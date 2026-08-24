@@ -8,17 +8,22 @@ An AI-powered automotive diagnostic assistant that retrieves model-specific, up-
 
 ```
 Autorag_champs/
+├── .github/           # Issue and Pull Request templates
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (git-ignored)
 ├── src/               # Ingestion, embedding, retrieval, and chat completion code
 │   └── chat_completion.py  # OpenAI-compatible API client & chat completion handler
 ├── prompts/           # System prompt templates & persona instructions
 │   └── system_prompt.txt
 ├── outputs/           # Logs, generated output artifacts, sample execution captures
-│   └── sample_output.txt
+│   ├── sample_output.txt
+│   └── github_workflow_submission_guide.md # Assignment 3.11 submission guide & video script
 ├── .env               # Local environment variables and API keys (git-ignored)
 ├── .env.example       # Example environment configuration template (committed)
 ├── .gitignore         # Version control exclusion rules
 ├── requirements.txt   # Python project dependencies
+├── WORKFLOW.md        # Team branching, commit conventions, PR process & onboarding guide
 └── README.md          # Project documentation
 ```
 
@@ -52,21 +57,11 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_API_KEY=your_actual_api_key_here
 CHAT_MODEL=gpt-4o-mini
 ```
-*(Supports any OpenAI-compatible provider, including local runtimes like Ollama or LM Studio).*
 
 ---
 
-## 🚀 Running the Chat Completion Client
+## 🚀 Team Workflow & Guidelines
 
-To execute a chat completion request with structured logging and error handling:
+For team collaboration rules, branching strategy (`feature/<name>`), conventional commit formats (`feat:`, `fix:`, `docs:`), Pull Request review checklists, issue tracking, and contributor onboarding, see [WORKFLOW.md](file:///d:/RAG/Autorag_champs/WORKFLOW.md).
 
-```bash
-python src/chat_completion.py
-```
-
-### Key Features
-- **Environment Configured (Task 1)**: Base URL, API key, and model read strictly from `.env`.
-- **Request & Response Handling (Task 2)**: Sends chat completion requests using system & user role messages, outputting `choices[0].message.content`.
-- **Structured Logging (Task 3)**: Logs request payload, model response text, and token usage (`prompt_tokens`, `completion_tokens`, `total_tokens`) to stdout and `outputs/chat_completion.log`.
-- **Clear Error Handling (Task 4)**: Catches and formats `401 Unauthorized` (`AuthenticationError`), `429 Too Many Requests` (`RateLimitError`), and `APIConnectionError` with clear human-readable messages instead of raw stack traces.
-- **Sample Output (Task 5)**: Saved sample logs and execution outputs in `outputs/sample_output.txt`.
+For Assignment 3.11 submission templates, PR copy-paste text, issue formats, and the 5-minute video script, see [outputs/github_workflow_submission_guide.md](file:///d:/RAG/Autorag_champs/outputs/github_workflow_submission_guide.md).
