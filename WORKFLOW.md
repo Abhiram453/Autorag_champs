@@ -8,6 +8,9 @@ This document defines the team collaboration standards, per-assignment branching
 
 To maintain complete auditability and fulfill assignment submission requirements, **every single assignment/concept must have its own dedicated feature branch and open Pull Request (PR)**. Direct commits to the `main` branch are strictly prohibited.
 
+- **Main Branch (`main`)**: Holds production-ready, fully tested, and releasable code only.
+- **Per-Assignment Feature Branches**: Every assignment or concept module is built on a dedicated branch created from `main`.
+
 ### Assignment Branch Naming Map
 | Assignment / Concept Module | Dedicated Branch Name | Key Files |
 | :--- | :--- | :--- |
@@ -47,3 +50,9 @@ Every assignment submission requires an open Pull Request on GitHub:
 1. Open PR from `feature/<assignment-name>` targeting `main`.
 2. Title format: `feat: <Assignment Title / Capability>`.
 3. Include `Closes #<issue_number>` in the PR description body.
+
+---
+
+## 📋 4. GitHub Issue Tracking Approach
+
+Every assignment task begins with a corresponding GitHub issue (`https://github.com/Abhiram453/Autorag_champs/issues`) with title, description, label (`feature`, `documentation`), and assignee (`@Abhiram453`).

@@ -18,6 +18,11 @@ Autorag_champs/
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
 │   ├── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
 │   └── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
+├── src/               # Ingestion, embedding, retrieval, and history management code
+│   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
+│   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
+│   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
+│   └── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   └── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -30,6 +35,9 @@ Autorag_champs/
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
+│   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
+│   ├── user_page_overview.md        # Layout architecture breakdown
+│   └── github_workflow_submission_guide.md # Assignment 3.11 submission guide & video script
 ├── .env               # Local environment variables and API keys (git-ignored)
 ├── .env.example       # Example environment configuration template (committed)
 ├── .gitignore         # Version control exclusion rules
@@ -78,9 +86,23 @@ python src/parameter_experiment.py
 - **`max_tokens`**: Caps maximum completion length, enforcing output bounds and controlling token costs.
 - **`stop` Sequences**: Terminates generation early (e.g. `stop=["\n\n2.", "Step 2:"]`) to prevent model rambling.
 - **Recommended Grounded RAG Preset**: `temperature=0.1`, `max_tokens=250`, `stop=["\n\n"]`.
+## 💬 Running Multi-Turn History & Context Trimming
+
+To test multi-turn conversation history tracking, token budget monitoring, FIFO trimming (`messages.pop(1)`), and LLM summarization strategies across 6–10 diagnostic turns:
+
+```bash
+python src/history_manager.py
+```
+
+### Key Learnings
+- **The Context Window Budget**: As multi-turn diagnostic chats progress, accumulated user/assistant turns compete for token space alongside system prompts and retrieved manual chunks.
+- **FIFO Trimming Strategy**: Automatically drops the oldest non-system turns (`messages.pop(1)`) when payload tokens exceed the set budget (e.g. 180 tokens in demo), protecting the root system prompt at index 0.
+- **Summarization Strategy**: Condenses older conversation turns into a single `[CONVERSATION SUMMARY]` block, maintaining core vehicle context (DTC P0300, VIN, Bank 1 specs) while reducing token footprint.
+- **Trade-off Balance**: More history = better continuity but higher cost and overflow risk; Less history (trimmed) = lower cost and safer execution but potential loss of early conversation details.
 
 ---
 
 ## 🚀 Team Workflow & Guidelines
 
 For team collaboration rules, per-assignment branching strategy (`feature/<name>`), conventional commit formats (`feat:`, `fix:`, `docs:`), Pull Request review checklists, issue tracking, and contributor onboarding, see [WORKFLOW.md](file:///d:/RAG/Autorag_champs/WORKFLOW.md).
+For team collaboration rules, branching strategy (`feature/<name>`), conventional commit formats (`feat:`, `fix:`, `docs:`), Pull Request review checklists, issue tracking, and contributor onboarding, see [WORKFLOW.md](file:///d:/RAG/Autorag_champs/WORKFLOW.md).
