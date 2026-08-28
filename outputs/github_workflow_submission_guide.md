@@ -37,28 +37,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 5: Generation Parameters Control (`src/parameter_experiment.py`)
+- **Branch**: `feature/generation-parameters-control`
+- **PR Title**: `feat: Add generation parameters control experiments for temperature, max_tokens, and stop sequences`
+- **Related Issue**: `Closes #6`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/6`
+
+---
+
+## 📌 Assignment 6: Structured Output & JSON Parsing (`src/structured_output.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/generation-parameters-control
-git add src/parameter_experiment.py outputs/parameter_comparison_results.log README.md
-git commit -m "feat: implement generation parameters control runner for temperature, max_tokens, and stop sequences"
-git push -u origin feature/generation-parameters-control
+git checkout -b feature/structured-output-json-validation
+git add src/structured_output.py outputs/structured_output_demo.log README.md
+git commit -m "feat: implement JSON mode structured output generator, safe parser, and schema validator"
+git push -u origin feature/structured-output-json-validation
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/generation-parameters-control` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add generation parameters control experiments for temperature, max_tokens, and stop sequences`
+- **Source Branch**: `feature/structured-output-json-validation` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add structured JSON output mode, defensive parser, schema validator, and retry recovery`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements parameter experiment engine testing temperature determinism (0.0 vs 1.0), max_tokens cost caps, and stop sequence early termination for grounded RAG.
+  Implements structured output engine with JSON mode enforcement, safe JSON parsing (safe_parse_json), field validation (validate_schema), and automatic retry recovery.
 
   ## Related Issue
-  Closes #6
+  Closes #7
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/6`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/7`
 
 ---
 

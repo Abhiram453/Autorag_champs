@@ -17,7 +17,8 @@ Autorag_champs/
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
 │   ├── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
-│   └── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
+│   ├── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
+│   └── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   └── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -27,6 +28,7 @@ Autorag_champs/
 │   ├── token_cost_analysis.log      # Token counting, call costs & corpus scale budget
 │   ├── history_management_demo.log  # Multi-turn history, trimming & summarization logs
 │   ├── parameter_comparison_results.log # Generation parameters control test logs
+│   ├── structured_output_demo.log   # JSON mode parsing & schema validation logs
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -65,19 +67,19 @@ cp .env.example .env
 
 ---
 
-## 🎛️ Running Generation Parameters Control Experiments
+## 🏗️ Running Structured Output & Safe JSON Validation
 
-To test generation parameters (`temperature`, `max_tokens`, `stop`, `top_p`) and verify deterministic factual RAG configurations:
+To execute JSON mode extractions, test defensive JSON parsing (`safe_parse_json`), validate required schema keys (`validate_schema`), and test retry recovery:
 
 ```bash
-python src/parameter_experiment.py
+python src/structured_output.py
 ```
 
 ### Key Learnings
-- **`temperature` (0.0 – 2.0)**: Low settings (`0.0 - 0.2`) produce deterministic, repeatable factual answers across runs. High settings (`1.0`) introduce variability and risk embellishment.
-- **`max_tokens`**: Caps maximum completion length, enforcing output bounds and controlling token costs.
-- **`stop` Sequences**: Terminates generation early (e.g. `stop=["\n\n2.", "Step 2:"]`) to prevent model rambling.
-- **Recommended Grounded RAG Preset**: `temperature=0.1`, `max_tokens=250`, `stop=["\n\n"]`.
+- **Structured JSON Mode**: Enforces `response_format={"type": "json_object"}` alongside system prompt schema instructions (`{"answer": "...", "source_manual": "...", "confidence": 0.98}`).
+- **Defensive Parsing (`safe_parse_json`)**: Gracefully handles markdown wrapping (` ```json `) and catches `JSONDecodeError` without application crashes.
+- **Field & Type Validation (`validate_schema`)**: Ensures all required keys (`answer`, `source_manual`, `confidence`) exist and match expected types before returning data to the application.
+- **Retry Recovery (`query_with_json_retry`)**: Automatically prompts the model once to fix syntax errors or supply missing keys if initial outputs fail validation.
 
 ---
 
