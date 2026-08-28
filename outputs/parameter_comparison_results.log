@@ -1,0 +1,60 @@
+================================================================================
+STARTING GENERATION PARAMETERS CONTROL EXPERIMENTS
+Target Model: gpt-4o-mini
+================================================================================
+
+--- EXPERIMENT 1: Temperature Variance Test (0.0 vs 1.0) ---
+[1A] Temperature = 0.0 (Factual, Deterministic RAG Mode):
+Run 1 Content:
+1. Inspect ignition coils and spark plugs for fouling or electrical breakdown.
+2. Check fuel pressure and verify fuel injector pulse signals.
+3. Test for intake manifold vacuum leaks or faulty MAF sensor.
+Run 2 Content:
+1. Inspect ignition coils and spark plugs for fouling or electrical breakdown.
+2. Check fuel pressure and verify fuel injector pulse signals.
+3. Test for intake manifold vacuum leaks or faulty MAF sensor.
+
+[1B] Temperature = 1.0 (Creative, Variable Mode):
+Run 1 Content:
+You might be looking at worn spark plugs causing weak arcs, low fuel delivery from a clogged fuel filter, or unmetered air entering via intake gaskets. Check electrical leads first.
+Run 2 Content:
+Top suspect is usually ignition system components (coils/plugs). Secondary issues include vacuum leaks pulling lean codes, or fluctuating fuel pressure under heavy load.
+
+--- EXPERIMENT 2: Max Tokens Length & Cost Cap (30 vs 250) ---
+[2A] max_tokens = 30 (Truncated Output Cap):
+Content:
+1. Inspect ignition coils and spark plugs for damage or fouling.
+2. Test fuel pressure to ensure...
+Finish Reason: length (Tokens Used: 30)
+
+[2B] max_tokens = 250 (Full Uncapped Response):
+Content:
+1. Inspect ignition coils and spark plugs for damage or fouling.
+2. Test fuel pressure to ensure adequate delivery under load.
+3. Inspect intake manifold for vacuum leaks.
+Finish Reason: stop (Tokens Used: 58)
+
+--- EXPERIMENT 3: Stop Sequences Early Termination ---
+[3A] Without Stop Sequence:
+Content:
+Step 1: Disconnect negative battery cable and wait 5 minutes.
+
+Step 2: Inspect ignition coil wiring harness C102 for corrosion.
+
+Step 3: Test coil primary resistance (0.4 - 0.6 ohms).
+
+[3B] With Stop Sequence = ['\n\n2.', 'Step 2:'] (Stops after Step 1):
+Content:
+Step 1: Disconnect negative battery cable and wait 5 minutes.
+Finish Reason: stop
+
+--- EXPERIMENT 4: Grounded Automotive RAG Parameter Profile ---
+Preset: temperature=0.1, max_tokens=200, stop=['\n\n---']
+Grounded RAG Output:
+1. Inspect ignition coils and spark plugs on affected cylinders for wear or fouling.
+2. Measure fuel pressure to rule out low fuel delivery under load.
+3. Test for intake manifold vacuum leaks or faulty Mass Air Flow (MAF) sensor.
+Total Tokens Billed: Prompt = 38, Completion = 42, Total = 80
+================================================================================
+PARAMETER CONTROL EXPERIMENTS COMPLETED. Saved to outputs/parameter_comparison_results.log
+================================================================================
