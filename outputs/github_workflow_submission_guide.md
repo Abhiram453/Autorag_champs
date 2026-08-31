@@ -53,28 +53,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 7: Prompt Templates & Reusability (`src/prompt_template_engine.py`)
+- **Branch**: `feature/prompt-templates-reusability`
+- **PR Title**: `feat: Add decoupled prompt templates directory, placeholder renderer, and multi-feature engine`
+- **Related Issue**: `Closes #8`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/8`
+
+---
+
+## 📌 Assignment 10: Document Loading & Multi-Format Intake (`src/document_loader.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/prompt-templates-reusability
-git add prompts/templates.py src/prompt_template_engine.py outputs/prompt_templates_demo.log README.md
-git commit -m "feat: implement prompt templates directory, runtime variable renderer, and multi-feature reuse engine"
-git push -u origin feature/prompt-templates-reusability
+git checkout -b feature/document-loading-intake
+git add data/ src/document_loader.py outputs/document_intake_summary.log requirements.txt README.md
+git commit -m "feat: implement multi-format document loader for PDF, TXT, HTML, MD with source metadata tracking"
+git push -u origin feature/document-loading-intake
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/prompt-templates-reusability` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add decoupled prompt templates directory, placeholder renderer, and multi-feature engine`
+- **Source Branch**: `feature/document-loading-intake` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add multi-format document loader for PDF, TXT, HTML, and MD with error-resilient intake`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements decoupled prompt template architecture (prompts/templates.py), dynamic variable renderer (render_prompt), and multi-feature prompt reuse across chat endpoints, evaluators, and CLI tools.
+  Implements multi-format document intake engine (src/document_loader.py) converting PDF (pypdf), TXT, MD, and HTML (BeautifulSoup) into plain text with source metadata tracking and error handling.
 
   ## Related Issue
-  Closes #8
+  Closes #9
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/8`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/9`
 
 ---
 
