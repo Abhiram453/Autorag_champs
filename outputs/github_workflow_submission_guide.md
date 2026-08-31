@@ -45,28 +45,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 6: Structured Output & JSON Parsing (`src/structured_output.py`)
+- **Branch**: `feature/structured-output-json-validation`
+- **PR Title**: `feat: Add structured JSON output mode, defensive parser, schema validator, and retry recovery`
+- **Related Issue**: `Closes #7`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/7`
+
+---
+
+## 📌 Assignment 7: Prompt Templates & Reusability (`src/prompt_template_engine.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/structured-output-json-validation
-git add src/structured_output.py outputs/structured_output_demo.log README.md
-git commit -m "feat: implement JSON mode structured output generator, safe parser, and schema validator"
-git push -u origin feature/structured-output-json-validation
+git checkout -b feature/prompt-templates-reusability
+git add prompts/templates.py src/prompt_template_engine.py outputs/prompt_templates_demo.log README.md
+git commit -m "feat: implement prompt templates directory, runtime variable renderer, and multi-feature reuse engine"
+git push -u origin feature/prompt-templates-reusability
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/structured-output-json-validation` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add structured JSON output mode, defensive parser, schema validator, and retry recovery`
+- **Source Branch**: `feature/prompt-templates-reusability` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add decoupled prompt templates directory, placeholder renderer, and multi-feature engine`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements structured output engine with JSON mode enforcement, safe JSON parsing (safe_parse_json), field validation (validate_schema), and automatic retry recovery.
+  Implements decoupled prompt template architecture (prompts/templates.py), dynamic variable renderer (render_prompt), and multi-feature prompt reuse across chat endpoints, evaluators, and CLI tools.
 
   ## Related Issue
-  Closes #7
+  Closes #8
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/7`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/8`
 
 ---
 

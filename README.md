@@ -18,10 +18,12 @@ Autorag_champs/
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
 │   ├── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
 │   ├── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
-│   └── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
+│   ├── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
+│   └── prompt_template_engine.py # Multi-feature prompt template renderer & reusability engine
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
-│   └── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
+│   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
+│   └── templates.py          # Centralized prompt templates with named placeholders & renderer
 ├── outputs/           # Logs, generated output artifacts, sample execution captures
 │   ├── sample_output.txt
 │   ├── prompt_comparison_results.log # Execution trace of side-by-side prompt tests
@@ -29,6 +31,7 @@ Autorag_champs/
 │   ├── history_management_demo.log  # Multi-turn history, trimming & summarization logs
 │   ├── parameter_comparison_results.log # Generation parameters control test logs
 │   ├── structured_output_demo.log   # JSON mode parsing & schema validation logs
+│   ├── prompt_templates_demo.log    # Multi-feature prompt template rendering logs
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -67,19 +70,19 @@ cp .env.example .env
 
 ---
 
-## 🏗️ Running Structured Output & Safe JSON Validation
+## 📝 Running Prompt Templates & Reusability Experiments
 
-To execute JSON mode extractions, test defensive JSON parsing (`safe_parse_json`), validate required schema keys (`validate_schema`), and test retry recovery:
+To test centralized prompt template rendering with named placeholders (`{context}`, `{question}`, `{vehicle_model}`, `{dtc_code}`) and verify multi-feature reuse across chat endpoints, evaluators, and CLI tools:
 
 ```bash
-python src/structured_output.py
+python src/prompt_template_engine.py
 ```
 
 ### Key Learnings
-- **Structured JSON Mode**: Enforces `response_format={"type": "json_object"}` alongside system prompt schema instructions (`{"answer": "...", "source_manual": "...", "confidence": 0.98}`).
-- **Defensive Parsing (`safe_parse_json`)**: Gracefully handles markdown wrapping (` ```json `) and catches `JSONDecodeError` without application crashes.
-- **Field & Type Validation (`validate_schema`)**: Ensures all required keys (`answer`, `source_manual`, `confidence`) exist and match expected types before returning data to the application.
-- **Retry Recovery (`query_with_json_retry`)**: Automatically prompts the model once to fix syntax errors or supply missing keys if initial outputs fail validation.
+- **Decoupled Architecture**: Prompts live in `prompts/templates.py`, completely separate from application business logic in `src/`.
+- **Runtime Variable Injection**: Dynamic placeholders (`{context}`, `{question}`) are injected cleanly using `render_prompt(template, **values)`.
+- **Multi-Feature Reuse**: A single prompt template (`RAG_ANSWER_TEMPLATE`) powers 3 separate features (Web Chat, Batch Evaluator, CLI Tool), guaranteeing zero prompt drift.
+- **Single-Point Updates**: Grounding rules or citation instructions are edited once in `prompts/templates.py` and instantly update all 3 features.
 
 ---
 
