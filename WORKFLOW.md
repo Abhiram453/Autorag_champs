@@ -16,6 +16,9 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 3: Tokenization & Cost Estimation** | `feature/token-counting-cost-estimation` | `src/token_estimator.py`, `outputs/token_cost_analysis.log` |
 | **Concept 4: History & Context Trimming** | `feature/conversation-history-management` | `src/history_manager.py`, `outputs/history_management_demo.log` |
 | **Concept 5: Generation Parameters Control** | `feature/generation-parameters-control` | `src/parameter_experiment.py`, `outputs/parameter_comparison_results.log` |
+| **Concept 6: Structured Output & JSON Parsing** | `feature/structured-output-json-validation` | `src/structured_output.py`, `outputs/structured_output_demo.log` |
+| **Concept 7: Prompt Templates & Reusability** | `feature/prompt-templates-reusability` | `prompts/templates.py`, `src/prompt_template_engine.py` |
+| **Concept 10: Document Loading & Intake** | `feature/document-loading-intake` | `src/document_loader.py`, `data/`, `outputs/document_intake_summary.log` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:

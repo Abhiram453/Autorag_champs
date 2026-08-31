@@ -1,0 +1,3 @@
+# Data Directory
+Store raw repair manuals, recall notices, and diagnostic manuals here.
+This directory is git-ignored to keep binary and large data files out of version control.

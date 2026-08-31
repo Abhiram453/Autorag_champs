@@ -11,29 +11,39 @@ Autorag_champs/
 ├── .github/           # Issue and Pull Request templates
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
-├── data/              # Source repair manuals, recall notices, diagnostic guides (git-ignored)
-├── src/               # Ingestion, embedding, retrieval, parameters, and history code
+├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html, .pdf)
+│   ├── sample_manual.txt  # Plain text repair manual for DTC P0300
+│   ├── tsb_notice.md      # Markdown Technical Service Bulletin TSB-22-112
+│   └── recall_report.html # HTML recall report for SUV Model X battery safety
+├── src/               # Ingestion, document loading, embedding, retrieval, and history code
 │   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
 │   ├── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
-│   └── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
+│   ├── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
+│   ├── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
+│   ├── prompt_template_engine.py # Multi-feature prompt template renderer & reusability engine
+│   └── document_loader.py    # Multi-format document loader (.pdf, .txt, .md, .html) & intake scanner
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
-│   └── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
+│   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
+│   └── templates.py          # Centralized prompt templates with named placeholders & renderer
 ├── outputs/           # Logs, generated output artifacts, sample execution captures
 │   ├── sample_output.txt
 │   ├── prompt_comparison_results.log # Execution trace of side-by-side prompt tests
 │   ├── token_cost_analysis.log      # Token counting, call costs & corpus scale budget
 │   ├── history_management_demo.log  # Multi-turn history, trimming & summarization logs
 │   ├── parameter_comparison_results.log # Generation parameters control test logs
+│   ├── structured_output_demo.log   # JSON mode parsing & schema validation logs
+│   ├── prompt_templates_demo.log    # Multi-feature prompt template rendering logs
+│   ├── document_intake_summary.log  # Multi-format document intake & metadata logs
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
 ├── .env               # Local environment variables and API keys (git-ignored)
 ├── .env.example       # Example environment configuration template (committed)
 ├── .gitignore         # Version control exclusion rules
-├── requirements.txt   # Python project dependencies (openai, python-dotenv, tiktoken)
+├── requirements.txt   # Python dependencies (openai, python-dotenv, tiktoken, pypdf, bs4)
 ├── WORKFLOW.md        # Team branching, commit conventions, PR process & onboarding guide
 └── README.md          # Project documentation
 ```
@@ -65,19 +75,19 @@ cp .env.example .env
 
 ---
 
-## 🎛️ Running Generation Parameters Control Experiments
+## 📄 Running Document Loading & Multi-Format Intake
 
-To test generation parameters (`temperature`, `max_tokens`, `stop`, `top_p`) and verify deterministic factual RAG configurations:
+To execute multi-format document intake (`.pdf`, `.txt`, `.md`, `.html`), track source identity metadata (`source`), handle corrupt/unreadable files without pipeline crashes, and inspect character lengths and text previews:
 
 ```bash
-python src/parameter_experiment.py
+python src/document_loader.py
 ```
 
 ### Key Learnings
-- **`temperature` (0.0 – 2.0)**: Low settings (`0.0 - 0.2`) produce deterministic, repeatable factual answers across runs. High settings (`1.0`) introduce variability and risk embellishment.
-- **`max_tokens`**: Caps maximum completion length, enforcing output bounds and controlling token costs.
-- **`stop` Sequences**: Terminates generation early (e.g. `stop=["\n\n2.", "Step 2:"]`) to prevent model rambling.
-- **Recommended Grounded RAG Preset**: `temperature=0.1`, `max_tokens=250`, `stop=["\n\n"]`.
+- **Unified Text Form**: Embeddings and models require plain text. `.pdf` files are parsed via `pypdf`, `.txt`/`.md` via UTF-8 text readers, and `.html` via `BeautifulSoup` tag stripping.
+- **Source Metadata Tracking**: Every ingested text snippet carries its `source` (filename / relative path) so retrieved answers can cite exact manuals.
+- **Error-Resilient Pipeline**: Corrupt, unreadable, or scanned PDFs are caught gracefully with `try/except` logging without crashing the intake process across 4,000 files.
+- **Intake Verification**: Inspects character counts and text previews (`text[:60]`) to confirm clean ingestion before chunking or embedding.
 
 ---
 

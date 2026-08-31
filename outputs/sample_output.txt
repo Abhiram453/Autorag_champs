@@ -1,0 +1,49 @@
+================================================================================
+AUTORAG ASSISTANT - OPENAI-COMPATIBLE CHAT COMPLETION LOG & EXECUTION SAMPLE
+================================================================================
+
+[SAMPLE 1: SUCCESSFUL CHAT COMPLETION RESPONSE]
+2026-08-24 14:05:00,123 [INFO] --- REQUEST PAYLOAD ---
+2026-08-24 14:05:00,124 [INFO] MODEL: gpt-4o-mini
+2026-08-24 14:05:00,124 [INFO] MESSAGES: [
+  {'role': 'system', 'content': 'You are an expert automotive diagnostic assistant for service centers.'},
+  {'role': 'user', 'content': 'What is the recommended diagnostic step when encountering fault code P0300 (random/multiple cylinder misfire)?'}
+]
+2026-08-24 14:05:01,845 [INFO] --- RESPONSE PAYLOAD ---
+2026-08-24 14:05:01,846 [INFO] RESPONSE CONTENT:
+When diagnosing diagnostic trouble code P0300 (Random/Multiple Cylinder Misfire):
+
+1. **Verify Fuel System & Pressure**: Check for low fuel pressure, clogged fuel filter, or contaminated fuel.
+2. **Inspect Ignition System**: Check spark plugs, ignition coils, and high-tension leads for wear or fouling.
+3. **Check Intake Air System**: Test for vacuum leaks, faulty Mass Air Flow (MAF) sensor, or intake manifold leaks.
+4. **Monitor Mechanical & Compression**: Perform a cylinder compression and leak-down test to rule out valve or head gasket damage.
+
+2026-08-24 14:05:01,847 [INFO] USAGE: Prompt Tokens = 42, Completion Tokens = 118, Total Tokens = 160
+
+=== Model Reply ===
+When diagnosing diagnostic trouble code P0300 (Random/Multiple Cylinder Misfire):
+
+1. **Verify Fuel System & Pressure**: Check for low fuel pressure, clogged fuel filter, or contaminated fuel.
+2. **Inspect Ignition System**: Check spark plugs, ignition coils, and high-tension leads for wear or fouling.
+3. **Check Intake Air System**: Test for vacuum leaks, faulty Mass Air Flow (MAF) sensor, or intake manifold leaks.
+4. **Monitor Mechanical & Compression**: Perform a cylinder compression and leak-down test to rule out valve or head gasket damage.
+===================
+
+--------------------------------------------------------------------------------
+
+[SAMPLE 2: HANDLED 401 AUTHENTICATION ERROR (BAD / MISSING API KEY)]
+2026-08-24 14:05:05,010 [INFO] --- REQUEST PAYLOAD ---
+2026-08-24 14:05:05,011 [INFO] MODEL: gpt-4o-mini
+2026-08-24 14:05:05,011 [INFO] MESSAGES: [{'role': 'system', 'content': 'You are a concise assistant.'}, {'role': 'user', 'content': 'Hello'}]
+2026-08-24 14:05:05,450 [ERROR] Auth failed (401): Invalid or missing API key. Check OPENAI_API_KEY in your .env file.
+2026-08-24 14:05:05,451 [ERROR] Details: Error code: 401 - {'error': {'message': 'Incorrect API key provided', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+
+--------------------------------------------------------------------------------
+
+[SAMPLE 3: HANDLED 429 RATE LIMIT ERROR (QUOTA / RATE LIMIT EXCEEDED)]
+2026-08-24 14:05:10,200 [INFO] --- REQUEST PAYLOAD ---
+2026-08-24 14:05:10,201 [INFO] MODEL: gpt-4o-mini
+2026-08-24 14:05:10,201 [INFO] MESSAGES: [{'role': 'system', 'content': 'You are a concise assistant.'}, {'role': 'user', 'content': 'Hello'}]
+2026-08-24 14:05:10,612 [ERROR] Rate limited (429): Quota hit or request rate limit exceeded. Slow down and retry with backoff.
+2026-08-24 14:05:10,613 [ERROR] Details: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================
