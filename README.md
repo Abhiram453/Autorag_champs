@@ -91,6 +91,58 @@ python src/document_loader.py
 
 ---
 
+## 🏷️ Chunk Metadata & Source Tracking
+
+Every chunk carries rich metadata so the assistant can **cite its sources** and retrieved content can be **traced back** to its exact origin.
+
+### Running the Metadata Demo
+
+```bash
+python src/chunk_metadata_demo.py
+```
+
+This produces:
+- `outputs/chunk_metadata_demo.log` — full demo with per-chunk metadata and traceback verification
+- `outputs/sample_chunks_metadata.json` — all chunks with metadata for reviewer inspection
+
+### Metadata Schema (consistent across every chunk)
+
+| Field | Example | Purpose |
+|---|---|---|
+| `chunk_id` | `tsb_notice.md::section::2` | Unique identifier for retrieval & citation |
+| `source` | `tsb_notice.md` | Source document filename |
+| `doc_type` | `tsb` | Category: `repair_manual`, `tsb`, `recall_notice` |
+| `section_title` | `2. Cause` | Section heading for citation |
+| `chunk_index` | `2` | 0-based position within the document |
+| `total_chunks` | `3` | Total chunks in the source document |
+| `char_start` | `386` | Character offset where chunk begins |
+| `char_end` | `825` | Character offset where chunk ends |
+| `char_count` | `443` | Number of characters in chunk text |
+| `strategy` | `section_based` | Chunking strategy used |
+| `text` | *(chunk content)* | The actual text content |
+
+### Source Traceback Example
+
+Given a retrieved chunk, its metadata lets us trace it back to the exact source:
+
+```
+Query:    "How do I inspect connector C102?"
+Source:   tsb_notice.md
+Doc Type: tsb
+Section:  "TECHNICAL SERVICE BULLETIN (TSB-22-112)"
+Position: chunk 1 of 3, chars 0-235
+Verified: True (text at recorded offsets matches exactly)
+```
+
+### How Metadata Enables Filtering
+
+With `doc_type` and `section_title` on every chunk, retrieval can be filtered:
+- **By document type**: "Only search recall notices" → filter `doc_type == "recall_notice"`
+- **By section**: "Only search diagnostic procedures" → filter `section_title` contains "DIAGNOSTIC"
+- **By source**: "Only search TSB-22-112" → filter `source == "tsb_notice.md"`
+
+---
+
 ## 🚀 Team Workflow & Guidelines
 
-For team collaboration rules, per-assignment branching strategy (`feature/<name>`), conventional commit formats (`feat:`, `fix:`, `docs:`), Pull Request review checklists, issue tracking, and contributor onboarding, see [WORKFLOW.md](file:///d:/RAG/Autorag_champs/WORKFLOW.md).
+For team collaboration rules, per-assignment branching strategy (`feature/<name>`), conventional commit formats (`feat:`, `fix:`, `docs:`), Pull Request review checklists, issue tracking, and contributor onboarding, see [WORKFLOW.md](WORKFLOW.md).

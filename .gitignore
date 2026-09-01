@@ -35,6 +35,8 @@ data/*
 outputs/*
 !outputs/.gitkeep
 !outputs/sample_output.txt
+!outputs/chunk_metadata_demo.log
+!outputs/sample_chunks_metadata.json
 
 # IDE / OS settings
 .vscode/
