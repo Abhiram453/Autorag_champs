@@ -1,0 +1,98 @@
+{
+  "recall_report.html": {
+    "document_char_count": 698,
+    "fixed_size": [
+      {
+        "chunk_index": 0,
+        "char_count": 500,
+        "text": "SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure "
+      },
+      {
+        "chunk_index": 1,
+        "char_count": 298,
+        "text": "ay cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure Flash Battery Control Module software to version v1.0.0 or higher. Perform high voltage isolation test prior to vehicle release. Ensure diagnostic session ID is logged in the compliance audit panel."
+      }
+    ],
+    "section_based": [
+      {
+        "chunk_index": 0,
+        "char_count": 698,
+        "text": "SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure Flash Battery Control Module software to version v1.0.0 or higher. Perform high voltage isolation test prior to vehicle release. Ensure diagnostic session ID is logged in the compliance audit panel."
+      }
+    ]
+  },
+  "sample_manual.txt": {
+    "document_char_count": 934,
+    "fixed_size": [
+      {
+        "chunk_index": 0,
+        "char_count": 500,
+        "text": "AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001\nVEHICLE MODEL: 2023 SUV Model X\nSYSTEM: IGNITION SYSTEM & CYLINDER MISFIRE DIAGNOSTICS (DTC P0300)\n\n1. SYSTEM OVERVIEW\nThe ignition system utilizes individual coil-on-plug assemblies for cylinders 1 through 6.\nDiagnostic Trouble Code P0300 indicates a random or multiple cylinder misfire event detected by the Engine Control Unit (ECU).\n\n2. DIAGNOSTIC PROCEDURES\n- Step 1: Connect OBD-II scanner and record freeze frame data.\n- Step 2: Disconn"
+      },
+      {
+        "chunk_index": 1,
+        "char_count": 500,
+        "text": "AGNOSTIC PROCEDURES\n- Step 1: Connect OBD-II scanner and record freeze frame data.\n- Step 2: Disconnect negative battery cable and wait 5 minutes before servicing electrical components.\n- Step 3: Remove decorative engine cover (10mm bolts).\n- Step 4: Inspect Bank 1 ignition coil assemblies (cylinders 1, 3, 5 located on passenger side).\n- Step 5: Test primary resistance across terminals 1 and 2. Specification: 0.4 to 0.6 Ohms.\n- Step 6: Test secondary resistance across output tower and terminal 2"
+      },
+      {
+        "chunk_index": 2,
+        "char_count": 134,
+        "text": "ecification: 0.4 to 0.6 Ohms.\n- Step 6: Test secondary resistance across output tower and terminal 2. Specification: 5.0 to 7.0 kOhms."
+      }
+    ],
+    "section_based": [
+      {
+        "chunk_index": 0,
+        "char_count": 155,
+        "text": "AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001\nVEHICLE MODEL: 2023 SUV Model X\nSYSTEM: IGNITION SYSTEM & CYLINDER MISFIRE DIAGNOSTICS (DTC P0300)"
+      },
+      {
+        "chunk_index": 1,
+        "char_count": 236,
+        "text": "1. SYSTEM OVERVIEW\nThe ignition system utilizes individual coil-on-plug assemblies for cylinders 1 through 6.\nDiagnostic Trouble Code P0300 indicates a random or multiple cylinder misfire event detected by the Engine Control Unit (ECU)."
+      },
+      {
+        "chunk_index": 2,
+        "char_count": 539,
+        "text": "2. DIAGNOSTIC PROCEDURES\n- Step 1: Connect OBD-II scanner and record freeze frame data.\n- Step 2: Disconnect negative battery cable and wait 5 minutes before servicing electrical components.\n- Step 3: Remove decorative engine cover (10mm bolts).\n- Step 4: Inspect Bank 1 ignition coil assemblies (cylinders 1, 3, 5 located on passenger side).\n- Step 5: Test primary resistance across terminals 1 and 2. Specification: 0.4 to 0.6 Ohms.\n- Step 6: Test secondary resistance across output tower and terminal 2. Specification: 5.0 to 7.0 kOhms."
+      }
+    ]
+  },
+  "tsb_notice.md": {
+    "document_char_count": 825,
+    "fixed_size": [
+      {
+        "chunk_index": 0,
+        "char_count": 500,
+        "text": "# TECHNICAL SERVICE BULLETIN (TSB-22-112)\n\n**Subject:** Wiring Harness Connector C102 Corrosion Inspection  \n**Bulletin ID:** TSB-22-112  \n**Date:** October 24, 2023  \n**Applicable Models:** Series X / Global, 2023 SUV Model X  \n\n---\n\n### 1. Condition\nCustomers may experience intermittent random misfire illumination (DTC P0300 or P0301) accompanied by hesitation under acceleration.\n\n### 2. Cause\nMoisture intrusion at the engine compartment bulkhead wiring harness connector C102 leading to pin re"
+      },
+      {
+        "chunk_index": 1,
+        "char_count": 425,
+        "text": "oisture intrusion at the engine compartment bulkhead wiring harness connector C102 leading to pin resistance variance.\n\n### 3. Service Action\n1. Inspect connector C102 located on the right bulkhead (passenger side).\n2. Look for green verdigris or corrosion on pins 4, 5, and 12.\n3. If corrosion is found, replace connector pigtail harness kit part # PRT-882-BRK.\n4. Apply dielectric grease to connector seals prior to mating."
+      },
+      {
+        "chunk_index": 2,
+        "char_count": 25,
+        "text": "or seals prior to mating."
+      }
+    ],
+    "section_based": [
+      {
+        "chunk_index": 0,
+        "char_count": 233,
+        "text": "# TECHNICAL SERVICE BULLETIN (TSB-22-112)\n\n**Subject:** Wiring Harness Connector C102 Corrosion Inspection  \n**Bulletin ID:** TSB-22-112  \n**Date:** October 24, 2023  \n**Applicable Models:** Series X / Global, 2023 SUV Model X  \n\n---"
+      },
+      {
+        "chunk_index": 1,
+        "char_count": 149,
+        "text": "### 1. Condition\nCustomers may experience intermittent random misfire illumination (DTC P0300 or P0301) accompanied by hesitation under acceleration."
+      },
+      {
+        "chunk_index": 2,
+        "char_count": 443,
+        "text": "### 2. Cause\nMoisture intrusion at the engine compartment bulkhead wiring harness connector C102 leading to pin resistance variance.\n\n### 3. Service Action\n\n1. Inspect connector C102 located on the right bulkhead (passenger side).\n\n2. Look for green verdigris or corrosion on pins 4, 5, and 12.\n\n3. If corrosion is found, replace connector pigtail harness kit part # PRT-882-BRK.\n\n4. Apply dielectric grease to connector seals prior to mating."
+      }
+    ]
+  }
+}
