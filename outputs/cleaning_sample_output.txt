@@ -1,0 +1,132 @@
+=== TEXT CLEANING PIPELINE - BEFORE & AFTER ===
+
+--- Document: noisy_document.txt ---
+BEFORE:
+PAGE 1 OF 3
+1. INTRODUCTION
+This document is a sample for testing the cleaning pipeline. It contains some noise.
+Back to top
+There are some broken line wraps
+in this document that should be
+fixed by the cleaning pipeline.
+
+
+     
+     
+    
+This text has too many spaces            between words.
+
+And too many
+
+
+blank lines.
+PAGE 2 OF 3
+2. ENCODING ARTIFACTS
+Here are some weird characters:
+ﬁre (should be fire)
+ﬀ (ff)
+This is an example of NFKC normalization.
+
+Next
+3. MORE TEXT
+End of the noisy do...
+
+AFTER:
+1. INTRODUCTION
+This document is a sample for testing the cleaning pipeline. It contains some noise.
+
+There are some broken line wraps in this document that should be fixed by the cleaning pipeline.
+
+ 
+ 
+ 
+This text has too many spaces between words.
+
+And too many
+
+blank lines.
+
+2. ENCODING ARTIFACTS
+Here are some weird characters:
+fire (should be fire)
+ff (ff)
+This is an example of NFKC normalization.
+
+3. MORE TEXT
+End of the noisy document.
+
+================================================================================
+
+--- Document: recall_report.html ---
+BEFORE:
+SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure ...
+
+AFTER:
+SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure ...
+
+================================================================================
+
+--- Document: sample_manual.txt ---
+BEFORE:
+AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001
+VEHICLE MODEL: 2023 SUV Model X
+SYSTEM: IGNITION SYSTEM & CYLINDER MISFIRE DIAGNOSTICS (DTC P0300)
+
+1. SYSTEM OVERVIEW
+The ignition system utilizes individual coil-on-plug assemblies for cylinders 1 through 6.
+Diagnostic Trouble Code P0300 indicates a random or multiple cylinder misfire event detected by the Engine Control Unit (ECU).
+
+2. DIAGNOSTIC PROCEDURES
+- Step 1: Connect OBD-II scanner and record freeze frame data.
+- Step 2: Disconn...
+
+AFTER:
+AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001
+VEHICLE MODEL: 2023 SUV Model X
+SYSTEM: IGNITION SYSTEM & CYLINDER MISFIRE DIAGNOSTICS (DTC P0300)
+
+1. SYSTEM OVERVIEW
+The ignition system utilizes individual coil-on-plug assemblies for cylinders 1 through 6.
+Diagnostic Trouble Code P0300 indicates a random or multiple cylinder misfire event detected by the Engine Control Unit (ECU).
+
+2. DIAGNOSTIC PROCEDURES
+- Step 1: Connect OBD-II scanner and record freeze frame data.
+- Step 2: Disconn...
+
+================================================================================
+
+--- Document: tsb_notice.md ---
+BEFORE:
+# TECHNICAL SERVICE BULLETIN (TSB-22-112)
+
+**Subject:** Wiring Harness Connector C102 Corrosion Inspection  
+**Bulletin ID:** TSB-22-112  
+**Date:** October 24, 2023  
+**Applicable Models:** Series X / Global, 2023 SUV Model X  
+
+---
+
+### 1. Condition
+Customers may experience intermittent random misfire illumination (DTC P0300 or P0301) accompanied by hesitation under acceleration.
+
+### 2. Cause
+Moisture intrusion at the engine compartment bulkhead wiring harness connector C102 leading to pin re...
+
+AFTER:
+# TECHNICAL SERVICE BULLETIN (TSB-22-112)
+
+**Subject:** Wiring Harness Connector C102 Corrosion Inspection 
+**Bulletin ID:** TSB-22-112 
+**Date:** October 24, 2023 
+**Applicable Models:** Series X / Global, 2023 SUV Model X 
+
+---
+
+### 1. Condition
+Customers may experience intermittent random misfire illumination (DTC P0300 or P0301) accompanied by hesitation under acceleration.
+
+### 2. Cause
+Moisture intrusion at the engine compartment bulkhead wiring harness connector C102 leading to pin resist...
+
+================================================================================
+
