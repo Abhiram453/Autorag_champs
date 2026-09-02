@@ -69,28 +69,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 11: Scalable Batch Embedding Pipeline (`src/batch_embedding_pipeline.py`)
+- **Branch**: `feature/scalable-batch-embedding-pipeline`
+- **PR Title**: `feat: Add scalable batch embedding pipeline with exponential backoff retry and idempotent caching`
+- **Related Issue**: `Closes #10`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/10`
+
+---
+
+## 📌 Assignment 17: Embedding Sanity Testing (`src/embedding_sanity_test.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/scalable-batch-embedding-pipeline
-git add src/batch_embedding_pipeline.py outputs/batch_embeddings_cache.json outputs/batch_embedding_pipeline_summary.log README.md
-git commit -m "feat: implement scalable batch embedding pipeline with exponential backoff retry and idempotent caching"
-git push -u origin feature/scalable-batch-embedding-pipeline
+git checkout -b feature/embedding-sanity-testing
+git add src/embedding_sanity_test.py outputs/embedding_sanity_report.log README.md
+git commit -m "feat: implement embedding sanity testing suite, cosine similarity ranker, and failure case analyzer"
+git push -u origin feature/embedding-sanity-testing
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/scalable-batch-embedding-pipeline` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add scalable batch embedding pipeline with exponential backoff retry and idempotent caching`
+- **Source Branch**: `feature/embedding-sanity-testing` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add embedding sanity testing suite, cosine similarity ranking, and failure case analyzer`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements batch embedding pipeline (src/batch_embedding_pipeline.py) featuring chunk batching (batch_size=64), exponential backoff retries (2 ** attempt), persistent JSON caching (outputs/batch_embeddings_cache.json) for 100% crash-resilient resumption, and token cost tracking.
+  Implements embedding sanity testing suite (src/embedding_sanity_test.py) using known query-chunk test cases, cosine similarity ranking, edge case failure analysis, and structured sanity reporting.
 
   ## Related Issue
-  Closes #10
+  Closes #17
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/10`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/17`
 
 ---
 

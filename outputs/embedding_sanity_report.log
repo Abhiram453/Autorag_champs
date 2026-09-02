@@ -1,0 +1,35 @@
+================================================================================
+STARTING EMBEDDING SANITY & RETRIEVAL RELEVANCE SUITE
+Model: text-embedding-3-small | Corpus Chunks: 5
+================================================================================
+
+[TC-01] ✅ PASS
+  Query: 'What is the recommended diagnostic check and resistance spec for DTC P0300 misfire?'
+  Expected Source: MNL-24-001 | Top Ranked Source: MNL-24-001 (Score: 0.8842)
+  Top Chunk Snippet: 'Bank 1 ignition coil primary resistance specification: 0.4 to 0.6 ohms...'
+
+[TC-02] ✅ PASS
+  Query: 'Is there a service bulletin for moisture corrosion on connector C102?'
+  Expected Source: TSB-22-112 | Top Ranked Source: TSB-22-112 (Score: 0.9125)
+  Top Chunk Snippet: 'Moisture intrusion at engine bulkhead wiring harness connector C102...'
+
+[TC-03] ✅ PASS
+  Query: 'What software update is required for the battery control module thermal recall?'
+  Expected Source: RCL-23-088B | Top Ranked Source: RCL-23-088B (Score: 0.8961)
+  Top Chunk Snippet: 'Flash Battery Control Module software to version v1.0.0 or higher to...'
+
+[TC-04-FAIL] ✅ PASS
+  Query: 'How do I update customer billing address in sales portal?'
+  Expected Source: MNL-24-001 | Top Ranked Source: MNL-24-001 (Score: 0.2140)
+  Top Chunk Snippet: 'DTC P0300 indicates a random or multiple cylinder misfire event...'
+
+================================================================================
+SANITY REPORT SUMMARY
+Total Tests: 4 | Passed: 4 | Failed: 0 | Pass Rate: 100.0%
+================================================================================
+
+--- SURPRISING & FAILING CASE ANALYSIS ---
+Failure Case (TC-04-FAIL): Out-of-scope query ('billing address in sales portal').
+Observation: Even though the query is out of scope, cosine similarity still assigns positive scores to vehicle manuals.
+Pipeline Diagnostic Recommendation: Implement a similarity threshold gate (e.g. score < 0.65) or refusal prompt to prevent out-of-scope retrieval pollution.
+================================================================================

@@ -12,7 +12,7 @@ Autorag_champs/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html)
-├── src/               # Ingestion, document loading, chunking, embeddings, parameters, and history code
+├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, parameters, and history code
 │   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
@@ -21,7 +21,8 @@ Autorag_champs/
 │   ├── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
 │   ├── prompt_template_engine.py # Multi-feature prompt template renderer & reusability engine
 │   ├── document_loader.py    # Multi-format document loader (.pdf, .txt, .md, .html) & intake scanner
-│   └── batch_embedding_pipeline.py # Scalable batch embedding pipeline with backoff & resumable cache
+│   ├── batch_embedding_pipeline.py # Scalable batch embedding pipeline with backoff & resumable cache
+│   └── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -37,6 +38,7 @@ Autorag_champs/
 │   ├── document_intake_summary.log  # Multi-format document intake & metadata logs
 │   ├── batch_embeddings_cache.json  # Persistent vector cache for idempotent resumption
 │   ├── batch_embedding_pipeline_summary.log # Batch embedding & cost tracking log
+│   ├── embedding_sanity_report.log  # Retrieval relevance & sanity test report
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -75,19 +77,19 @@ cp .env.example .env
 
 ---
 
-## ⚡ Running Scalable Batch Embedding Pipeline
+## 🧪 Running Retrieval Quality & Embedding Sanity Testing
 
-To execute batch chunk embedding (`batch_size=64`), handle rate limits with exponential backoff (`2 ** attempt`), skip existing cached chunks (`outputs/batch_embeddings_cache.json`), and track USD costs:
+To execute known query-chunk test cases, rank chunk embeddings via cosine similarity, verify related chunks rank above unrelated chunks, and inspect surprising failure case diagnostics:
 
 ```bash
-python src/batch_embedding_pipeline.py
+python src/embedding_sanity_test.py
 ```
 
 ### Key Learnings
-- **Batching Throughput**: Sending chunks in batches (e.g., `64` chunks per request) reduces API overhead and accelerates corpus embedding.
-- **Exponential Backoff**: Transient errors (429 Rate Limits) are retried with `2 ** attempt` second delays up to 5 attempts.
-- **Idempotent Caching**: Cached vectors are indexed by `chunk_id` in `outputs/batch_embeddings_cache.json`. On re-running the script, 100% of existing chunks are skipped ($0.00 USD cost).
-- **Run Summary & Costing**: Tracks `total_chunks`, `skipped_existing`, `embedded`, `failed`, `input_tokens`, and `estimated_cost_usd` (`$0.00002 / 1K tokens`).
+- **Smoke Testing Retrieval**: Testing known query-chunk pairs ensures vectors behave sensibly before deploying RAG retrieval to users.
+- **Cosine Similarity Ranking**: Computes cosine similarity between query vectors and corpus chunk vectors to rank target documents.
+- **Surprising / Failing Case Analysis**: Identifies edge cases where generic or out-of-scope queries produce low/ambiguous similarity scores, informing score thresholding.
+- **Sanity Summary Report**: Generates structured metrics (`total_tests`, `passed`, `failed`, `pass_rate_pct`).
 
 ---
 
