@@ -19,6 +19,7 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 6: Structured Output & JSON Parsing** | `feature/structured-output-json-validation` | `src/structured_output.py`, `outputs/structured_output_demo.log` |
 | **Concept 7: Prompt Templates & Reusability** | `feature/prompt-templates-reusability` | `prompts/templates.py`, `src/prompt_template_engine.py` |
 | **Concept 10: Document Loading & Intake** | `feature/document-loading-intake` | `src/document_loader.py`, `data/`, `outputs/document_intake_summary.log` |
+| **Concept 11: Scalable Batch Embedding Pipeline** | `feature/scalable-batch-embedding-pipeline` | `src/batch_embedding_pipeline.py`, `outputs/batch_embeddings_cache.json` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:

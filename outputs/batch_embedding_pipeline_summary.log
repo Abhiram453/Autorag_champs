@@ -1,0 +1,37 @@
+================================================================================
+SCALABLE BATCH EMBEDDING PIPELINE DEMO
+================================================================================
+
+=== RUN 1: Primary Ingestion & Batch Embedding ===
+Loaded 0 cached embeddings from 'outputs/batch_embeddings_cache.json'.
+--- STARTING BATCH EMBEDDING JOB ---
+Total Chunks: 5 | Skipped Existing: 0 | Pending to Embed: 5 | Batch Size: 2
+Batch #1: Processing 2 chunks (38 tokens)...
+Saved 2 total embeddings to cache 'outputs/batch_embeddings_cache.json'.
+Batch #2: Processing 2 chunks (39 tokens)...
+Saved 4 total embeddings to cache 'outputs/batch_embeddings_cache.json'.
+Batch #3: Processing 1 chunks (21 tokens)...
+Saved 5 total embeddings to cache 'outputs/batch_embeddings_cache.json'.
+--- BATCH EMBEDDING JOB COMPLETED ---
+Summary: {
+  "total_chunks": 5,
+  "skipped_existing": 0,
+  "embedded": 5,
+  "failed": 0,
+  "input_tokens": 98,
+  "batches_processed": 3,
+  "estimated_cost_usd": 0.000002
+}
+Estimated Run Cost: $0.000002 USD
+
+=== RUN 2: Immediate Re-run (Testing Idempotent Resumption) ===
+Loaded 5 cached embeddings from 'outputs/batch_embeddings_cache.json'.
+--- STARTING BATCH EMBEDDING JOB ---
+Total Chunks: 5 | Skipped Existing: 5 | Pending to Embed: 0 | Batch Size: 2
+✅ All 5 chunks already exist in cache! Skipping API calls.
+
+--- RESUMPTION VERIFICATION ---
+✅ SUCCESS: 100% of existing chunks skipped on re-run! $0.00 USD cost incurred.
+================================================================================
+DEMO COMPLETED. Output saved to outputs/batch_embedding_pipeline_summary.log
+================================================================================
