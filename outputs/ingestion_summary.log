@@ -1,0 +1,47 @@
+2026-09-02 11:36:02,278 [INFO] ================================================================================
+2026-09-02 11:36:02,278 [INFO] STARTING CORPUS PREPARATION & INGESTION VALIDATION
+2026-09-02 11:36:02,278 [INFO] ================================================================================
+2026-09-02 11:36:02,279 [INFO] Task 3 Check: Total physical files in data = 4
+2026-09-02 11:36:02,306 [INFO] Cleaned noisy_document.txt: 519 -> 446 chars
+2026-09-02 11:36:02,306 [INFO] Cleaned recall_report.html: 698 -> 698 chars
+2026-09-02 11:36:02,306 [INFO] Cleaned sample_manual.txt: 934 -> 934 chars
+2026-09-02 11:36:02,306 [INFO] Cleaned tsb_notice.md: 825 -> 821 chars
+2026-09-02 11:36:02,306 [INFO] 
+================================================================================
+2026-09-02 11:36:02,306 [INFO] INGESTION SUMMARY
+2026-09-02 11:36:02,306 [INFO] ================================================================================
+2026-09-02 11:36:02,306 [INFO] Total Source Documents (Physical): 4
+2026-09-02 11:36:02,306 [INFO] Successfully Ingested Documents:   4
+2026-09-02 11:36:02,307 [INFO] Failed/Skipped Documents:          0
+2026-09-02 11:36:02,307 [INFO] Total Chunks Created:              9
+2026-09-02 11:36:02,307 [INFO] 
+================================================================================
+2026-09-02 11:36:02,307 [INFO] COMPLETENESS VALIDATION
+2026-09-02 11:36:02,307 [INFO] ================================================================================
+2026-09-02 11:36:02,307 [INFO] [PASS] Completeness validation passed: 4 processed == 4 physical files.
+2026-09-02 11:36:02,307 [INFO] 
+================================================================================
+2026-09-02 11:36:02,307 [INFO] SAMPLE CHUNKS INSPECTION
+2026-09-02 11:36:02,307 [INFO] ================================================================================
+2026-09-02 11:36:02,307 [INFO] 
+--- Sample Chunk 1 ---
+2026-09-02 11:36:02,307 [INFO] Chunk ID:      noisy_document.txt::section::0
+2026-09-02 11:36:02,307 [INFO] Source:        noisy_document.txt
+2026-09-02 11:36:02,307 [INFO] Doc Type:      unknown
+2026-09-02 11:36:02,307 [INFO] Section Title: 1. INTRODUCTION
+2026-09-02 11:36:02,307 [INFO] Position:      Chunk 0 of 2
+2026-09-02 11:36:02,307 [INFO] Length:        278 characters
+2026-09-02 11:36:02,307 [INFO] Preview:       1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise.  There are some broken line wraps in this documen...
+2026-09-02 11:36:02,307 [INFO] ----------------------------------------
+2026-09-02 11:36:02,307 [INFO] 
+--- Sample Chunk 2 ---
+2026-09-02 11:36:02,307 [INFO] Chunk ID:      noisy_document.txt::section::1
+2026-09-02 11:36:02,307 [INFO] Source:        noisy_document.txt
+2026-09-02 11:36:02,307 [INFO] Doc Type:      unknown
+2026-09-02 11:36:02,307 [INFO] Section Title: 2. ENCODING ARTIFACTS
+2026-09-02 11:36:02,307 [INFO] Position:      Chunk 1 of 2
+2026-09-02 11:36:02,307 [INFO] Length:        166 characters
+2026-09-02 11:36:02,307 [INFO] Preview:       2. ENCODING ARTIFACTS Here are some weird characters: fire (should be fire) ff (ff) This is an example of NFKC normalization.  3. MORE TEXT End of the...
+2026-09-02 11:36:02,307 [INFO] ----------------------------------------
+2026-09-02 11:36:02,307 [INFO] 
+Pipeline run completed. Summary saved to outputs\ingestion_summary.log
