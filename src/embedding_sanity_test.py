@@ -13,16 +13,21 @@ import logging
 from dotenv import load_dotenv
 from openai import OpenAI, AuthenticationError, RateLimitError, OpenAIError
 
-# Configure logging
+# Configure logging with UTF-8 stream handler to support all environments
 os.makedirs("outputs", exist_ok=True)
 log_file_path = os.path.join("outputs", "embedding_sanity_report.log")
+
+file_handler = logging.FileHandler(log_file_path, encoding="utf-8")
+stream_handler = logging.StreamHandler(sys.stdout)
+
+# Avoid unicode charmap errors on Windows console
+if sys.platform == "win32":
+    stream_handler.setStream(open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1))
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler(log_file_path, encoding="utf-8")
-    ]
+    handlers=[stream_handler, file_handler]
 )
 
 def cosine_similarity(vec_a: list, vec_b: list) -> float:
@@ -71,43 +76,44 @@ class EmbeddingSanityTester:
         base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
         api_key = os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(base_url=base_url, api_key=api_key or "missing_key")
-        self.embedding_model = embedding_model
+        self.embedding_model = self.detect_model()
         self.corpus_chunks = self.load_corpus_chunks()
 
-    def load_corpus_chunks() -> list:
-        """Loads cached chunk embeddings or returns sample automotive corpus records."""
-        cache_file = "outputs/batch_embeddings_cache.json"
-        if os.path.exists(cache_file):
-            try:
-                with open(cache_file, "r", encoding="utf-8") as f:
-                    cached_data = json.load(f)
-                    records = list(cached_data.values())
-                    logging.info("Loaded %d corpus chunk embeddings from cache '%s'.", len(records), cache_file)
-                    return records
-            except Exception as e:
-                logging.warning("Could not read cache '%s': %s", cache_file, e)
+    def detect_model(self) -> str:
+        """Returns embedding model configuration."""
+        return os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 
-        # Fallback sample corpus chunks
-        return [
+    def load_corpus_chunks(self) -> list:
+        """Loads cached chunk embeddings or embeds sample corpus records via API."""
+        sample_chunks = [
             {
                 "chunk_id": "chunk_mnl_001",
                 "source": "MNL-24-001",
-                "text": "DTC P0300 indicates a random misfire. Inspect Bank 1 ignition coils. Primary resistance: 0.4 to 0.6 ohms.",
-                "embedding": [0.012, -0.034, 0.008, 0.021, -0.015]
+                "text": "AUTOMOTIVE REPAIR MANUAL: DTC P0300 indicates random misfire. Inspect Bank 1 ignition coils. Primary resistance specification: 0.4 to 0.6 ohms across terminals 1 and 2."
             },
             {
                 "chunk_id": "chunk_tsb_112",
                 "source": "TSB-22-112",
-                "text": "TSB-22-112: Moisture intrusion at engine connector C102 causes pin resistance variance.",
-                "embedding": [-0.018, 0.027, 0.001, -0.030, 0.014]
+                "text": "TECHNICAL SERVICE BULLETIN TSB-22-112: Moisture intrusion at engine compartment bulkhead wiring harness connector C102 causes pin resistance variance and intermittent misfires."
             },
             {
                 "chunk_id": "chunk_rcl_088",
                 "source": "RCL-23-088B",
-                "text": "Recall RCL-23-088B: Flash Battery Control Module software to version v1.0.0 or higher.",
-                "embedding": [0.007, -0.012, 0.038, -0.004, -0.021]
+                "text": "SAFETY RECALL NOTICE RCL-23-088B: Flash Battery Control Module software to version v1.0.0 or higher to resolve false thermal management warnings on 2023 SUV Model X."
             }
         ]
+
+        logging.info("Generating live embeddings for %d corpus chunks using '%s'...", len(sample_chunks), self.embedding_model)
+        try:
+            texts = [c["text"] for c in sample_chunks]
+            res = self.client.embeddings.create(model=self.embedding_model, input=texts)
+            for chunk, item in zip(sample_chunks, res.data):
+                chunk["embedding"] = item.embedding
+            logging.info("Successfully generated embeddings (%d dimensions).", len(sample_chunks[0]["embedding"]))
+            return sample_chunks
+        except Exception as e:
+            logging.error("Failed to generate live corpus embeddings: %s", e)
+            return sample_chunks
 
     def embed_query(self, query: str) -> list:
         """Embeds a single query string using the active embedding model."""
@@ -125,7 +131,6 @@ class EmbeddingSanityTester:
         """Embeds query and ranks all corpus chunks by cosine similarity."""
         query_vec = self.embed_query(query)
         if not query_vec:
-            # Fallback uniform scores if query embedding fails
             return [{"source": c.get("source", "unknown"), "text": c.get("text", ""), "score": 0.0} for c in chunk_records]
 
         ranked = []
@@ -157,8 +162,8 @@ class EmbeddingSanityTester:
             ranked_results = self.rank_chunks(query, self.corpus_chunks)
             top_result = ranked_results[0] if ranked_results else {"source": "none", "score": 0.0, "text": ""}
             
-            # Evaluate pass/fail: Top ranked source matches expected source AND score meets relevance threshold
-            passed = (top_result["source"] == expected) if "FAIL" not in test_id else (top_result["score"] < 0.70)
+            # Evaluate pass/fail: Top ranked source matches expected source
+            passed = (top_result["source"] == expected) if "FAIL" not in test_id else (top_result["score"] < 0.60)
             
             row = {
                 "test_id": test_id,
@@ -171,7 +176,7 @@ class EmbeddingSanityTester:
             }
             report_rows.append(row)
 
-            status_str = "✅ PASS" if passed else "❌ FAIL"
+            status_str = "[PASS]" if passed else "[FAIL]"
             logging.info("\n[%s] %s", test_id, status_str)
             logging.info("  Query: '%s'", query)
             logging.info("  Expected Source: %s | Top Ranked Source: %s (Score: %.4f)",
