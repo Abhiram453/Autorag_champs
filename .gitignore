@@ -32,9 +32,15 @@ wheels/
 # Data and Outputs (ignore local runtime data except tracked templates/samples)
 data/*
 !data/.gitkeep
+!data/noisy_document.txt
 outputs/*
 !outputs/.gitkeep
+!outputs/cleaning_sample_output.txt
 !outputs/sample_output.txt
+!outputs/chunking_comparison.log
+!outputs/sample_chunks.json
+!outputs/chunk_metadata_demo.log
+!outputs/sample_chunks_metadata.json
 
 # IDE / OS settings
 .vscode/
