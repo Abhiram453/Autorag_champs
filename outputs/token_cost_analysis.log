@@ -1,0 +1,186 @@
+================================================================================
+TOKENIZATION, CONTEXT LIMIT & COST ANALYSIS DEMO
+Encoding Engine: cl100k_base (tiktoken available: True)
+================================================================================
+
+--- 1. Token vs. Character / Word Comparison ---
+Text: 'refund'
+  -> Words: 1 | Chars: 6 | Tokens: 1 (Avg chars/token: 6.00)
+Text: 'refundable'
+  -> Words: 1 | Chars: 10 | Tokens: 2 (Avg chars/token: 5.00)
+Text: 'What is our refund window?'
+  -> Words: 5 | Chars: 26 | Tokens: 6 (Avg chars/token: 4.33)
+Text: 'Diagnostic Trouble Code P0300 (Random/Multiple Cylinder Misfire Detected)'
+  -> Words: 8 | Chars: 73 | Tokens: 14 (Avg chars/token: 5.21)
+Text: 'Primary Resistance Specification: 0.4 - 0.6 Ω (Ohms) Connector ID: C102'
+  -> Words: 11 | Chars: 72 | Tokens: 21 (Avg chars/token: 3.43)
+
+--- 2. Single Call API Cost Calculation ---
+Prompt Tokens: 14 | Answer Tokens: 28
+Estimated Call Cost (gpt-4o-mini rates): $0.000019 USD
+
+--- 3. Corpus Scale Cost Projection (4,000 Repair Manuals) ---
+Total Documents: 4000
+Avg Tokens / Manual: 2000
+Total Corpus Volume: 8000000 tokens (8.00 Million Tokens)
+Total Embedding Ingestion Cost (text-embedding-3-small): $0.160000 USD
+
+--- 4. RAG Context Window Budget (K=5 Chunks) ---
+System Prompt Tokens: 12
+User Query Tokens: 14
+Top-5 Retrieved Chunks Tokens: 118
+Total Input Payload Tokens: 154
+Max Response Output Buffer: 500
+Total Context Window Used: 654 / 128000 tokens (0.51% utilization)
+Remaining Window Headroom: 127346 tokens
+================================================================================
+TOKEN ANALYSIS COMPLETED. Log saved to outputs/token_cost_analysis.log
+================================================================================
+2026-08-27 15:06:48,580 [INFO] ================================================================================
+2026-08-27 15:06:48,581 [INFO] TOKENIZATION, CONTEXT LIMIT & COST ANALYSIS DEMO
+2026-08-27 15:06:48,581 [INFO] Encoding Engine: cl100k_base (tiktoken available: False)
+2026-08-27 15:06:48,581 [INFO] ================================================================================
+2026-08-27 15:06:48,581 [INFO] 
+--- 1. Token vs. Character / Word Comparison ---
+2026-08-27 15:06:48,581 [INFO] Text: 'refund'
+2026-08-27 15:06:48,581 [INFO]   -> Words: 1 | Chars: 6 | Tokens: 1 (Avg chars/token: 6.00)
+2026-08-27 15:06:48,582 [INFO] Text: 'refundable'
+2026-08-27 15:06:48,582 [INFO]   -> Words: 1 | Chars: 10 | Tokens: 2 (Avg chars/token: 5.00)
+2026-08-27 15:06:48,582 [INFO] Text: 'What is our refund window?'
+2026-08-27 15:06:48,582 [INFO]   -> Words: 5 | Chars: 26 | Tokens: 6 (Avg chars/token: 4.33)
+2026-08-27 15:06:48,582 [INFO] Text: 'Diagnostic Trouble Code P0300 (Random/Multiple Cylinder Misfire Detected)'
+2026-08-27 15:06:48,582 [INFO]   -> Words: 8 | Chars: 73 | Tokens: 18 (Avg chars/token: 4.06)
+2026-08-27 15:06:48,583 [INFO] Text: 'Primary Resistance Specification: 0.4 - 0.6 Ω (Ohms) Connector ID: C102'
+2026-08-27 15:06:48,584 [INFO]   -> Words: 11 | Chars: 71 | Tokens: 17 (Avg chars/token: 4.18)
+2026-08-27 15:06:48,584 [INFO] 
+--- 2. Single Call API Cost Calculation ---
+2026-08-27 15:06:48,584 [INFO] Prompt Tokens: 16 | Answer Tokens: 35
+2026-08-27 15:06:48,584 [INFO] Estimated Call Cost (gpt-4o-mini rates): $0.000023 USD
+2026-08-27 15:06:48,584 [INFO] 
+--- 3. Corpus Scale Cost Projection (4,000 Repair Manuals) ---
+2026-08-27 15:06:48,584 [INFO] Total Documents: 4000
+2026-08-27 15:06:48,585 [INFO] Avg Tokens / Manual: 2000
+2026-08-27 15:06:48,585 [INFO] Total Corpus Volume: 8000000 tokens (8.00 Million Tokens)
+2026-08-27 15:06:48,585 [INFO] Total Embedding Ingestion Cost (text-embedding-3-small): $0.160000 USD
+2026-08-27 15:06:48,585 [INFO] 
+--- 4. RAG Context Window Budget (K=5 Chunks) ---
+2026-08-27 15:06:48,585 [INFO] System Prompt Tokens: 17
+2026-08-27 15:06:48,585 [INFO] User Query Tokens: 17
+2026-08-27 15:06:48,586 [INFO] Top-5 Retrieved Chunks Tokens: 102
+2026-08-27 15:06:48,586 [INFO] Total Input Payload Tokens: 146
+2026-08-27 15:06:48,586 [INFO] Max Response Output Buffer: 500
+2026-08-27 15:06:48,587 [INFO] Total Context Window Used: 646 / 128000 tokens (0.50% utilization)
+2026-08-27 15:06:48,587 [INFO] Remaining Window Headroom: 127354 tokens
+2026-08-27 15:06:48,588 [INFO] ================================================================================
+2026-08-27 15:06:48,588 [INFO] TOKEN ANALYSIS COMPLETED. Log saved to outputs\token_cost_analysis.log
+2026-08-27 15:06:48,588 [INFO] ================================================================================
+2026-08-27 15:07:47,968 [INFO] ================================================================================
+2026-08-27 15:07:47,968 [INFO] STARTING MULTI-TURN CONVERSATION HISTORY & TRIMMING DEMO
+2026-08-27 15:07:47,968 [INFO] ================================================================================
+2026-08-27 15:07:47,968 [INFO] 
+=== DEMO 1: Multi-Turn Conversation with FIFO Trimming (Budget = 180 tokens) ===
+2026-08-27 15:07:48,332 [INFO] 
+--- Turn 1 ---
+2026-08-27 15:07:48,333 [INFO] --- REQUEST TURN (Tokens: 74 / Budget: 180) ---
+2026-08-27 15:07:48,333 [INFO] Latest User Message: 'Vehicle loaded. VIN: 1G1RC6E4XGU123456. Diagnostic code P0300 reported.'
+2026-08-27 15:07:51,060 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:07:51,926 [INFO] Assistant Reply:
+Diagnostic code P0300 indicates a random/multiple cylinder misfire detected. This can be caused by issues such as faulty spark plugs, ignition coils, fuel injectors, or low fuel pressure; further diagnosis is necessary to isolate the specific cause.
+2026-08-27 15:07:51,926 [INFO] Turn Usage: Prompt = 68, Completion = 50, Total = 118
+2026-08-27 15:07:51,927 [INFO] 
+--- Turn 2 ---
+2026-08-27 15:07:51,927 [INFO] --- REQUEST TURN (Tokens: 162 / Budget: 180) ---
+2026-08-27 15:07:51,927 [INFO] Latest User Message: 'What is the first recommended diagnostic check for code P0300?'
+2026-08-27 15:07:53,209 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:07:54,023 [INFO] Assistant Reply:
+The first recommended diagnostic check for code P0300 is to visually inspect the ignition system components, including spark plugs and ignition coils, for wear or damage. Additionally, check for any vacuum leaks in the intake system, as they can contribute to misfires.
+2026-08-27 15:07:54,023 [INFO] Turn Usage: Prompt = 138, Completion = 52, Total = 190
+2026-08-27 15:07:54,024 [INFO] 
+--- Turn 3 ---
+2026-08-27 15:07:54,025 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (254) > Budget (180). Triggering strategy: TRIM
+2026-08-27 15:07:54,026 [INFO]   [TRIM] Dropped oldest message: role='user', content='Vehicle loaded. VIN: 1G1RC6E4X...'
+2026-08-27 15:07:54,027 [INFO]   [TRIM] Dropped oldest message: role='assistant', content='Diagnostic code P0300 indicate...'
+2026-08-27 15:07:54,028 [INFO]   [TRIM COMPLETED] Removed 2 turns. New token count: 164 tokens.
+2026-08-27 15:07:54,028 [INFO] --- REQUEST TURN (Tokens: 164 / Budget: 180) ---
+2026-08-27 15:07:54,028 [INFO] Latest User Message: 'Where are the Bank 1 ignition coils located on this engine?'
+2026-08-27 15:07:55,496 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:07:56,181 [INFO] Assistant Reply:
+The location of Bank 1 ignition coils varies by engine type, but typically they are positioned on the cylinder head nearest to the firewall or in-line with the first bank of cylinders. Refer to the specific vehicle service manual for accurate placement based on the engine model.
+2026-08-27 15:07:56,183 [INFO] Turn Usage: Prompt = 128, Completion = 53, Total = 181
+2026-08-27 15:07:56,184 [INFO] 
+--- Turn 4 ---
+2026-08-27 15:07:56,185 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (259) > Budget (180). Triggering strategy: TRIM
+2026-08-27 15:07:56,187 [INFO]   [TRIM] Dropped oldest message: role='user', content='What is the first recommended ...'
+2026-08-27 15:07:56,188 [INFO]   [TRIM] Dropped oldest message: role='assistant', content='The first recommended diagnost...'
+2026-08-27 15:07:56,193 [INFO]   [TRIM COMPLETED] Removed 2 turns. New token count: 166 tokens.
+2026-08-27 15:07:56,194 [INFO] --- REQUEST TURN (Tokens: 166 / Budget: 180) ---
+2026-08-27 15:07:56,195 [INFO] Latest User Message: 'What is the primary resistance specification for Bank 1 coils?'
+2026-08-27 15:07:57,301 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:07:57,820 [INFO] Assistant Reply:
+The primary resistance specification for Bank 1 ignition coils generally ranges from 0.5 to 1.5 ohms, but this can vary by manufacturer and engine type. Always consult the specific vehicle's service manual for the precise specification.
+2026-08-27 15:07:57,820 [INFO] Turn Usage: Prompt = 128, Completion = 48, Total = 176
+2026-08-27 15:07:57,822 [INFO] 
+--- Turn 5 ---
+2026-08-27 15:07:57,823 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (250) > Budget (180). Triggering strategy: TRIM
+2026-08-27 15:07:57,823 [INFO]   [TRIM] Dropped oldest message: role='user', content='Where are the Bank 1 ignition ...'
+2026-08-27 15:07:57,824 [INFO]   [TRIM] Dropped oldest message: role='assistant', content='The location of Bank 1 ignitio...'
+2026-08-27 15:07:57,825 [INFO]   [TRIM COMPLETED] Removed 2 turns. New token count: 156 tokens.
+2026-08-27 15:07:57,825 [INFO] --- REQUEST TURN (Tokens: 156 / Budget: 180) ---
+2026-08-27 15:07:57,826 [INFO] Latest User Message: 'Is there a known wiring harness recall for connector C102?'
+2026-08-27 15:07:58,732 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:07:59,567 [INFO] Assistant Reply:
+Yes, there have been recalls related to connector C102 in certain models, often related to corrosion or connection issues. It's important to check the National Highway Traffic Safety Administration (NHTSA) database or the manufacturer's website for the latest recall information concerning specific vehicles.
+2026-08-27 15:07:59,568 [INFO] Turn Usage: Prompt = 123, Completion = 52, Total = 175
+2026-08-27 15:07:59,569 [INFO] 
+--- Turn 6 ---
+2026-08-27 15:07:59,569 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (260) > Budget (180). Triggering strategy: TRIM
+2026-08-27 15:07:59,570 [INFO]   [TRIM] Dropped oldest message: role='user', content='What is the primary resistance...'
+2026-08-27 15:07:59,570 [INFO]   [TRIM] Dropped oldest message: role='assistant', content='The primary resistance specifi...'
+2026-08-27 15:07:59,571 [INFO]   [TRIM COMPLETED] Removed 2 turns. New token count: 175 tokens.
+2026-08-27 15:07:59,571 [INFO] --- REQUEST TURN (Tokens: 175 / Budget: 180) ---
+2026-08-27 15:07:59,572 [INFO] Latest User Message: 'What safety steps should I follow before disconnecting the battery?'
+2026-08-27 15:08:00,491 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:08:01,194 [INFO] Assistant Reply:
+Before disconnecting the battery, ensure the ignition is turned off and remove keys from the ignition. Additionally, wear safety goggles and gloves to protect against accidental sparks or battery acid exposure.
+2026-08-27 15:08:01,194 [INFO] Turn Usage: Prompt = 127, Completion = 37, Total = 164
+2026-08-27 15:08:01,195 [INFO] 
+=== DEMO 2: Multi-Turn Conversation with Summarization Strategy ===
+2026-08-27 15:08:01,534 [INFO] 
+--- Summary Turn 1 ---
+2026-08-27 15:08:01,535 [INFO] --- REQUEST TURN (Tokens: 74 / Budget: 180) ---
+2026-08-27 15:08:01,535 [INFO] Latest User Message: 'Vehicle loaded. VIN: 1G1RC6E4XGU123456. Diagnostic code P0300 reported.'
+2026-08-27 15:08:03,472 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:08:04,065 [INFO] Assistant Reply:
+Diagnostic code P0300 indicates multiple random/misfire detected. Check the ignition system, fuel delivery, and engine mechanical conditions, as these can contribute to this code.
+2026-08-27 15:08:04,066 [INFO] Turn Usage: Prompt = 68, Completion = 35, Total = 103
+2026-08-27 15:08:04,068 [INFO] 
+--- Summary Turn 2 ---
+2026-08-27 15:08:04,069 [INFO] --- REQUEST TURN (Tokens: 144 / Budget: 180) ---
+2026-08-27 15:08:04,070 [INFO] Latest User Message: 'What is the first recommended diagnostic check for code P0300?'
+2026-08-27 15:08:05,553 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:08:06,450 [INFO] Assistant Reply:
+The first recommended diagnostic check for code P0300 is to inspect the ignition system components, including spark plugs, ignition coils, and wiring, for wear or failure. This ensures proper spark delivery, which is crucial for engine performance.
+2026-08-27 15:08:06,451 [INFO] Turn Usage: Prompt = 123, Completion = 47, Total = 170
+2026-08-27 15:08:06,451 [INFO] 
+--- Summary Turn 3 ---
+2026-08-27 15:08:06,451 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (231) > Budget (180). Triggering strategy: SUMMARIZE
+2026-08-27 15:08:06,451 [INFO]   [SUMMARIZATION COMPLETED] Replaced 4 old turns with summary block. New token count: 117 tokens.
+2026-08-27 15:08:06,452 [INFO] --- REQUEST TURN (Tokens: 117 / Budget: 180) ---
+2026-08-27 15:08:06,452 [INFO] Latest User Message: 'Where are the Bank 1 ignition coils located on this engine?'
+2026-08-27 15:08:07,542 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:08:07,855 [INFO] Assistant Reply:
+Bank 1 ignition coils are typically located on the cylinder head of the engine, directly above the corresponding cylinders. For precise location, refer to the specific vehicle service manual as the configuration may vary by make and model.
+2026-08-27 15:08:07,856 [INFO] Turn Usage: Prompt = 98, Completion = 43, Total = 141
+2026-08-27 15:08:07,857 [INFO] 
+--- Summary Turn 4 ---
+2026-08-27 15:08:07,857 [WARNING] ⚠️ TOKEN BUDGET EXCEEDED: Current tokens (202) > Budget (180). Triggering strategy: SUMMARIZE
+2026-08-27 15:08:07,857 [INFO]   [SUMMARIZATION COMPLETED] Replaced 3 old turns with summary block. New token count: 118 tokens.
+2026-08-27 15:08:07,857 [INFO] --- REQUEST TURN (Tokens: 118 / Budget: 180) ---
+2026-08-27 15:08:07,857 [INFO] Latest User Message: 'What is the primary resistance specification for Bank 1 coils?'
+2026-08-27 15:08:09,505 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-27 15:08:09,955 [INFO] Assistant Reply:
+The primary resistance specification for Bank 1 ignition coils typically ranges from 0.5 to 2.0 ohms, depending on the specific vehicle model. Always consult the service manual for exact specifications.
+2026-08-27 15:08:09,960 [INFO] Turn Usage: Prompt = 97, Completion = 42, Total = 139
+2026-08-27 15:08:09,961 [INFO] ================================================================================
+2026-08-27 15:08:09,962 [INFO] MULTI-TURN HISTORY DEMO COMPLETED. Log saved to outputs\history_management_demo.log
+2026-08-27 15:08:09,963 [INFO] ================================================================================

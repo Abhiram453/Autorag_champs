@@ -1,0 +1,34 @@
+================================================================================
+STARTING MULTI-FORMAT DOCUMENT INTAKE DEMO
+Libraries: pypdf available=True | beautifulsoup4 available=True
+================================================================================
+Scanning directory 'data' for documents...
+  [OK] recall_report.html (.html): 512 chars | Preview: 'MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Compon'
+  [OK] sample_manual.txt (.txt): 884 chars | Preview: 'AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001 VEH'
+  [OK] tsb_notice.md (.md): 642 chars | Preview: '# TECHNICAL SERVICE BULLETIN (TSB-22-112) **Subject:** Wirin'
+
+--- INTAKE SUMMARY METRICS ---
+Total Successfully Ingested Documents: 3
+Total Skipped Files: 0
+Total Corpus Character Volume: 2038 characters
+Format Breakdown: {'.html': 1, '.txt': 1, '.md': 1}
+
+--- INGESTED DOCUMENTS PREVIEW ---
+Document #1: 'recall_report.html' [.html]
+  Path: data\recall_report.html
+  Character Length: 512 chars
+  Text Preview: 'MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Compon'
+----------------------------------------
+Document #2: 'sample_manual.txt' [.txt]
+  Path: data\sample_manual.txt
+  Character Length: 884 chars
+  Text Preview: 'AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001 VEH'
+----------------------------------------
+Document #3: 'tsb_notice.md' [.md]
+  Path: data\tsb_notice.md
+  Character Length: 642 chars
+  Text Preview: '# TECHNICAL SERVICE BULLETIN (TSB-22-112) **Subject:** Wirin'
+----------------------------------------
+================================================================================
+DOCUMENT INTAKE COMPLETED. Summary saved to outputs/document_intake_summary.log
+================================================================================
