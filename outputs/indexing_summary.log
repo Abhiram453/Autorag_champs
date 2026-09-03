@@ -1,0 +1,28 @@
+2026-09-03 13:43:38,832 [INFO] ================================================================================
+2026-09-03 13:43:38,833 [INFO] INDEXING EMBEDDINGS & METADATA STORAGE
+2026-09-03 13:43:38,833 [INFO] ================================================================================
+2026-09-03 13:43:38,918 [INFO] Loaded 3 chunks from outputs\embedded_corpus.json
+2026-09-03 13:43:38,918 [INFO] Preparing points for insertion...
+2026-09-03 13:43:38,919 [INFO] Inserting 3 points into collection 'knowledge_base'...
+2026-09-03 13:43:38,928 [INFO] Insertion completed. Status: completed
+2026-09-03 13:43:38,929 [INFO] ================================================================================
+2026-09-03 13:43:38,929 [INFO] INDEXING VALIDATION
+2026-09-03 13:43:38,929 [INFO] ================================================================================
+2026-09-03 13:43:38,929 [INFO] Original chunk count: 3
+2026-09-03 13:43:38,929 [INFO] Indexed record count: 3
+2026-09-03 13:43:38,929 [INFO] SUCCESS: Indexed count matches the number of chunks produced earlier.
+2026-09-03 13:43:38,929 [INFO] ================================================================================
+2026-09-03 13:43:38,929 [INFO] SPOT-CHECK INTEGRITY
+2026-09-03 13:43:38,930 [INFO] ================================================================================
+2026-09-03 13:43:38,930 [INFO] Retrieving record ID=1 for spot-check...
+2026-09-03 13:43:38,930 [INFO] Retrieved ID: 1
+2026-09-03 13:43:38,930 [INFO] Vector Length: 1536
+2026-09-03 13:43:38,930 [INFO] Chunk ID Match: True (noisy_document.txt::section::0 vs noisy_document.txt::section::0)
+2026-09-03 13:43:38,930 [INFO] Text Match: True
+2026-09-03 13:43:38,930 [INFO] Payload Content Snippet: 1. INTRODUCTION
+This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-03 13:43:38,930 [INFO] Payload Metadata: {'chunk_id': 'noisy_document.txt::section::0', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '1. INTRODUCTION', 'chunk_index': 0, 'total_chunks': 2, 'char_start': 0, 'char_end': 280, 'char_count': 278, 'strategy': 'section_based', 'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.'}
+2026-09-03 13:43:38,930 [INFO] Integrity check passed.
+2026-09-03 13:43:38,930 [INFO] ================================================================================
+2026-09-03 13:43:38,930 [INFO] INDEXING COMPLETE
+2026-09-03 13:43:38,930 [INFO] ================================================================================
