@@ -1,0 +1,38 @@
+2026-09-07 13:25:27,879 [INFO] ================================================================================
+2026-09-07 13:25:27,880 [INFO] CHUNK RE-RANKING FOR PRECISION
+2026-09-07 13:25:27,880 [INFO] ================================================================================
+2026-09-07 13:25:28,205 [INFO] User Query: 'What is this sample document about?'
+2026-09-07 13:25:36,599 [WARNING] API Error generating embedding: Connection error.
+2026-09-07 13:25:36,599 [WARNING] Falling back to local mock embedding.
+2026-09-07 13:25:36,600 [INFO] --------------------------------------------------------------------------------
+2026-09-07 13:25:36,600 [INFO] Retrieving initial candidate set of size 10
+2026-09-07 13:25:36,602 [INFO] --------------------------------------------------------------------------------
+2026-09-07 13:25:36,610 [INFO] Initial Ranking (Original Vector Scores):
+2026-09-07 13:25:36,611 [INFO]   Rank 1 | Score: 0.0044 | Chunk ID: noisy_document.txt::section::1 | Snippet: 2. ENCODING ARTIFACTS Here are some weird characters: fire (...
+2026-09-07 13:25:36,611 [INFO]   Rank 2 | Score: -0.0114 | Chunk ID: recall_report.html::section::0 | Snippet: SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL N...
+2026-09-07 13:25:36,611 [INFO]   Rank 3 | Score: -0.0288 | Chunk ID: noisy_document.txt::section::0 | Snippet: 1. INTRODUCTION This document is a sample for testing the cl...
+2026-09-07 13:25:36,611 [INFO] --------------------------------------------------------------------------------
+2026-09-07 13:25:36,611 [INFO] Re-ranking candidates using custom lexical overlap scoring
+2026-09-07 13:25:36,611 [INFO] --------------------------------------------------------------------------------
+2026-09-07 13:25:36,611 [INFO] Before-and-After Ordering Comparison:
+2026-09-07 13:25:36,611 [INFO] Original Top 3:
+2026-09-07 13:25:36,611 [INFO]   [1] Score: 0.0044 | Text: 2. ENCODING ARTIFACTS Here are some weird characters: fire (should be fire) ff (ff) This is an examp...
+2026-09-07 13:25:36,611 [INFO]   [2] Score: -0.0114 | Text: SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: ...
+2026-09-07 13:25:36,611 [INFO]   [3] Score: -0.0288 | Text: 1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-07 13:25:36,611 [INFO] 
+Re-ranked Top 3:
+2026-09-07 13:25:36,611 [INFO]   [1] Re-rank Score: 0.6667 (Original: -0.0288)
+2026-09-07 13:25:36,611 [INFO]       Chunk ID: noisy_document.txt::section::0
+2026-09-07 13:25:36,612 [INFO]       Metadata: {'chunk_id': 'noisy_document.txt::section::0', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '1. INTRODUCTION', 'chunk_index': 0, 'total_chunks': 2, 'char_start': 0, 'char_end': 280, 'char_count': 278, 'strategy': 'section_based', 'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.'}
+2026-09-07 13:25:36,612 [INFO]       Text: 1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-07 13:25:36,612 [INFO]   [2] Re-rank Score: 0.5000 (Original: 0.0044)
+2026-09-07 13:25:36,612 [INFO]       Chunk ID: noisy_document.txt::section::1
+2026-09-07 13:25:36,612 [INFO]       Metadata: {'chunk_id': 'noisy_document.txt::section::1', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '2. ENCODING ARTIFACTS', 'chunk_index': 1, 'total_chunks': 2, 'char_start': 280, 'char_end': 446, 'char_count': 166, 'strategy': 'section_based', 'text': '2. ENCODING ARTIFACTS\nHere are some weird characters:\nfire (should be fire)\nff (ff)\nThis is an example of NFKC normalization.\n\n3. MORE TEXT\nEnd of the noisy document.'}
+2026-09-07 13:25:36,612 [INFO]       Text: 2. ENCODING ARTIFACTS Here are some weird characters: fire (should be fire) ff (ff) This is an examp...
+2026-09-07 13:25:36,612 [INFO]   [3] Re-rank Score: 0.3333 (Original: -0.0114)
+2026-09-07 13:25:36,612 [INFO]       Chunk ID: recall_report.html::section::0
+2026-09-07 13:25:36,612 [INFO]       Metadata: {'chunk_id': 'recall_report.html::section::0', 'source': 'recall_report.html', 'doc_type': 'recall_notice', 'section_title': 'Preamble', 'chunk_index': 0, 'total_chunks': 1, 'char_start': 0, 'char_end': 698, 'char_count': 698, 'strategy': 'section_based', 'text': 'SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure Flash Battery Control Module software to version v1.0.0 or higher. Perform high voltage isolation test prior to vehicle release. Ensure diagnostic session ID is logged in the compliance audit panel.'}
+2026-09-07 13:25:36,612 [INFO]       Text: SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: ...
+2026-09-07 13:25:36,612 [INFO] ================================================================================
+2026-09-07 13:25:36,612 [INFO] CHUNK RE-RANKING COMPLETE
+2026-09-07 13:25:36,612 [INFO] ================================================================================
