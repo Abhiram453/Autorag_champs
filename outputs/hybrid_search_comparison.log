@@ -1,0 +1,46 @@
+================================================================================
+STARTING METADATA FILTERING & HYBRID SEARCH DEMO
+Model: text-embedding-3-small
+================================================================================
+Target Query: 'What is the connector C102 inspection for wiring harness misfire issues?'
+Metadata Filter: {'doc_type': 'TSB', 'vehicle_model': '2023 SUV Model X'}
+Target Keywords: ['connector', 'C102', 'TSB-22-112', 'harness', 'resistance']
+
+=== MODE 1: UNFILTERED SEMANTIC VECTOR SEARCH ===
+  Result #1:
+    Hybrid Score: 0.6421 | Vector Score: 0.6421 | Keyword Match Score: 0.0
+    Source: tsb_notice.md | Doc Type: TSB | Section: Wiring Harness
+    Text Snippet: 'TECHNICAL SERVICE BULLETIN TSB-22-112: Moisture intrusion at engine compartment bulkhead wiring harn...'
+--------------------------------------------------
+  Result #2:
+    Hybrid Score: 0.4846 | Vector Score: 0.4846 | Keyword Match Score: 0.0
+    Source: sample_manual.txt | Doc Type: Repair Manual | Section: Ignition Diagnostics
+    Text Snippet: 'AUTOMOTIVE REPAIR MANUAL: DTC P0300 indicates random misfire. Inspect Bank 1 ignition coils. Primary...'
+--------------------------------------------------
+  Result #3:
+    Hybrid Score: 0.2797 | Vector Score: 0.2797 | Keyword Match Score: 0.0
+    Source: recall_report.html | Doc Type: Safety Recall | Section: Battery Firmware
+    Text Snippet: 'SAFETY RECALL NOTICE RCL-23-088B: Flash Battery Control Module software to version v1.0.0 or higher ...'
+--------------------------------------------------
+
+=== MODE 2: METADATA-FILTERED VECTOR SEARCH ===
+  Result #1:
+    Hybrid Score: 0.6421 | Vector Score: 0.6421 | Keyword Match Score: 0.0
+    Source: tsb_notice.md | Doc Type: TSB | Section: Wiring Harness
+    Text Snippet: 'TECHNICAL SERVICE BULLETIN TSB-22-112: Moisture intrusion at engine compartment bulkhead wiring harn...'
+--------------------------------------------------
+
+=== MODE 3: HYBRID FILTERED (SEMANTIC + LEXICAL) SEARCH ===
+  Result #1:
+    Hybrid Score: 1.5136 | Vector Score: 0.6421 | Keyword Match Score: 5.0
+    Source: tsb_notice.md | Doc Type: TSB | Section: Wiring Harness
+    Text Snippet: 'TECHNICAL SERVICE BULLETIN TSB-22-112: Moisture intrusion at engine compartment bulkhead wiring harn...'
+--------------------------------------------------
+
+--- RETRIEVAL ANALYSIS & KEY LEARNINGS ---
+1. Unfiltered Vector Search retrieved generic repair manuals and TSBs based purely on semantic overlap.
+2. Metadata Filtering successfully scoped retrieval strictly to doc_type='TSB', eliminating non-bulletin noise.
+3. Hybrid Search boosted the exact match for connector ID 'C102' and bulletin 'TSB-22-112', delivering top precision.
+================================================================================
+HYBRID SEARCH DEMO COMPLETED. Log saved to outputs/hybrid_search_comparison.log
+================================================================================

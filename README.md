@@ -12,7 +12,7 @@ Autorag_champs/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html)
-├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, parameters, and history code
+├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, parameters, and history code
 │   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
@@ -22,7 +22,8 @@ Autorag_champs/
 │   ├── prompt_template_engine.py # Multi-feature prompt template renderer & reusability engine
 │   ├── document_loader.py    # Multi-format document loader (.pdf, .txt, .md, .html) & intake scanner
 │   ├── batch_embedding_pipeline.py # Scalable batch embedding pipeline with backoff & resumable cache
-│   └── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
+│   ├── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
+│   └── hybrid_search.py      # Metadata-filtered & hybrid (semantic + lexical) search engine
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -39,6 +40,7 @@ Autorag_champs/
 │   ├── batch_embeddings_cache.json  # Persistent vector cache for idempotent resumption
 │   ├── batch_embedding_pipeline_summary.log # Batch embedding & cost tracking log
 │   ├── embedding_sanity_report.log  # Retrieval relevance & sanity test report
+│   ├── hybrid_search_comparison.log # Side-by-side filtered & hybrid search comparison log
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -77,19 +79,18 @@ cp .env.example .env
 
 ---
 
-## 🧪 Running Retrieval Quality & Embedding Sanity Testing
+## 🔍 Running Metadata Filtering & Hybrid Search
 
-To execute known query-chunk test cases, rank chunk embeddings via cosine similarity, verify related chunks rank above unrelated chunks, and inspect surprising failure case diagnostics:
+To execute side-by-side comparisons of Unfiltered Semantic Search, Metadata-Filtered Search (`doc_type`, `vehicle_model`, `section`), and Hybrid (Semantic + Lexical) Search boosting exact codes (`P0300`, `C102`, `TSB-22-112`):
 
 ```bash
-python src/embedding_sanity_test.py
+python src/hybrid_search.py
 ```
 
 ### Key Learnings
-- **Smoke Testing Retrieval**: Testing known query-chunk pairs ensures vectors behave sensibly before deploying RAG retrieval to users.
-- **Cosine Similarity Ranking**: Computes cosine similarity between query vectors and corpus chunk vectors to rank target documents.
-- **Surprising / Failing Case Analysis**: Identifies edge cases where generic or out-of-scope queries produce low/ambiguous similarity scores, informing score thresholding.
-- **Sanity Summary Report**: Generates structured metrics (`total_tests`, `passed`, `failed`, `pass_rate_pct`).
+- **Metadata Filtering**: Restricts retrieval scope prior to vector similarity scoring, eliminating irrelevant document noise.
+- **Lexical Keyword Scoring**: Counts exact technical codes (e.g. `C102`, `P0300`) to complement semantic vector search.
+- **Hybrid Fusion Ranking**: Combines vector similarity (`weight 0.8`) and lexical keyword matching (`weight 0.2`) to deliver top precision for technical automotive queries.
 
 ---
 

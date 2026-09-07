@@ -77,28 +77,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 17: Embedding Sanity Testing (`src/embedding_sanity_test.py`)
+- **Branch**: `feature/embedding-sanity-testing`
+- **PR Title**: `feat: Add embedding sanity testing suite, cosine similarity ranking, and failure case analyzer`
+- **Related Issue**: `Closes #17`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/17`
+
+---
+
+## 📌 Assignment 21: Metadata Filtering & Hybrid Search (`src/hybrid_search.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/embedding-sanity-testing
-git add src/embedding_sanity_test.py outputs/embedding_sanity_report.log README.md
-git commit -m "feat: implement embedding sanity testing suite, cosine similarity ranker, and failure case analyzer"
-git push -u origin feature/embedding-sanity-testing
+git checkout -b feature/metadata-filtering-hybrid-search
+git add src/hybrid_search.py outputs/hybrid_search_comparison.log README.md
+git commit -m "feat: implement metadata filtering engine, lexical keyword matcher, and hybrid semantic-lexical search"
+git push -u origin feature/metadata-filtering-hybrid-search
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/embedding-sanity-testing` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add embedding sanity testing suite, cosine similarity ranking, and failure case analyzer`
+- **Source Branch**: `feature/metadata-filtering-hybrid-search` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add metadata-filtered vector retrieval, lexical keyword matching, and hybrid search engine`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements embedding sanity testing suite (src/embedding_sanity_test.py) using known query-chunk test cases, cosine similarity ranking, edge case failure analysis, and structured sanity reporting.
+  Implements metadata filtering engine (src/hybrid_search.py), semantic vector search, lexical keyword matcher, hybrid fusion ranker (vector_weight=0.8, keyword_weight=0.2), and side-by-side comparative retrieval trace.
 
   ## Related Issue
-  Closes #17
+  Closes #21
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/17`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/21`
 
 ---
 

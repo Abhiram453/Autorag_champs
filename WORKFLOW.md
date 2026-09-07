@@ -21,6 +21,7 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 10: Document Loading & Intake** | `feature/document-loading-intake` | `src/document_loader.py`, `data/`, `outputs/document_intake_summary.log` |
 | **Concept 11: Scalable Batch Embedding Pipeline** | `feature/scalable-batch-embedding-pipeline` | `src/batch_embedding_pipeline.py`, `outputs/batch_embeddings_cache.json` |
 | **Concept 17: Embedding Sanity Testing** | `feature/embedding-sanity-testing` | `src/embedding_sanity_test.py`, `outputs/embedding_sanity_report.log` |
+| **Concept 21: Metadata Filtering & Hybrid Search** | `feature/metadata-filtering-hybrid-search` | `src/hybrid_search.py`, `outputs/hybrid_search_comparison.log` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:
