@@ -1,0 +1,42 @@
+2026-09-07 13:44:30,533 [INFO] ================================================================================
+2026-09-07 13:44:30,533 [INFO] CONTEXT INJECTION & PROMPT AUGMENTATION DEMO
+2026-09-07 13:44:30,533 [INFO] ================================================================================
+2026-09-07 13:44:30,533 [INFO] Building augmented prompt with normal token budget (e.g., 2000 tokens)...
+2026-09-07 13:44:30,932 [INFO] Total prompt tokens: 236 / 2000
+2026-09-07 13:44:30,932 [INFO] 
+=== ASSEMBLED AUGMENTED PROMPT ===
+2026-09-07 13:44:30,932 [INFO] 
+You are an expert Q&A assistant. Your task is to answer the user's question using ONLY the provided CONTEXT. Do not use outside knowledge.
+If the CONTEXT does not contain enough information to answer the question, you must clearly state: 'I do not have enough information to answer that based on the provided context.'
+When answering, cite the sources used by referencing their markers (e.g., [1], [2]).
+
+--- CONTEXT ---
+[1] Source: battery_recall_notice.pdf
+The high voltage battery control module (BCM) in 2023 SUV models may improperly calculate thermal limits during rapid charging. This can lead to unexpected battery disconnects.
+
+[2] Source: service_bulletin_88B.txt
+To resolve the false battery disconnect error, technicians must flash the BCM software to version v1.0.0 or higher. After flashing, perform a high voltage isolation test.
+
+[3] Source: irrelevant_marketing.pdf
+The new 2023 SUV models feature an upgraded interior with premium leather seats and a panoramic sunroof, enhancing the driving experience.
+
+--- END CONTEXT ---
+
+USER QUERY: What causes the battery disconnect error and how can it be fixed?
+2026-09-07 13:44:30,947 [INFO] ==================================
+
+2026-09-07 13:44:30,947 [INFO] Building augmented prompt with TIGHT token budget to demonstrate truncation (e.g., 150 tokens)...
+2026-09-07 13:44:30,947 [INFO] Total prompt tokens: 109 / 150
+2026-09-07 13:44:30,947 [INFO] 
+=== TIGHT BUDGET AUGMENTED PROMPT ===
+2026-09-07 13:44:30,948 [INFO] 
+You are an expert Q&A assistant. Your task is to answer the user's question using ONLY the provided CONTEXT. Do not use outside knowledge.
+If the CONTEXT does not contain enough information to answer the question, you must clearly state: 'I do not have enough information to answer that based on the provided context.'
+When answering, cite the sources used by referencing their markers (e.g., [1], [2]).
+
+--- CONTEXT ---
+--- END CONTEXT ---
+
+USER QUERY: What causes the battery disconnect error and how can it be fixed?
+2026-09-07 13:44:30,948 [INFO] =====================================
+
