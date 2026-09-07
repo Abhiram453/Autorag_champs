@@ -85,28 +85,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 21: Metadata Filtering & Hybrid Search (`src/hybrid_search.py`)
+- **Branch**: `feature/metadata-filtering-hybrid-search`
+- **PR Title**: `feat: Add metadata-filtered vector retrieval, lexical keyword matching, and hybrid search engine`
+- **Related Issue**: `Closes #21`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/21`
+
+---
+
+## 📌 Assignment 23: Retrieval Quality Tuning & Evaluation (`src/retrieval_tuner.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/metadata-filtering-hybrid-search
-git add src/hybrid_search.py outputs/hybrid_search_comparison.log README.md
-git commit -m "feat: implement metadata filtering engine, lexical keyword matcher, and hybrid semantic-lexical search"
-git push -u origin feature/metadata-filtering-hybrid-search
+git checkout -b feature/retrieval-quality-tuning
+git add src/retrieval_tuner.py outputs/retrieval_tuning_results.log README.md
+git commit -m "feat: implement retrieval quality tuner, configuration evaluation grid, and Hit Rate benchmark"
+git push -u origin feature/retrieval-quality-tuning
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/metadata-filtering-hybrid-search` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add metadata-filtered vector retrieval, lexical keyword matching, and hybrid search engine`
+- **Source Branch**: `feature/retrieval-quality-tuning` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add retrieval quality tuning engine, configuration evaluation grid, and Hit Rate benchmark`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements metadata filtering engine (src/hybrid_search.py), semantic vector search, lexical keyword matcher, hybrid fusion ranker (vector_weight=0.8, keyword_weight=0.2), and side-by-side comparative retrieval trace.
+  Implements retrieval quality tuning engine (src/retrieval_tuner.py), benchmarks 4 configurations (baseline_k3, filtered_k3, strict_threshold_k5, hybrid_threshold_k3), computes Hit Rate metrics, and provides data-driven setting justification.
 
   ## Related Issue
-  Closes #21
+  Closes #23
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/21`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/23`
 
 ---
 
