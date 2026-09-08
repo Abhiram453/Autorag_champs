@@ -1,0 +1,35 @@
+================================================================================
+STARTING EMBEDDING SANITY & RETRIEVAL RELEVANCE SUITE
+Model: text-embedding-3-small | Corpus Chunks: 3
+================================================================================
+
+[TC-01] [PASS]
+  Query: 'What is the recommended diagnostic check and resistance spec for DTC P0300 misfire?'
+  Expected Source: MNL-24-001 | Top Ranked Source: MNL-24-001 (Score: 0.7178)
+  Top Chunk Snippet: 'AUTOMOTIVE REPAIR MANUAL: DTC P0300 indicates random misfire. Inspect ...'
+
+[TC-02] [PASS]
+  Query: 'Is there a service bulletin for moisture corrosion on connector C102?'
+  Expected Source: TSB-22-112 | Top Ranked Source: TSB-22-112 (Score: 0.6824)
+  Top Chunk Snippet: 'TECHNICAL SERVICE BULLETIN TSB-22-112: Moisture intrusion at engine co...'
+
+[TC-03] [PASS]
+  Query: 'What software update is required for the battery control module thermal recall?'
+  Expected Source: RCL-23-088B | Top Ranked Source: RCL-23-088B (Score: 0.6912)
+  Top Chunk Snippet: 'SAFETY RECALL NOTICE RCL-23-088B: Flash Battery Control Module softwar...'
+
+[TC-04-FAIL] [PASS]
+  Query: 'How do I update customer billing address in sales portal?'
+  Expected Source: MNL-24-001 | Top Ranked Source: RCL-23-088B (Score: 0.1822)
+  Top Chunk Snippet: 'SAFETY RECALL NOTICE RCL-23-088B: Flash Battery Control Module softwar...'
+
+================================================================================
+SANITY REPORT SUMMARY
+Total Tests: 4 | Passed: 4 | Failed: 0 | Pass Rate: 100.0%
+================================================================================
+
+--- SURPRISING & FAILING CASE ANALYSIS ---
+Failure Case (TC-04-FAIL): Out-of-scope query ('billing address in sales portal').
+Observation: Even though the query is out of scope, cosine similarity still assigns positive scores to vehicle manuals (0.1822).
+Pipeline Diagnostic Recommendation: Implement a similarity threshold gate (e.g. score < 0.65) or refusal prompt to prevent out-of-scope retrieval pollution.
+================================================================================

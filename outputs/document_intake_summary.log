@@ -32,3 +32,37 @@ Document #3: 'tsb_notice.md' [.md]
 ================================================================================
 DOCUMENT INTAKE COMPLETED. Summary saved to outputs/document_intake_summary.log
 ================================================================================
+2026-08-31 13:30:27,756 [INFO] ================================================================================
+2026-08-31 13:30:27,757 [INFO] STARTING MULTI-FORMAT DOCUMENT INTAKE DEMO
+2026-08-31 13:30:27,757 [INFO] Libraries: pypdf available=False | beautifulsoup4 available=True
+2026-08-31 13:30:27,757 [INFO] ================================================================================
+2026-08-31 13:30:27,758 [INFO] Scanning directory 'data' for documents...
+2026-08-31 13:30:27,781 [INFO]   [OK] recall_report.html (.html): 698 chars | Preview: 'SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL N'
+2026-08-31 13:30:27,798 [INFO]   [OK] sample_manual.txt (.txt): 934 chars | Preview: 'AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001\nVEH'
+2026-08-31 13:30:27,814 [INFO]   [OK] tsb_notice.md (.md): 825 chars | Preview: '# TECHNICAL SERVICE BULLETIN (TSB-22-112)\n\n**Subject:** Wiri'
+2026-08-31 13:30:27,814 [INFO] 
+--- INTAKE SUMMARY METRICS ---
+2026-08-31 13:30:27,814 [INFO] Total Successfully Ingested Documents: 3
+2026-08-31 13:30:27,814 [INFO] Total Skipped Files: 0
+2026-08-31 13:30:27,814 [INFO] Total Corpus Character Volume: 2457 characters
+2026-08-31 13:30:27,815 [INFO] Format Breakdown: {'.html': 1, '.txt': 1, '.md': 1}
+2026-08-31 13:30:27,815 [INFO] 
+--- INGESTED DOCUMENTS PREVIEW ---
+2026-08-31 13:30:27,815 [INFO] Document #1: 'recall_report.html' [.html]
+2026-08-31 13:30:27,815 [INFO]   Path: data\recall_report.html
+2026-08-31 13:30:27,815 [INFO]   Character Length: 698 chars
+2026-08-31 13:30:27,815 [INFO]   Text Preview: 'SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL N'
+2026-08-31 13:30:27,815 [INFO] ----------------------------------------
+2026-08-31 13:30:27,815 [INFO] Document #2: 'sample_manual.txt' [.txt]
+2026-08-31 13:30:27,816 [INFO]   Path: data\sample_manual.txt
+2026-08-31 13:30:27,816 [INFO]   Character Length: 934 chars
+2026-08-31 13:30:27,816 [INFO]   Text Preview: 'AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001\nVEH'
+2026-08-31 13:30:27,816 [INFO] ----------------------------------------
+2026-08-31 13:30:27,816 [INFO] Document #3: 'tsb_notice.md' [.md]
+2026-08-31 13:30:27,817 [INFO]   Path: data\tsb_notice.md
+2026-08-31 13:30:27,817 [INFO]   Character Length: 825 chars
+2026-08-31 13:30:27,817 [INFO]   Text Preview: '# TECHNICAL SERVICE BULLETIN (TSB-22-112)\n\n**Subject:** Wiri'
+2026-08-31 13:30:27,817 [INFO] ----------------------------------------
+2026-08-31 13:30:27,817 [INFO] ================================================================================
+2026-08-31 13:30:27,817 [INFO] DOCUMENT INTAKE COMPLETED. Summary saved to outputs\document_intake_summary.log
+2026-08-31 13:30:27,817 [INFO] ================================================================================

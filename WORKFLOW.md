@@ -19,6 +19,13 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 6: Structured Output & JSON Parsing** | `feature/structured-output-json-validation` | `src/structured_output.py`, `outputs/structured_output_demo.log` |
 | **Concept 7: Prompt Templates & Reusability** | `feature/prompt-templates-reusability` | `prompts/templates.py`, `src/prompt_template_engine.py` |
 | **Concept 10: Document Loading & Intake** | `feature/document-loading-intake` | `src/document_loader.py`, `data/`, `outputs/document_intake_summary.log` |
+| **Concept 11: Scalable Batch Embedding Pipeline** | `feature/scalable-batch-embedding-pipeline` | `src/batch_embedding_pipeline.py`, `outputs/batch_embeddings_cache.json` |
+| **Concept 17: Embedding Sanity Testing** | `feature/embedding-sanity-testing` | `src/embedding_sanity_test.py`, `outputs/embedding_sanity_report.log` |
+| **Concept 21: Metadata Filtering & Hybrid Search** | `feature/metadata-filtering-hybrid-search` | `src/hybrid_search.py`, `outputs/hybrid_search_comparison.log` |
+| **Concept 23: Retrieval Quality Tuning & Eval** | `feature/retrieval-quality-tuning` | `src/retrieval_tuner.py`, `outputs/retrieval_tuning_results.log` |
+| **Concept 26: Grounded Generation with Citations** | `feature/grounded-generation-citations` | `src/citation_generator.py`, `outputs/citation_generation_demo.log` |
+| **Concept 28: Retrieval Quality Guardrails** | `feature/retrieval-quality-guardrails` | `src/retrieval_guardrails.py`, `outputs/guardrails_demo.log` |
+| **Concept 31: Conversational RAG & Query Rewriting** | `feature/conversational-rag-query-rewriting` | `src/conversational_rag.py`, `outputs/conversational_rag_demo.log` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:
