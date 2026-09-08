@@ -12,7 +12,7 @@ Autorag_champs/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html)
-├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, retrieval tuning, parameters, and history code
+├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, retrieval tuning, citations, parameters, and history code
 │   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
@@ -24,7 +24,8 @@ Autorag_champs/
 │   ├── batch_embedding_pipeline.py # Scalable batch embedding pipeline with backoff & resumable cache
 │   ├── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
 │   ├── hybrid_search.py      # Metadata-filtered & hybrid (semantic + lexical) search engine
-│   └── retrieval_tuner.py    # Retrieval quality tuning & empirical benchmark evaluation engine
+│   ├── retrieval_tuner.py    # Retrieval quality tuning & empirical benchmark evaluation engine
+│   └── citation_generator.py # Grounded generation with inline citations & source attribution
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -43,6 +44,7 @@ Autorag_champs/
 │   ├── embedding_sanity_report.log  # Retrieval relevance & sanity test report
 │   ├── hybrid_search_comparison.log # Side-by-side filtered & hybrid search comparison log
 │   ├── retrieval_tuning_results.log # Benchmark evaluation & Hit Rate tuning log
+│   ├── citation_generation_demo.log # Grounded LLM completion with citations log
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -81,18 +83,19 @@ cp .env.example .env
 
 ---
 
-## 📊 Running Retrieval Quality Tuning & Evaluation
+## 🔗 Running Grounded Generation with Citations
 
-To benchmark multiple retrieval configurations (`baseline_k3`, `filtered_k3`, `strict_threshold_k5`, `hybrid_threshold_k3`), calculate **Hit Rate** percentages, and empirically justify optimal retrieval settings:
+To execute grounded LLM completion enforcing inline source markers (`[1]`, `[2]`), map markers to source metadata (`source`, `chunk_id`, `section`), verify claim attribution, and test refusal fallbacks for out-of-scope queries:
 
 ```bash
-python src/retrieval_tuner.py
+python src/citation_generator.py
 ```
 
 ### Key Learnings
-- **Empirical Tuning**: Evaluating retrieval configurations against known test queries provides data-driven justification for production hyperparameter choices.
-- **Hit Rate Metric**: Measures the percentage of test queries for which the expected target document appears in the retrieved results (100% achieved).
-- **Score Thresholding**: Discarding low-confidence candidates (`min_score=0.60`) prevents context pollution and LLM hallucination.
+- **Inline Citation Markers**: Prompts the LLM to tag every factual claim with markers like `[1]` or `[2]`.
+- **Citation Mapping**: Constructs a structured dictionary mapping `[1]` -> `{source: "sample_manual.txt", section: "Ignition Diagnostics", text: "..."}`.
+- **Claim Verification**: Parses generated markers and verifies that cited claims directly match retrieved document chunks.
+- **Refusal Fallback**: Returns *"I don't have enough information in the provided context."* without fabricating fake citations when context is missing.
 
 ---
 
