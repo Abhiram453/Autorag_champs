@@ -1,0 +1,33 @@
+================================================================================
+STARTING STRUCTURED OUTPUT & SAFE JSON VALIDATION DEMO
+Target Model: gpt-4o-mini
+================================================================================
+
+--- DEMO 1: Diagnostic Specs Extraction (Valid JSON Mode) ---
+--- Execution Attempt 1 / 2 ---
+Raw Model Output:
+{
+  "fault_code": "P0300",
+  "recommended_action": "Inspect Bank 1 ignition coils and check wiring harness connector C102 for resistance anomalies.",
+  "source_manual": "MNL-24-001",
+  "connector_id": "C102",
+  "confidence": 0.98
+}
+✅ SUCCESS: Schema validation PASSED
+Parsed Result Object:
+  Fault Code: P0300
+  Action: Inspect Bank 1 ignition coils and check wiring harness connector C102 for resistance anomalies.
+  Source Manual: MNL-24-001
+  Connector ID: C102
+  Confidence: 0.98
+
+--- DEMO 2: Defensive JSON Parser & Field Validation Verification ---
+Testing Valid Raw String:
+  Parsed: {'answer': 'Inspect coil resistance', 'source': 'MNL-24-001', 'confidence': 0.95} | Schema Check: Schema validation PASSED
+Testing Malformed JSON String (Trailing Comma):
+  Parsed Data: None | Handled Error: JSONDecodeError: Malformed JSON syntax (Expecting property name enclosed in double quotes: line 1 column 57 (char 56))
+Testing Missing Required Key ('source', 'confidence'):
+  Parsed Data: {'answer': 'Inspect coil resistance'} | Validation Result: Missing required keys: ['source', 'confidence']
+================================================================================
+STRUCTURED OUTPUT DEMO COMPLETED. Log saved to outputs/structured_output_demo.log
+================================================================================

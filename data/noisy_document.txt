@@ -1,0 +1,29 @@
+PAGE 1 OF 3
+1. INTRODUCTION
+This document is a sample for testing the cleaning pipeline. It contains some noise.
+Back to top
+There are some broken line wraps
+in this document that should be
+fixed by the cleaning pipeline.
+
+
+     
+     
+    
+This text has too many spaces            between words.
+
+And too many
+
+
+blank lines.
+PAGE 2 OF 3
+2. ENCODING ARTIFACTS
+Here are some weird characters:
+ﬁre (should be fire)
+ﬀ (ff)
+This is an example of NFKC normalization.
+
+Next
+3. MORE TEXT
+End of the noisy document.
+Page 3 of 3

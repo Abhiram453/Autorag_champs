@@ -1,0 +1,38 @@
+2026-09-02 11:48:25,432 [INFO] ================================================================================
+2026-09-02 11:48:25,432 [INFO] EMBEDDING SIMILARITY & DISTANCE METRICS
+2026-09-02 11:48:25,432 [INFO] ================================================================================
+2026-09-02 11:48:25,445 [INFO] Loaded 3 embedded chunks from corpus.
+2026-09-02 11:48:25,445 [INFO] 
+Query Text: 'What information is available regarding safety recalls and mandatory inspections?'
+2026-09-02 11:48:25,446 [INFO] Generating query embedding via API...
+2026-09-02 11:48:25,452 [INFO] 
+Computing Cosine Similarity for all chunks...
+2026-09-02 11:48:25,453 [INFO] 
+================================================================================
+2026-09-02 11:48:25,461 [INFO] RANKED RESULTS (Most to Least Similar)
+2026-09-02 11:48:25,461 [INFO] ================================================================================
+2026-09-02 11:48:25,461 [INFO] Rank 1 | Score: 0.0040
+2026-09-02 11:48:25,461 [INFO]   Chunk ID: noisy_document.txt::section::1 (Source: noisy_document.txt)
+2026-09-02 11:48:25,461 [INFO]   Section:  2. ENCODING ARTIFACTS
+2026-09-02 11:48:25,461 [INFO]   Preview:  '2. ENCODING ARTIFACTS Here are some weird characters: fire (should be fire) ff (ff) This is an examp...'
+
+2026-09-02 11:48:25,461 [INFO] Rank 2 | Score: -0.0030
+2026-09-02 11:48:25,462 [INFO]   Chunk ID: recall_report.html::section::0 (Source: recall_report.html)
+2026-09-02 11:48:25,462 [INFO]   Section:  Preamble
+2026-09-02 11:48:25,462 [INFO]   Preview:  'SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: ...'
+
+2026-09-02 11:48:25,462 [INFO] Rank 3 | Score: -0.0033
+2026-09-02 11:48:25,462 [INFO]   Chunk ID: noisy_document.txt::section::0 (Source: noisy_document.txt)
+2026-09-02 11:48:25,462 [INFO]   Section:  1. INTRODUCTION
+2026-09-02 11:48:25,462 [INFO]   Preview:  '1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise....'
+
+2026-09-02 11:48:25,462 [INFO] --------------------------------------------------------------------------------
+2026-09-02 11:48:25,462 [INFO] ANALYSIS:
+2026-09-02 11:48:25,462 [INFO] MOST SIMILAR: noisy_document.txt::section::1 (Score: 0.0040)
+2026-09-02 11:48:25,462 [INFO] LEAST SIMILAR: noisy_document.txt::section::0 (Score: -0.0033)
+2026-09-02 11:48:25,462 [INFO] 
+================================================================================
+2026-09-02 11:48:25,462 [INFO] METRIC JUSTIFICATION (Cosine Similarity)
+2026-09-02 11:48:25,462 [INFO] ================================================================================
+2026-09-02 11:48:25,462 [INFO] We chose Cosine Similarity because it measures the angle between two vectors in high-dimensional space, focusing purely on the 'direction' of the meaning rather than the 'magnitude' (which can be skewed by the length of the original text or word frequencies). A score closer to 1 means the vectors point in the same semantic direction (highly similar), while a score near 0 means they are orthogonal (unrelated). This is the standard and most robust metric for comparing text embeddings.
+2026-09-02 11:48:25,462 [INFO] ================================================================================

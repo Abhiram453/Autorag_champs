@@ -1,0 +1,33 @@
+================================================================================
+STARTING GROUNDED GENERATION & CITATION ATTRIBUTION DEMO
+Model: openai/gpt-4o-mini
+================================================================================
+
+--- DEMO 1: Valid Automotive Query with Sufficient Context ---
+Question: 'What is the primary resistance spec for Bank 1 coils and what action is required for connector C102?'
+
+[Generated Answer]
+The primary resistance specification for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2 [1]. For connector C102, the required action is to inspect the connector and apply dielectric grease to the seals prior to connector mating [2].
+
+[Citation Map Details]
+  Marker [1] -> Source: sample_manual.txt | Section: Ignition Diagnostics
+    Raw Text: 'DTC P0300 indicates a random misfire event. Inspect Bank 1 ignition coils. Primary resistance specification must measure 0.4 to 0.6 ohms across terminals 1 and 2.'
+  Marker [2] -> Source: tsb_notice.md | Section: Wiring Harness
+    Raw Text: 'Technical Service Bulletin TSB-22-112: Inspect connector C102 on right bulkhead. Apply dielectric grease to seals prior to connector mating.'
+
+[Citation Verification Analysis]
+  ✅ [1] -> Source: sample_manual.txt (Chunk: chunk_mnl_001)
+  ✅ [2] -> Source: tsb_notice.md (Chunk: chunk_tsb_112)
+
+================================================================================
+--- DEMO 2: Out-of-Scope Query with Insufficient Evidence ---
+Question: 'What is the refund policy for customer sales invoice #8891?'
+
+[Generated Answer]
+I don't have enough information in the provided context.
+
+[Citation Verification Analysis]
+  Status: VALID_REFUSAL | Correctly refused out-of-scope question without fabricating citations.
+================================================================================
+CITATION DEMO COMPLETED. Log saved to outputs/citation_generation_demo.log
+================================================================================

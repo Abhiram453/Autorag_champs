@@ -1,0 +1,15 @@
+AUTOMOTIVE SERVICE REPAIR MANUAL - MANUAL ID: MNL-24-001
+VEHICLE MODEL: 2023 SUV Model X
+SYSTEM: IGNITION SYSTEM & CYLINDER MISFIRE DIAGNOSTICS (DTC P0300)
+
+1. SYSTEM OVERVIEW
+The ignition system utilizes individual coil-on-plug assemblies for cylinders 1 through 6.
+Diagnostic Trouble Code P0300 indicates a random or multiple cylinder misfire event detected by the Engine Control Unit (ECU).
+
+2. DIAGNOSTIC PROCEDURES
+- Step 1: Connect OBD-II scanner and record freeze frame data.
+- Step 2: Disconnect negative battery cable and wait 5 minutes before servicing electrical components.
+- Step 3: Remove decorative engine cover (10mm bolts).
+- Step 4: Inspect Bank 1 ignition coil assemblies (cylinders 1, 3, 5 located on passenger side).
+- Step 5: Test primary resistance across terminals 1 and 2. Specification: 0.4 to 0.6 Ohms.
+- Step 6: Test secondary resistance across output tower and terminal 2. Specification: 5.0 to 7.0 kOhms.

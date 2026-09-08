@@ -1,0 +1,32 @@
+{
+  "chunk_mnl_001_p01": {
+    "chunk_id": "chunk_mnl_001_p01",
+    "source": "MNL-24-001",
+    "text": "DTC P0300 indicates a random or multiple cylinder misfire event detected by ECU.",
+    "embedding": [0.0124, -0.0341, 0.0089, 0.0215, -0.0152]
+  },
+  "chunk_mnl_001_p02": {
+    "chunk_id": "chunk_mnl_001_p02",
+    "source": "MNL-24-001",
+    "text": "Step 2: Disconnect negative battery cable and wait 5 minutes before servicing electrical harness.",
+    "embedding": [-0.0051, 0.0198, -0.0421, 0.0112, 0.0034]
+  },
+  "chunk_mnl_001_p03": {
+    "chunk_id": "chunk_mnl_001_p03",
+    "source": "MNL-24-001",
+    "text": "Bank 1 ignition coil primary resistance specification: 0.4 to 0.6 ohms across terminals 1 and 2.",
+    "embedding": [0.0312, 0.0045, -0.0187, 0.0254, -0.0091]
+  },
+  "chunk_tsb_112_p01": {
+    "chunk_id": "chunk_tsb_112_p01",
+    "source": "TSB-22-112",
+    "text": "Moisture intrusion at engine bulkhead wiring harness connector C102 causes pin resistance variance.",
+    "embedding": [-0.0189, 0.0274, 0.0012, -0.0305, 0.0143]
+  },
+  "chunk_rcl_088_p01": {
+    "chunk_id": "chunk_rcl_088_p01",
+    "source": "RCL-23-088B",
+    "text": "Flash Battery Control Module software to version v1.0.0 or higher to resolve false thermal warnings.",
+    "embedding": [0.0076, -0.0123, 0.0389, -0.0041, -0.0211]
+  }
+}

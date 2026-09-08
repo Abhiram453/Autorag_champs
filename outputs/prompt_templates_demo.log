@@ -1,0 +1,69 @@
+================================================================================
+STARTING PROMPT TEMPLATE & MULTI-FEATURE REUSE DEMO
+Target Model: gpt-4o-mini
+================================================================================
+
+--- 1. Template Rendering Test (Variable Injection) ---
+Rendered User Message:
+You are an expert service technician assistant for vehicle model 2023 SUV Model X.
+Rules:
+1. Answer the Question ONLY using the official service manual Context provided below.
+2. If the answer is not explicitly contained in the Context, respond strictly: 'I don't know based on available service data.'
+3. Keep your response concise (maximum 2 sentences).
+
+Vehicle Model: 2023 SUV Model X
+Fault Code: P0300
+Context:
+Manual Chunk MNL-24-001: For DTC P0300 on 2023 SUV Model X, inspect Bank 1 ignition coils. Primary resistance must measure 0.4 to 0.6 ohms across terminals 1 and 2. Connector C102 must be checked for corrosion.
+
+Question: What is the primary resistance spec and connector check for Bank 1 coils?
+
+--- 2. Multi-Feature Reuse (1 Template -> 3 Features) ---
+[Feature 1: Interactive Chat Endpoint]
+  Reply: The primary resistance spec for Bank 1 ignition coils is 0.4 to 0.6 ohms across terminals 1 and 2. Additionally, connector C102 must be checked for corrosion.
+[Feature 2: Batch Quality Evaluator]
+  Reply: The primary resistance specification for Bank 1 ignition coils is 0.4 to 0.6 ohms across terminals 1 and 2. Connector C102 should also be inspected for corrosion.
+[Feature 3: Terminal CLI Service Tool]
+  Reply: The primary resistance spec for Bank 1 ignition coils is 0.4 to 0.6 ohms across terminals 1 and 2. Connector C102 must be checked for corrosion.
+
+--- 3. Prompt Consistency Verification ---
+✅ SUCCESS: All 3 features generated 100% IDENTICAL prompt strings from prompts/templates.py!
+================================================================================
+PROMPT TEMPLATE DEMO COMPLETED. Saved to outputs/prompt_templates_demo.log
+================================================================================
+2026-08-31 12:57:33,979 [INFO] ================================================================================
+2026-08-31 12:57:33,980 [INFO] STARTING PROMPT TEMPLATE & MULTI-FEATURE REUSE DEMO
+2026-08-31 12:57:33,980 [INFO] Target Model: openai/gpt-4o-mini
+2026-08-31 12:57:33,980 [INFO] ================================================================================
+2026-08-31 12:57:33,981 [INFO] 
+--- 1. Template Rendering Test (Variable Injection) ---
+2026-08-31 12:57:33,981 [INFO] Rendered User Message:
+You are an expert service technician assistant for vehicle model 2023 SUV Model X.
+Rules:
+1. Answer the Question ONLY using the official service manual Context provided below.
+2. If the answer is not explicitly contained in the Context, respond strictly: 'I don't know based on available service data.'
+3. Keep your response concise (maximum 2 sentences).
+
+Vehicle Model: 2023 SUV Model X
+Fault Code: P0300
+Context:
+Manual Chunk MNL-24-001: For DTC P0300 on 2023 SUV Model X, inspect Bank 1 ignition coils. Primary resistance must measure 0.4 to 0.6 ohms across terminals 1 and 2. Connector C102 must be checked for corrosion.
+
+Question: What is the primary resistance spec and connector check for Bank 1 coils?
+2026-08-31 12:57:33,981 [INFO] 
+--- 2. Multi-Feature Reuse (1 Template -> 3 Features) ---
+2026-08-31 12:57:37,077 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-31 12:57:37,319 [INFO] [Feature 1: Interactive Chat Endpoint]
+2026-08-31 12:57:37,319 [INFO]   Reply: The primary resistance for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2, and connector C102 must be checked for corrosion.
+2026-08-31 12:57:38,206 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-31 12:57:38,663 [INFO] [Feature 2: Batch Quality Evaluator]
+2026-08-31 12:57:38,664 [INFO]   Reply: The primary resistance for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2, and connector C102 must be checked for corrosion.
+2026-08-31 12:57:39,481 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-08-31 12:57:39,956 [INFO] [Feature 3: Terminal CLI Service Tool]
+2026-08-31 12:57:39,957 [INFO]   Reply: The primary resistance for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2, and connector C102 must be checked for corrosion.
+2026-08-31 12:57:39,957 [INFO] 
+--- 3. Prompt Consistency Verification ---
+2026-08-31 12:57:39,958 [INFO] ✅ SUCCESS: All 3 features generated 100% IDENTICAL prompt strings from prompts/templates.py!
+2026-08-31 12:57:39,961 [INFO] ================================================================================
+2026-08-31 12:57:39,961 [INFO] PROMPT TEMPLATE DEMO COMPLETED. Saved to outputs\prompt_templates_demo.log
+2026-08-31 12:57:39,961 [INFO] ================================================================================
