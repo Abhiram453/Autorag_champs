@@ -12,7 +12,7 @@ Autorag_champs/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html)
-├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, retrieval tuning, citations, parameters, and history code
+├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, retrieval tuning, citations, guardrails, parameters, and history code
 │   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
 │   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
 │   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
@@ -25,7 +25,8 @@ Autorag_champs/
 │   ├── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
 │   ├── hybrid_search.py      # Metadata-filtered & hybrid (semantic + lexical) search engine
 │   ├── retrieval_tuner.py    # Retrieval quality tuning & empirical benchmark evaluation engine
-│   └── citation_generator.py # Grounded generation with inline citations & source attribution
+│   ├── citation_generator.py # Grounded generation with inline citations & source attribution
+│   └── retrieval_guardrails.py # Pre-generation retrieval quality guardrails & refusal gating
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -45,6 +46,7 @@ Autorag_champs/
 │   ├── hybrid_search_comparison.log # Side-by-side filtered & hybrid search comparison log
 │   ├── retrieval_tuning_results.log # Benchmark evaluation & Hit Rate tuning log
 │   ├── citation_generation_demo.log # Grounded LLM completion with citations log
+│   ├── guardrails_demo.log          # Retrieval strength guardrails & refusal gating log
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -83,19 +85,18 @@ cp .env.example .env
 
 ---
 
-## 🔗 Running Grounded Generation with Citations
+## 🛡️ Running Retrieval Quality Guardrails
 
-To execute grounded LLM completion enforcing inline source markers (`[1]`, `[2]`), map markers to source metadata (`source`, `chunk_id`, `section`), verify claim attribution, and test refusal fallbacks for out-of-scope queries:
+To execute pre-generation retrieval strength checking (`MIN_TOP_SCORE = 0.70`), halt LLM invocation on weak/empty context (`status: "refused_weak_context"`), and preserve confident generation (`status: "answered"`) for supported queries:
 
 ```bash
-python src/citation_generator.py
+python src/retrieval_guardrails.py
 ```
 
 ### Key Learnings
-- **Inline Citation Markers**: Prompts the LLM to tag every factual claim with markers like `[1]` or `[2]`.
-- **Citation Mapping**: Constructs a structured dictionary mapping `[1]` -> `{source: "sample_manual.txt", section: "Ignition Diagnostics", text: "..."}`.
-- **Claim Verification**: Parses generated markers and verifies that cited claims directly match retrieved document chunks.
-- **Refusal Fallback**: Returns *"I don't have enough information in the provided context."* without fabricating fake citations when context is missing.
+- **Pre-Generation Refusal Gating**: Evaluating similarity scores before calling the LLM prevents the model from hallucinating plausible-sounding answers when evidence is missing.
+- **Threshold Control**: Queries with top similarity scores `< 0.70` trigger immediate refusal (*"I don't have enough reliable context to answer that."*) without wasting API tokens.
+- **Confident Generation**: Queries with strong retrieved context (`>= 0.70`) proceed cleanly to grounded generation with inline citations.
 
 ---
 

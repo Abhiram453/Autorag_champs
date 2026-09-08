@@ -24,6 +24,7 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 21: Metadata Filtering & Hybrid Search** | `feature/metadata-filtering-hybrid-search` | `src/hybrid_search.py`, `outputs/hybrid_search_comparison.log` |
 | **Concept 23: Retrieval Quality Tuning & Eval** | `feature/retrieval-quality-tuning` | `src/retrieval_tuner.py`, `outputs/retrieval_tuning_results.log` |
 | **Concept 26: Grounded Generation with Citations** | `feature/grounded-generation-citations` | `src/citation_generator.py`, `outputs/citation_generation_demo.log` |
+| **Concept 28: Retrieval Quality Guardrails** | `feature/retrieval-quality-guardrails` | `src/retrieval_guardrails.py`, `outputs/guardrails_demo.log` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:

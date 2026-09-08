@@ -1,0 +1,36 @@
+================================================================================
+STARTING RETRIEVAL QUALITY GUARDRAILS & HALLUCINATION PREVENTION DEMO
+Model: openai/gpt-4o-mini | Min Top Score Threshold: 0.70
+================================================================================
+
+--- [CASE-1] Answerable Query (Strong Context) ---
+Question: 'What is the primary resistance specification for Bank 1 ignition coils on DTC P0300?'
+  Status: answered
+  Top Similarity Score: 0.7673
+  Sources Used: ['sample_manual.txt']
+  Final Output Answer:
+    "The primary resistance specification for Bank 1 ignition coils on DTC P0300 is 0.4 to 0.6 ohms across terminals 1 and 2 [1]."
+------------------------------------------------------------
+
+--- [CASE-2] Unanswerable / Out-of-Scope Query (No Context) ---
+Question: 'What is the refund policy for a customer sales invoice not in this repair manual?'
+  Guardrail Triggered! Context too weak (Top Score: 0.3194 < Threshold 0.70). Halting generation.
+  Status: refused_weak_context
+  Top Similarity Score: 0.3194
+  Sources Used: []
+  Final Output Answer:
+    "I don't have enough reliable context to answer that."
+------------------------------------------------------------
+
+--- [CASE-3] Low-Similarity Edge Case Query (Weak Context) ---
+Question: 'How do I fix generic noise coming from somewhere under the vehicle frame?'
+  Guardrail Triggered! Context too weak (Top Score: 0.3797 < Threshold 0.70). Halting generation.
+  Status: refused_weak_context
+  Top Similarity Score: 0.3797
+  Sources Used: []
+  Final Output Answer:
+    "I don't have enough reliable context to answer that."
+------------------------------------------------------------
+================================================================================
+GUARDRAILS DEMO COMPLETED. Log saved to outputs/guardrails_demo.log
+================================================================================

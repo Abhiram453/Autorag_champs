@@ -101,28 +101,36 @@ This guide details the **per-assignment branching strategy** for `https://github
 ---
 
 ## 📌 Assignment 26: Grounded Generation with Citations (`src/citation_generator.py`)
+- **Branch**: `feature/grounded-generation-citations`
+- **PR Title**: `feat: Add grounded generation with inline citations, source mapping, and refusal fallbacks`
+- **Related Issue**: `Closes #26`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/26`
+
+---
+
+## 📌 Assignment 28: Retrieval Quality Guardrails (`src/retrieval_guardrails.py`)
 
 ### 1. Git Commands
 ```bash
 git checkout main
-git checkout -b feature/grounded-generation-citations
-git add src/citation_generator.py outputs/citation_generation_demo.log README.md
-git commit -m "feat: implement grounded generation engine with inline citations, citation mapping, and claim verification"
-git push -u origin feature/grounded-generation-citations
+git checkout -b feature/retrieval-quality-guardrails
+git add src/retrieval_guardrails.py outputs/guardrails_demo.log README.md
+git commit -m "feat: implement pre-generation retrieval quality guardrails with similarity score threshold gating"
+git push -u origin feature/retrieval-quality-guardrails
 ```
 
 ### 2. GitHub PR Details
-- **Source Branch**: `feature/grounded-generation-citations` -> **Base Branch**: `main`
-- **PR Title**: `feat: Add grounded generation with inline citations, source mapping, and refusal fallbacks`
+- **Source Branch**: `feature/retrieval-quality-guardrails` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add pre-generation retrieval quality guardrails and hallucination refusal gating`
 - **PR Description Body**:
   ```markdown
   ## Summary
-  Implements grounded LLM answer generator (src/citation_generator.py) enforcing inline citation markers ([1], [2]), structured metadata mapping (build_citation_map), claim attribution verification, and refusal fallbacks for out-of-scope queries.
+  Implements pre-generation retrieval guardrails engine (src/retrieval_guardrails.py) evaluating similarity score thresholds (MIN_TOP_SCORE=0.70), halting LLM completion on weak/empty context (status: refused_weak_context), and preserving confident generation (status: answered) for supported queries.
 
   ## Related Issue
-  Closes #26
+  Closes #28
   ```
-- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/26`
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/28`
 
 ---
 
