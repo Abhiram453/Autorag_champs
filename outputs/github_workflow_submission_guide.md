@@ -134,8 +134,35 @@ git push -u origin feature/retrieval-quality-guardrails
 
 ---
 
+## 📌 Assignment 31: Conversational RAG & Query Rewriting (`src/conversational_rag.py`)
+
+### 1. Git Commands
+```bash
+git checkout main
+git checkout -b feature/conversational-rag-query-rewriting
+git add src/conversational_rag.py outputs/conversational_rag_demo.log README.md WORKFLOW.md
+git commit -m "feat: implement conversational RAG engine with LLM query rewriting and standalone vector retrieval"
+git push -u origin feature/conversational-rag-query-rewriting
+```
+
+### 2. GitHub PR Details
+- **Source Branch**: `feature/conversational-rag-query-rewriting` -> **Base Branch**: `main`
+- **PR Title**: `feat: Add conversational RAG engine with LLM follow-up query rewriting and standalone retrieval`
+- **PR Description Body**:
+  ```markdown
+  ## Summary
+  Implements multi-turn conversational RAG engine (src/conversational_rag.py) with LLM query reformulation (rewrite_followup), standalone vector search, similarity threshold guardrails, grounded response generation with citations, and 4-turn dialogue simulation.
+
+  ## Related Issue
+  Closes #31
+  ```
+- **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/31`
+
+---
+
 ## 📌 Assignment 3.11: GitHub Team Workflow Setup (`WORKFLOW.md`)
 - **Branch**: `feature/github-workflow-setup`
 - **PR Title**: `docs: Add team GitHub workflow documentation and contributor guidelines`
 - **Related Issue**: `Closes #5`
 - **PR Link Format**: `https://github.com/Abhiram453/Autorag_champs/pull/5`
+

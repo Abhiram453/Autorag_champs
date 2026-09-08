@@ -26,7 +26,8 @@ Autorag_champs/
 │   ├── hybrid_search.py      # Metadata-filtered & hybrid (semantic + lexical) search engine
 │   ├── retrieval_tuner.py    # Retrieval quality tuning & empirical benchmark evaluation engine
 │   ├── citation_generator.py # Grounded generation with inline citations & source attribution
-│   └── retrieval_guardrails.py # Pre-generation retrieval quality guardrails & refusal gating
+│   ├── retrieval_guardrails.py # Pre-generation retrieval quality guardrails & refusal gating
+│   └── conversational_rag.py # Conversational RAG engine with LLM query rewriting & multi-turn history
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -47,6 +48,7 @@ Autorag_champs/
 │   ├── retrieval_tuning_results.log # Benchmark evaluation & Hit Rate tuning log
 │   ├── citation_generation_demo.log # Grounded LLM completion with citations log
 │   ├── guardrails_demo.log          # Retrieval strength guardrails & refusal gating log
+│   ├── conversational_rag_demo.log  # Conversational RAG & multi-turn query rewriting log
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
 │   ├── user_page_overview.md        # Layout architecture breakdown
 │   └── github_workflow_submission_guide.md # Assignment submission guide & video script
@@ -97,6 +99,21 @@ python src/retrieval_guardrails.py
 - **Pre-Generation Refusal Gating**: Evaluating similarity scores before calling the LLM prevents the model from hallucinating plausible-sounding answers when evidence is missing.
 - **Threshold Control**: Queries with top similarity scores `< 0.70` trigger immediate refusal (*"I don't have enough reliable context to answer that."*) without wasting API tokens.
 - **Confident Generation**: Queries with strong retrieved context (`>= 0.70`) proceed cleanly to grounded generation with inline citations.
+
+---
+
+## 💬 Running Conversational RAG & Query Rewriting
+
+To execute multi-turn conversational RAG with automatic LLM query rewriting and retrieval guardrails:
+
+```bash
+python src/conversational_rag.py
+```
+
+### Key Learnings
+- **Query Reformulation Engine**: Conversational follow-ups (e.g. *"What connector should I inspect?"*) are rewritten into self-contained standalone search queries (e.g. *"What connector should be inspected for misfire issues related to DTC P0300 on 2023 SUV Model X?"*) using prior dialogue context.
+- **Standalone Retrieval & Guardrails**: Vector search runs against the rewritten query to ensure accurate semantic matching and prevent context drift across multi-turn sessions.
+- **Grounded Responses & Safe Refusals**: Supported turns return citation-backed answers (`[1]`, `[2]`), while out-of-domain or under-supported follow-ups trigger guardrail refusals.
 
 ---
 
