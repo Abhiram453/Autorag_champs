@@ -1,0 +1,20 @@
+2026-09-03 13:35:24,838 [INFO] ================================================================================
+2026-09-03 13:35:24,838 [INFO] VECTOR DATABASE SETUP & COLLECTION DESIGN
+2026-09-03 13:35:24,838 [INFO] ================================================================================
+2026-09-03 13:35:24,838 [INFO] Setting up Qdrant client at local path: outputs/qdrant_db
+2026-09-03 13:35:24,989 [INFO] Creating collection 'knowledge_base' with vector dimension 1536
+2026-09-03 13:35:24,994 [INFO] Schema designed: ID (UUID or int), Vector (1536 floats), Payload (text, source, chunk_id, metadata)
+2026-09-03 13:35:25,004 [INFO] Loaded test record from outputs/embedded_corpus.json
+2026-09-03 13:35:25,004 [INFO] Inserting test record ID=1 into collection 'knowledge_base'...
+2026-09-03 13:35:25,008 [INFO] Insert status: completed
+2026-09-03 13:35:25,009 [INFO] Reading back test record ID=1...
+2026-09-03 13:35:25,009 [INFO] 
+================================================================================
+2026-09-03 13:35:25,009 [INFO] VERIFICATION OUTPUT
+2026-09-03 13:35:25,009 [INFO] ================================================================================
+2026-09-03 13:35:25,009 [INFO] Successfully retrieved record ID: 1
+2026-09-03 13:35:25,009 [INFO] Vector length: 1536
+2026-09-03 13:35:25,009 [INFO] Payload Text: 1. INTRODUCTION
+This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-03 13:35:25,009 [INFO] Payload Metadata: {'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.', 'source': 'noisy_document.txt', 'chunk_id': 'noisy_document.txt::section::0', 'metadata': {'chunk_id': 'noisy_document.txt::section::0', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '1. INTRODUCTION', 'chunk_index': 0, 'total_chunks': 2, 'char_start': 0, 'char_end': 280, 'char_count': 278, 'strategy': 'section_based', 'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.'}}
+2026-09-03 13:35:25,009 [INFO] ================================================================================

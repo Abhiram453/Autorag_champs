@@ -1,0 +1,42 @@
+2026-09-03 13:57:33,841 [INFO] ================================================================================
+2026-09-03 13:57:33,842 [INFO] SIMILARITY SEARCH & TOP-K RETRIEVAL
+2026-09-03 13:57:33,842 [INFO] ================================================================================
+2026-09-03 13:57:33,944 [INFO] User Query: 'What is this sample document about?'
+2026-09-03 13:57:33,944 [INFO] Embedding query using model: text-embedding-3-small
+2026-09-03 13:57:41,875 [WARNING] API Error generating embedding for query: Connection error.
+2026-09-03 13:57:41,875 [WARNING] Falling back to local mock embedding for testing purposes.
+2026-09-03 13:57:41,875 [INFO] --------------------------------------------------------------------------------
+2026-09-03 13:57:41,875 [INFO] Performing search with k = 1
+2026-09-03 13:57:41,875 [INFO] --------------------------------------------------------------------------------
+2026-09-03 13:57:41,880 [INFO] Retrieved 1 results:
+2026-09-03 13:57:41,880 [INFO] Result 1 (Score: 0.0247):
+2026-09-03 13:57:41,880 [INFO]   Chunk ID: noisy_document.txt::section::0
+2026-09-03 13:57:41,880 [INFO]   Source: noisy_document.txt
+2026-09-03 13:57:41,880 [INFO]   Text Snippet: 1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-03 13:57:41,880 [INFO]   Metadata: {'chunk_id': 'noisy_document.txt::section::0', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '1. INTRODUCTION', 'chunk_index': 0, 'total_chunks': 2, 'char_start': 0, 'char_end': 280, 'char_count': 278, 'strategy': 'section_based', 'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.'}
+2026-09-03 13:57:41,880 [INFO] 
+2026-09-03 13:57:41,880 [INFO] --------------------------------------------------------------------------------
+2026-09-03 13:57:41,880 [INFO] Performing search with k = 3
+2026-09-03 13:57:41,880 [INFO] --------------------------------------------------------------------------------
+2026-09-03 13:57:41,881 [INFO] Retrieved 3 results:
+2026-09-03 13:57:41,882 [INFO] Result 1 (Score: 0.0247):
+2026-09-03 13:57:41,882 [INFO]   Chunk ID: noisy_document.txt::section::0
+2026-09-03 13:57:41,882 [INFO]   Source: noisy_document.txt
+2026-09-03 13:57:41,882 [INFO]   Text Snippet: 1. INTRODUCTION This document is a sample for testing the cleaning pipeline. It contains some noise....
+2026-09-03 13:57:41,882 [INFO]   Metadata: {'chunk_id': 'noisy_document.txt::section::0', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '1. INTRODUCTION', 'chunk_index': 0, 'total_chunks': 2, 'char_start': 0, 'char_end': 280, 'char_count': 278, 'strategy': 'section_based', 'text': '1. INTRODUCTION\nThis document is a sample for testing the cleaning pipeline. It contains some noise.\n\nThere are some broken line wraps in this document that should be fixed by the cleaning pipeline.\n\n \n \n \nThis text has too many spaces between words.\n\nAnd too many\n\nblank lines.'}
+2026-09-03 13:57:41,882 [INFO] 
+2026-09-03 13:57:41,882 [INFO] Result 2 (Score: -0.0035):
+2026-09-03 13:57:41,882 [INFO]   Chunk ID: noisy_document.txt::section::1
+2026-09-03 13:57:41,882 [INFO]   Source: noisy_document.txt
+2026-09-03 13:57:41,882 [INFO]   Text Snippet: 2. ENCODING ARTIFACTS Here are some weird characters: fire (should be fire) ff (ff) This is an examp...
+2026-09-03 13:57:41,882 [INFO]   Metadata: {'chunk_id': 'noisy_document.txt::section::1', 'source': 'noisy_document.txt', 'doc_type': 'unknown', 'section_title': '2. ENCODING ARTIFACTS', 'chunk_index': 1, 'total_chunks': 2, 'char_start': 280, 'char_end': 446, 'char_count': 166, 'strategy': 'section_based', 'text': '2. ENCODING ARTIFACTS\nHere are some weird characters:\nfire (should be fire)\nff (ff)\nThis is an example of NFKC normalization.\n\n3. MORE TEXT\nEnd of the noisy document.'}
+2026-09-03 13:57:41,882 [INFO] 
+2026-09-03 13:57:41,882 [INFO] Result 3 (Score: -0.0184):
+2026-09-03 13:57:41,882 [INFO]   Chunk ID: recall_report.html::section::0
+2026-09-03 13:57:41,882 [INFO]   Source: recall_report.html
+2026-09-03 13:57:41,882 [INFO]   Text Snippet: SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: ...
+2026-09-03 13:57:41,882 [INFO]   Metadata: {'chunk_id': 'recall_report.html::section::0', 'source': 'recall_report.html', 'doc_type': 'recall_notice', 'section_title': 'Preamble', 'chunk_index': 0, 'total_chunks': 1, 'char_start': 0, 'char_end': 698, 'char_count': 698, 'strategy': 'section_based', 'text': 'SAFETY RECALL NOTICE - RCL-23-088B MANDATORY SAFETY RECALL NOTICE Recall ID: RCL-23-088B Component: Battery Control Module Firmware Update Affected Vehicles: Series Y / NA & 2023 SUV Model X (AWD Hybrid) Summary of Safety Defect On certain 2023 SUV Model X vehicles, software in the High Voltage Battery Control Module (BCM) may incorrectly calculate cell thermal limits during rapid charging. This may cause false battery disconnect errors or thermal management warnings. Remedy & Service Procedure Flash Battery Control Module software to version v1.0.0 or higher. Perform high voltage isolation test prior to vehicle release. Ensure diagnostic session ID is logged in the compliance audit panel.'}
+2026-09-03 13:57:41,882 [INFO] 
+2026-09-03 13:57:41,882 [INFO] ================================================================================
+2026-09-03 13:57:41,882 [INFO] SIMILARITY SEARCH COMPLETE
+2026-09-03 13:57:41,882 [INFO] ================================================================================
