@@ -47,9 +47,9 @@ def cosine_similarity(vec_a: list, vec_b: list) -> float:
 class ConversationalRAGEngine:
     def __init__(self, min_top_score: float = 0.50, max_history_turns: int = 6):
         load_dotenv()
-        base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-        api_key = os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(base_url=base_url, api_key=api_key or "missing_key")
+        base_url = os.getenv("OPENAI_BASE_URL", "http://127.0.0.1:8081")
+        api_key = os.getenv("OPENAI_API_KEY", "sk-dummy")
+        self.client = OpenAI(base_url=base_url, api_key=api_key)
         self.model = os.getenv("CHAT_MODEL", "openai/gpt-4o-mini")
         self.embedding_model = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
         self.min_top_score = min_top_score
@@ -108,6 +108,49 @@ class ConversationalRAGEngine:
         except Exception as e:
             logging.error("Failed to embed query '%s': %s", query, e)
             return []
+
+    def ingest_and_index_document(self, text: str, source_name: str) -> dict:
+        """
+        Ingests a new document text, chunks it, embeds it, and appends to the active index.
+        Returns a summary of the ingestion.
+        """
+        import uuid
+        from chunking import chunk_fixed_size
+
+        new_chunks = chunk_fixed_size(text, source_name)
+        if not new_chunks:
+            return {"status": "error", "message": "No extractable text found or chunking failed."}
+
+        formatted_chunks = []
+        for c in new_chunks:
+            formatted_chunks.append({
+                "chunk_id": f"chunk_{uuid.uuid4().hex[:8]}",
+                "text": c["text"],
+                "metadata": {
+                    "source": source_name,
+                    "doc_type": "Uploaded Document",
+                    "section": f"Chunk {c.get('chunk_index', 0)}"
+                }
+            })
+
+        try:
+            texts = [c["text"] for c in formatted_chunks]
+            res = self.client.embeddings.create(model=self.embedding_model, input=texts)
+            for chunk, item in zip(formatted_chunks, res.data):
+                chunk["embedding"] = item.embedding
+
+            self.corpus_chunks.extend(formatted_chunks)
+            logging.info("Successfully indexed %d new chunks from %s", len(formatted_chunks), source_name)
+
+            return {
+                "status": "success",
+                "message": f"Successfully indexed {len(formatted_chunks)} chunks.",
+                "chunks_added": len(formatted_chunks),
+                "vector_dimensions": len(formatted_chunks[0]["embedding"]),
+            }
+        except Exception as e:
+            logging.error("Failed to embed uploaded document '%s': %s", source_name, e)
+            return {"status": "error", "message": f"Embedding failed: {str(e)}"}
 
     def retrieve_chunks(self, query: str, k: int = 4) -> list:
         """Retrieves and ranks corpus chunks by cosine similarity."""

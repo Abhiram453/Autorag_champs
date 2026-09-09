@@ -115,6 +115,25 @@ python src/conversational_rag.py
 - **Standalone Retrieval & Guardrails**: Vector search runs against the rewritten query to ensure accurate semantic matching and prevent context drift across multi-turn sessions.
 - **Grounded Responses & Safe Refusals**: Supported turns return citation-backed answers (`[1]`, `[2]`), while out-of-domain or under-supported follow-ups trigger guardrail refusals.
 
+## 📤 Uploading and Indexing Documents at Runtime
+
+Start the API from the repository root:
+
+```bash
+uvicorn src.api:app --reload --port 8000
+```
+
+Upload a supported `.txt`, `.md`, `.pdf`, `.html`, or `.htm` document. The API stores it under `data/uploads/` with a generated safe filename, extracts and cleans its text, chunks it, embeds every chunk, and appends the vectors to the running RAG engine without a restart:
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/upload" \
+	-F "file=@data/new_service_notice.txt"
+```
+
+The response reports `chunks_indexed`, `vector_dimensions`, and `index_status: "searchable immediately"`. Query the new material through the existing `/api/v1/query` endpoint. Empty files return `400`, unsupported extensions return `400`, files over 10 MB return `413`, unreadable documents return `422`, and embedding/indexing failures return `502`.
+
+See [docs/upload_sample_run.md](docs/upload_sample_run.md) for a reproducible request, indexing summary, and follow-up query evidence.
+
 ---
 
 ## 🚀 Team Workflow & Guidelines
