@@ -131,3 +131,71 @@
 2026-09-08 13:40:50,792 [INFO] ================================================================================
 2026-09-08 13:40:50,792 [INFO] CONVERSATIONAL RAG DEMO COMPLETED. Log saved to outputs\conversational_rag_demo.log
 2026-09-08 13:40:50,792 [INFO] ================================================================================
+2026-09-09 14:45:45,431 [INFO] Generating live vector embeddings for 3 corpus chunks...
+2026-09-09 14:45:51,168 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:45:51,352 [INFO] Successfully generated embeddings (1536 dims).
+2026-09-09 14:45:51,353 [INFO] ================================================================================
+2026-09-09 14:45:51,353 [INFO] STARTING CONVERSATIONAL RAG & QUERY REWRITING DEMO
+2026-09-09 14:45:51,353 [INFO] Model: openai/gpt-4o-mini | Max History Turns: 6
+2026-09-09 14:45:51,353 [INFO] ================================================================================
+2026-09-09 14:45:51,353 [INFO] 
+================================================================================
+2026-09-09 14:45:51,353 [INFO] --- MULTI-TURN DIALOGUE TURN #1 ---
+2026-09-09 14:45:51,353 [INFO] User Original Question: 'What is the diagnostic troubleshooting procedure for DTC P0300 on 2023 SUV Model X?'
+2026-09-09 14:45:53,123 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:45:55,742 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:45:56,169 [INFO]   Rewritten Standalone Query: 'What is the diagnostic troubleshooting procedure for DTC P0300 on 2023 SUV Model X?'
+2026-09-09 14:45:56,169 [INFO]   Retrieval Status: answered | Top Score: 0.5635
+2026-09-09 14:45:56,169 [INFO]   Sources Used: ['recall_report.html', 'sample_manual.txt']
+2026-09-09 14:45:56,169 [INFO]   Assistant Response:
+    "I do not have enough information."
+2026-09-09 14:45:56,169 [INFO] 
+================================================================================
+2026-09-09 14:45:56,169 [INFO] --- MULTI-TURN DIALOGUE TURN #2 ---
+2026-09-09 14:45:56,169 [INFO] User Original Question: 'What connector should I inspect for misfire issues?'
+2026-09-09 14:45:59,291 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:00,979 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:03,286 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:04,334 [INFO]   Rewritten Standalone Query: 'What connector should I inspect for misfire issues related to DTC P0300 on a 2023 SUV Model X?'
+2026-09-09 14:46:04,334 [INFO]   Retrieval Status: answered | Top Score: 0.5751
+2026-09-09 14:46:04,334 [INFO]   Sources Used: ['recall_report.html', 'sample_manual.txt', 'tsb_notice.md']
+2026-09-09 14:46:04,334 [INFO]   Assistant Response:
+    "You should inspect the engine compartment bulkhead wiring harness connector C102 for misfire issues, as moisture intrusion at this connector can cause pin resistance variance and intermittent misfires [3]."
+2026-09-09 14:46:04,334 [INFO] 
+================================================================================
+2026-09-09 14:46:04,335 [INFO] --- MULTI-TURN DIALOGUE TURN #3 ---
+2026-09-09 14:46:04,335 [INFO] User Original Question: 'What primary resistance specification should it measure?'
+2026-09-09 14:46:06,227 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:07,498 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:09,151 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:09,709 [INFO]   Rewritten Standalone Query: 'What is the primary resistance specification for connector C102 in the engine compartment bulkhead wiring harness?'
+2026-09-09 14:46:09,709 [INFO]   Retrieval Status: answered | Top Score: 0.6036
+2026-09-09 14:46:09,710 [INFO]   Sources Used: ['tsb_notice.md']
+2026-09-09 14:46:09,710 [INFO]   Assistant Response:
+    "I do not have enough information."
+2026-09-09 14:46:09,710 [INFO] 
+================================================================================
+2026-09-09 14:46:09,710 [INFO] --- MULTI-TURN DIALOGUE TURN #4 ---
+2026-09-09 14:46:09,710 [INFO] User Original Question: 'What is the refund policy for customer sales invoice #8891?'
+2026-09-09 14:46:12,239 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:14,937 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:14,939 [INFO]   Rewritten Standalone Query: 'What is the refund policy for customer sales invoice #8891?'
+2026-09-09 14:46:14,939 [INFO]   Retrieval Status: refused_weak_context | Top Score: 0.2265
+2026-09-09 14:46:14,939 [INFO]   Sources Used: []
+2026-09-09 14:46:14,940 [INFO]   Assistant Response:
+    "I don't have enough reliable context in the service manuals to answer that."
+2026-09-09 14:46:14,940 [INFO] 
+================================================================================
+2026-09-09 14:46:14,940 [INFO] FINAL CONVERSATION HISTORY OBJECT (8 Turns Recorded)
+2026-09-09 14:46:14,940 [INFO] ================================================================================
+2026-09-09 14:46:14,940 [INFO] Turn #1 [USER]: What is the diagnostic troubleshooting procedure for DTC P0300 on 2023 SUV Model X?
+2026-09-09 14:46:14,940 [INFO] Turn #2 [ASSISTANT]: I do not have enough information.
+2026-09-09 14:46:14,940 [INFO] Turn #3 [USER]: What connector should I inspect for misfire issues?
+2026-09-09 14:46:14,940 [INFO] Turn #4 [ASSISTANT]: You should inspect the engine compartment bulkhead wiring harness connector C102 for misfire issues,
+2026-09-09 14:46:14,940 [INFO] Turn #5 [USER]: What primary resistance specification should it measure?
+2026-09-09 14:46:14,940 [INFO] Turn #6 [ASSISTANT]: I do not have enough information.
+2026-09-09 14:46:14,940 [INFO] Turn #7 [USER]: What is the refund policy for customer sales invoice #8891?
+2026-09-09 14:46:14,940 [INFO] Turn #8 [ASSISTANT]: I don't have enough reliable context in the service manuals to answer that.
+2026-09-09 14:46:14,940 [INFO] ================================================================================
+2026-09-09 14:46:14,940 [INFO] CONVERSATIONAL RAG DEMO COMPLETED. Log saved to outputs\conversational_rag_demo.log
+2026-09-09 14:46:14,940 [INFO] ================================================================================

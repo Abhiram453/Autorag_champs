@@ -31,3 +31,118 @@ I don't have enough information in the provided context.
 ================================================================================
 CITATION DEMO COMPLETED. Log saved to outputs/citation_generation_demo.log
 ================================================================================
+2026-09-09 14:46:16,077 [INFO] Generating live vector embeddings for 3 corpus chunks...
+2026-09-09 14:46:19,265 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:19,348 [INFO] Successfully generated embeddings (1536 dims).
+2026-09-09 14:46:19,348 [INFO] ================================================================================
+2026-09-09 14:46:19,348 [INFO] STARTING RETRIEVAL QUALITY GUARDRAILS & HALLUCINATION PREVENTION DEMO
+2026-09-09 14:46:19,348 [INFO] Model: openai/gpt-4o-mini | Min Top Score Threshold: 0.70
+2026-09-09 14:46:19,348 [INFO] ================================================================================
+2026-09-09 14:46:19,348 [INFO] 
+--- [CASE-1] Answerable Query (Strong Context) ---
+2026-09-09 14:46:19,348 [INFO] Question: 'What is the primary resistance specification for Bank 1 ignition coils on DTC P0300?'
+2026-09-09 14:46:20,080 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:21,707 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:22,007 [INFO]   Status: answered
+2026-09-09 14:46:22,007 [INFO]   Top Similarity Score: 0.7673
+2026-09-09 14:46:22,007 [INFO]   Sources Used: ['sample_manual.txt']
+2026-09-09 14:46:22,007 [INFO]   Final Output Answer:
+    "The primary resistance specification for Bank 1 ignition coils on DTC P0300 is 0.4 to 0.6 ohms across terminals 1 and 2 [1]."
+2026-09-09 14:46:22,007 [INFO] ------------------------------------------------------------
+2026-09-09 14:46:22,007 [INFO] 
+--- [CASE-2] Unanswerable / Out-of-Scope Query (No Context) ---
+2026-09-09 14:46:22,007 [INFO] Question: 'What is the refund policy for a customer sales invoice not in this repair manual?'
+2026-09-09 14:46:22,706 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:22,708 [WARNING] ⚠️ Guardrail Triggered! Context too weak for query 'What is the refund policy for a customer sales invoice not in this repair manual?' (Top Score: 0.3194 < Threshold 0.70). Halting generation.
+2026-09-09 14:46:22,709 [INFO]   Status: refused_weak_context
+2026-09-09 14:46:22,709 [INFO]   Top Similarity Score: 0.3194
+2026-09-09 14:46:22,709 [INFO]   Sources Used: []
+2026-09-09 14:46:22,709 [INFO]   Final Output Answer:
+    "I don't have enough reliable context to answer that."
+2026-09-09 14:46:22,709 [INFO] ------------------------------------------------------------
+2026-09-09 14:46:22,709 [INFO] 
+--- [CASE-3] Low-Similarity Edge Case Query (Weak Context) ---
+2026-09-09 14:46:22,709 [INFO] Question: 'How do I fix generic noise coming from somewhere under the vehicle frame?'
+2026-09-09 14:46:24,070 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+2026-09-09 14:46:24,076 [WARNING] ⚠️ Guardrail Triggered! Context too weak for query 'How do I fix generic noise coming from somewhere under the vehicle frame?' (Top Score: 0.3797 < Threshold 0.70). Halting generation.
+2026-09-09 14:46:24,076 [INFO]   Status: refused_weak_context
+2026-09-09 14:46:24,076 [INFO]   Top Similarity Score: 0.3797
+2026-09-09 14:46:24,076 [INFO]   Sources Used: []
+2026-09-09 14:46:24,076 [INFO]   Final Output Answer:
+    "I don't have enough reliable context to answer that."
+2026-09-09 14:46:24,076 [INFO] ------------------------------------------------------------
+2026-09-09 14:46:24,076 [INFO] ================================================================================
+2026-09-09 14:46:24,076 [INFO] GUARDRAILS DEMO COMPLETED. Log saved to outputs\guardrails_demo.log
+2026-09-09 14:46:24,076 [INFO] ================================================================================
+2026-09-09 14:46:25,079 [INFO] ================================================================================
+2026-09-09 14:46:25,079 [INFO] STARTING GROUNDED GENERATION & CITATION ATTRIBUTION DEMO
+2026-09-09 14:46:25,079 [INFO] Model: openai/gpt-4o-mini
+2026-09-09 14:46:25,079 [INFO] ================================================================================
+2026-09-09 14:46:25,079 [INFO] 
+--- DEMO 1: Valid Automotive Query with Sufficient Context ---
+2026-09-09 14:46:25,079 [INFO] Question: 'What is the primary resistance spec for Bank 1 coils and what action is required for connector C102?'
+2026-09-09 14:46:43,684 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 14:46:44,114 [INFO] 
+[Generated Answer]
+2026-09-09 14:46:44,114 [INFO] The primary resistance specification for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2 [1]. For connector C102, the action required is to inspect the connector and apply dielectric grease to the seals prior to connector mating [2].
+2026-09-09 14:46:44,114 [INFO] 
+[Citation Map Details]
+2026-09-09 14:46:44,114 [INFO]   Marker [1] -> Source: sample_manual.txt | Section: Ignition Diagnostics
+2026-09-09 14:46:44,115 [INFO]     Raw Text: 'DTC P0300 indicates a random misfire event. Inspect Bank 1 ignition coils. Primary resistance specification must measure 0.4 to 0.6 ohms across terminals 1 and 2.'
+2026-09-09 14:46:44,115 [INFO]   Marker [2] -> Source: tsb_notice.md | Section: Wiring Harness
+2026-09-09 14:46:44,115 [INFO]     Raw Text: 'Technical Service Bulletin TSB-22-112: Inspect connector C102 on right bulkhead. Apply dielectric grease to seals prior to connector mating.'
+2026-09-09 14:46:44,115 [INFO] 
+[Citation Verification Analysis]
+2026-09-09 14:46:44,115 [INFO]   ✅ [1] -> Source: sample_manual.txt (Chunk: chunk_mnl_001)
+2026-09-09 14:46:44,115 [INFO]   ✅ [2] -> Source: tsb_notice.md (Chunk: chunk_tsb_112)
+2026-09-09 14:46:44,115 [INFO] 
+================================================================================
+2026-09-09 14:46:44,115 [INFO] --- DEMO 2: Out-of-Scope Query with Insufficient Evidence ---
+2026-09-09 14:46:44,115 [INFO] Question: 'What is the refund policy for customer sales invoice #8891?'
+2026-09-09 14:47:13,602 [INFO] Retrying request to /chat/completions in 0.465195 seconds
+2026-09-09 14:47:24,095 [INFO] Retrying request to /chat/completions in 0.891801 seconds
+2026-09-09 14:47:35,011 [ERROR] Failed to generate cited answer for question 'What is the refund policy for customer sales invoice #8891?': Request timed out.
+2026-09-09 14:47:35,012 [INFO] 
+[Generated Answer]
+2026-09-09 14:47:35,012 [INFO] Error generating answer: Request timed out.
+2026-09-09 14:47:35,012 [INFO] 
+[Citation Verification Analysis]
+2026-09-09 14:47:35,012 [INFO]   Status: VALID_REFUSAL | Correctly refused out-of-scope question without fabricating citations.
+2026-09-09 14:47:35,012 [INFO] ================================================================================
+2026-09-09 14:47:35,012 [INFO] CITATION DEMO COMPLETED. Log saved to outputs\citation_generation_demo.log
+2026-09-09 14:47:35,012 [INFO] ================================================================================
+2026-09-09 15:14:32,965 [INFO] ================================================================================
+2026-09-09 15:14:32,968 [INFO] STARTING GROUNDED GENERATION & CITATION ATTRIBUTION DEMO
+2026-09-09 15:14:32,969 [INFO] Model: openai/gpt-4o-mini
+2026-09-09 15:14:32,969 [INFO] ================================================================================
+2026-09-09 15:14:32,969 [INFO] 
+--- DEMO 1: Valid Automotive Query with Sufficient Context ---
+2026-09-09 15:14:32,969 [INFO] Question: 'What is the primary resistance spec for Bank 1 coils and what action is required for connector C102?'
+2026-09-09 15:14:35,965 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 15:14:37,113 [INFO] 
+[Generated Answer]
+2026-09-09 15:14:37,114 [INFO] The primary resistance specification for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2 [1]. For connector C102, the required action is to inspect the connector and apply dielectric grease to the seals prior to connector mating [2].
+2026-09-09 15:14:37,114 [INFO] 
+[Citation Map Details]
+2026-09-09 15:14:37,114 [INFO]   Marker [1] -> Source: sample_manual.txt | Section: Ignition Diagnostics
+2026-09-09 15:14:37,114 [INFO]     Raw Text: 'DTC P0300 indicates a random misfire event. Inspect Bank 1 ignition coils. Primary resistance specification must measure 0.4 to 0.6 ohms across terminals 1 and 2.'
+2026-09-09 15:14:37,114 [INFO]   Marker [2] -> Source: tsb_notice.md | Section: Wiring Harness
+2026-09-09 15:14:37,114 [INFO]     Raw Text: 'Technical Service Bulletin TSB-22-112: Inspect connector C102 on right bulkhead. Apply dielectric grease to seals prior to connector mating.'
+2026-09-09 15:14:37,114 [INFO] 
+[Citation Verification Analysis]
+2026-09-09 15:14:37,114 [INFO]   ✅ [1] -> Source: sample_manual.txt (Chunk: chunk_mnl_001)
+2026-09-09 15:14:37,114 [INFO]   ✅ [2] -> Source: tsb_notice.md (Chunk: chunk_tsb_112)
+2026-09-09 15:14:37,114 [INFO] 
+================================================================================
+2026-09-09 15:14:37,114 [INFO] --- DEMO 2: Out-of-Scope Query with Insufficient Evidence ---
+2026-09-09 15:14:37,114 [INFO] Question: 'What is the refund policy for customer sales invoice #8891?'
+2026-09-09 15:14:38,048 [INFO] HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-09 15:14:38,135 [INFO] 
+[Generated Answer]
+2026-09-09 15:14:38,135 [INFO] I don't have enough information in the provided context.
+2026-09-09 15:14:38,136 [INFO] 
+[Citation Verification Analysis]
+2026-09-09 15:14:38,136 [INFO]   Status: VALID_REFUSAL | Correctly refused out-of-scope question without fabricating citations.
+2026-09-09 15:14:38,136 [INFO] ================================================================================
+2026-09-09 15:14:38,136 [INFO] CITATION DEMO COMPLETED. Log saved to outputs\citation_generation_demo.log
+2026-09-09 15:14:38,136 [INFO] ================================================================================
