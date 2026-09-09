@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Automotive - Service Platform</title>
+  <meta name="description" content="Aura Automotive Multi-Portal RAG Platform: Diagnostic Hub, Command Center, Knowledge Base, and Global Compliance Audit.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar" id="app-sidebar">
+      <div>
+        <div class="brand-wrapper">
+          <div class="brand-icon">⚙️</div>
+          <div class="brand-text">Aura<br>Automotive</div>
+        </div>
+        <div class="brand-subtext">Service Platform</div>
+
+        <button class="btn-start-session" id="btn-start-session">
+          <span>▶</span> Start Session
+        </button>
+
+        <nav class="nav-menu">
+          <a class="nav-item active" id="nav-diagnostic-hub" data-target="view-diagnostic-hub">
+            <span class="nav-icon">🔧</span>
+            <span>Diagnostic Hub</span>
+          </a>
+          <a class="nav-item" id="nav-command-center" data-target="view-command-center">
+            <span class="nav-icon">📊</span>
+            <span>Command Center</span>
+          </a>
+          <a class="nav-item" id="nav-knowledge-base" data-target="view-knowledge-base">
+            <span class="nav-icon">📚</span>
+            <span>Knowledge Base</span>
+          </a>
+          <a class="nav-item" id="nav-audit-panel" data-target="view-audit-panel">
+            <span class="nav-icon">📋</span>
+            <span>Audit Panel</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="bottom-nav-group">
+          <a class="nav-item" id="nav-settings">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+          <a class="nav-item" id="nav-support">
+            <span class="nav-icon">❓</span>
+            <span>Support</span>
+          </a>
+        </div>
+
+        <!-- User Role Profile Pill & Switcher Trigger -->
+        <div class="user-profile-pill" id="user-profile-trigger" title="Click to switch user role/portal">
+          <div class="user-avatar-img" id="user-avatar-display">JD</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name-display">J. Doe</div>
+            <div class="user-role-badge" id="user-role-display">MANAGER</div>
+          </div>
+          <span style="font-size: 11px; color: var(--text-muted);">⇄</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+      <!-- Mobile Topbar with Hamburger -->
+      <div class="mobile-topbar">
+        <div style="font-weight: 800; font-size: 16px;">⚙️ Aura Automotive</div>
+        <button class="hamburger-btn" id="btn-mobile-menu">☰</button>
+      </div>
+
+      <!-- ===================================================================
+           VIEW 1: TECHNICIAN - DIAGNOSTIC HUB
+           =================================================================== -->
+      <section class="portal-view active" id="view-diagnostic-hub">
+        
+        <!-- Top VIN & Vehicle Context Bar -->
+        <div class="hub-top-bar">
+          <div class="vin-search-wrapper">
+            <span class="vin-search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="vin-search-input" 
+              id="vin-search-input"
+              value="1G1RC6E4XGU123456" 
+              placeholder="Enter VIN or Model (e.g., JTMX...)"
+            >
+            <span class="vin-qr-icon" title="Scan Barcode / QR Code">📷</span>
+          </div>
+
+          <div class="vehicle-context-badge">
+            <span>🚘 2023 SUV Model X</span>
+            <span class="vin-number-tag">VIN: 1G1RC6E4XGU123456</span>
+            <span class="powertrain-tag">AWD Hybrid</span>
+          </div>
+        </div>
+
+        <!-- Split Diagnostic Workspace -->
+        <div class="diagnostic-workspace">
+          
+          <!-- Left Panel: RAG Diagnostic Assistant Chat -->
+          <div class="diagnostic-assistant-panel">
+            <div class="panel-title-bar">
+              <span>🤖</span> Diagnostic Assistant
+              <span id="backend-status-pill" style="margin-left: auto; font-size: 11px; font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 4px;">
+                ● RAG Online
+              </span>
+            </div>
+
+            <!-- Chat Stream Scroll -->
+            <div class="chat-history-scroll" id="hub-chat-stream">
+              
+              <!-- Bot Initial Message -->
+              <div class="chat-bubble-row bot">
+                <div class="chat-avatar">AI</div>
+                <div class="chat-bubble-content">
+                  Vehicle loaded. Code <strong>P0300</strong> (Random/Multiple Cylinder Misfire Detected) reported. Would you like me to pull up the diagnostic flow for the ignition coils?
+                </div>
+              </div>
+
+              <!-- Technician User Response -->
+              <div class="chat-bubble-row user">
+                <div class="chat-avatar user-avatar">Tech</div>
+                <div class="chat-bubble-content">
+                  Yes, focus on Bank 1.
+                </div>
+              </div>
+
+              <!-- Bot Response with Specs Table -->
+              <div class="chat-bubble-row bot" id="initial-bot-response">
+                <div class="chat-avatar">AI</div>
+                <div class="chat-bubble-content">
+                  Loading <strong>Bank 1 Ignition Coil</strong> specs. I've populated the Instruction Viewer on the right.<br><br>
+                  <em>Note: Check the wiring harness connector C102 for corrosion, a known issue on this VIN range.</em>
+                  <table class="chat-specs-table">
+                    <thead>
+                      <tr><th>Parameter</th><th>Specification</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Primary Resistance</td><td>0.4 - 0.6 Ω</td></tr>
+                      <tr><td>Secondary Resistance</td><td>5.0 - 7.0 kΩ</td></tr>
+                    </tbody>
+                  </table>
+                  <div style="margin-top: 10px; font-size: 11.5px; color: var(--text-muted);">
+                    📚 Sources: <code>sample_manual.txt (chunk_mnl_001)</code>, <code>tsb_notice.md (chunk_tsb_112)</code>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Chat Input Dock -->
+            <div class="chat-input-dock">
+              <input 
+                type="text" 
+                class="chat-input-field" 
+                id="hub-query-input"
+                placeholder="Ask a technical question (e.g., 'What is primary resistance?') ..." 
+              />
+              <button class="chat-send-btn" id="hub-query-submit">➔</button>
+            </div>
+          </div>
+
+          <!-- Right Panel: Step-by-Step Repair Instruction Viewer -->
+          <div class="instruction-viewer-panel">
+            <div class="viewer-header-bar">
+              <span>⚡ Ignition Coil Replacement - Bank 1</span>
+              <span class="time-badge">Est. Time: 45 min</span>
+            </div>
+
+            <div class="steps-list-scroll">
+              
+              <!-- Step 1 -->
+              <div class="step-item-card" id="repair-step-1">
+                <div class="step-header-line">
+                  <input type="checkbox" class="step-checkbox" id="check-step-1" checked>
+                  <div class="step-number-box">1</div>
+                  <span>Disconnect Negative Battery Cable</span>
+                </div>
+                <div class="step-body-text">
+                  Always disconnect power before servicing electrical components to prevent shorts and ECU damage.
+                </div>
+                <div class="step-warning-box">
+                  <span>⚠️</span>
+                  <span>Wait 5 minutes after disconnect before working on the ignition system to allow capacitors to discharge.</span>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="step-item-card" id="repair-step-2">
+                <div class="step-header-line">
+                  <input type="checkbox" class="step-checkbox" id="check-step-2" checked>
+                  <div class="step-number-box">2</div>
+                  <span>Remove Engine Cover</span>
+                </div>
+                <div class="step-body-text">
+                  Remove the 4 decorative bolts (10mm) securing the top plastic engine cover.
+                </div>
+                <div class="step-diagram-preview">
+                  <div style="font-weight: 600; color: #334155;">🖼 Engine Bay Diagram (10mm Bolt Locations)</div>
+                  <div style="font-size: 11px; color: #64748b;">Torque spec: 9-11 Nm upon reassembly.</div>
+                </div>
+              </div>
+
+              <!-- Step 3 (Active Step) -->
+              <div class="step-item-card active-step" id="repair-step-3">
+                <div class="step-header-line">
+                  <input type="checkbox" class="step-checkbox" id="check-step-3">
+                  <div class="step-number-box">3</div>
+                  <span>Disconnect Ignition Coil Harness (Bank 1)</span>
+                </div>
+                <div class="step-body-text">
+                  Locate coils on the right side of the engine (cylinders 1, 3, 5). Unclip the wiring harness connectors from each coil pack.
+                </div>
+                <div class="step-code-box">
+                  Target Location: Bank 1 (Right Bank / Passenger Side)<br>
+                  Connector ID: C102 (Inspect for corrosion as per AI note)
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Diagnostic Session Bottom Action Bar -->
+        <div class="diagnostic-bottom-bar">
+          <div class="session-badge-text">
+            Diagnostic Session: <strong>SESSION-8A9F</strong>
+          </div>
+          <div class="bottom-action-buttons">
+            <button class="btn-report-unclear" id="btn-report-unclear">
+              <span>⚠️</span> Report Unclear
+            </button>
+            <button class="btn-outdated-guide" id="btn-outdated-guide">
+              <span>🔄</span> Outdated Guide
+            </button>
+            <button class="btn-complete-job" id="btn-complete-job">
+              <span>✓</span> Complete Job
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 2: MANAGER - COMMAND CENTER (Management Oversight)
+           =================================================================== -->
+      <section class="portal-view" id="view-command-center">
+        <div class="oversight-container">
+          
+          <!-- View Header -->
+          <div class="view-header-row">
+            <div>
+              <h1 class="view-title-main">Management Oversight</h1>
+              <p class="view-subtitle">Real-time operational metrics and compliance tracking.</p>
+            </div>
+            <button class="btn-export" id="btn-export-manager">
+              <span>📥</span> Export Data
+            </button>
+          </div>
+
+          <!-- Top Metrics KPI Cards Grid -->
+          <div class="metrics-kpi-grid">
+            
+            <!-- KPI 1: Repairs Completed -->
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-square blue">🔧</div>
+                <div class="kpi-badge-tag green">↗ +12%</div>
+              </div>
+              <div class="kpi-label">Repairs Completed</div>
+              <div class="kpi-number-display" id="metric-repairs-count">1,248</div>
+              <div class="kpi-footer-note">Current month-to-date</div>
+            </div>
+
+            <!-- KPI 2: Open Recalls Addressed -->
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-square red">⚠️</div>
+                <div class="kpi-badge-tag yellow">Priority</div>
+              </div>
+              <div class="kpi-label">Open Recalls Addressed</div>
+              <div class="kpi-number-display">
+                <span id="metric-recalls-pct">78%</span>
+                <span class="kpi-target-text">/ 85% Target</span>
+              </div>
+              <div class="kpi-progress-bar-track">
+                <div class="kpi-progress-bar-fill" style="width: 78%;"></div>
+              </div>
+            </div>
+
+            <!-- KPI 3: Pending Approvals -->
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-square amber">📋</div>
+                <div class="kpi-badge-tag red">Requires Action</div>
+              </div>
+              <div class="kpi-label">Pending Approvals</div>
+              <div class="kpi-number-display" id="metric-approvals-count">42</div>
+              <div class="kpi-footer-note">Est. value: $34,200</div>
+            </div>
+
+          </div>
+
+          <!-- RAG Observability & Query Caching Metrics Strip -->
+          <div class="observability-metrics-section">
+            <div class="observability-header-row">
+              <div class="observability-title">
+                <span>⚡</span> RAG Observability &amp; Query Cache Intelligence
+              </div>
+              <div class="observability-actions">
+                <span id="cache-entries-pill" class="badge-pill-outline">Active Cache: 0 entries</span>
+                <button class="btn-flush-cache" id="btn-clear-query-cache" title="Purge in-memory query cache">
+                  <span>🗑️</span> Clear Cache
+                </button>
+              </div>
+            </div>
+
+            <div class="observability-cards-grid">
+              <div class="obs-card">
+                <div class="obs-card-label">Cache Hit Rate</div>
+                <div class="obs-card-val" id="obs-hit-rate">0.0%</div>
+                <div class="obs-card-sub" id="obs-hit-count">0 hits / 0 requests</div>
+              </div>
+
+              <div class="obs-card">
+                <div class="obs-card-label">Total Cost Spent</div>
+                <div class="obs-card-val" id="obs-cost-spent">$0.000000</div>
+                <div class="obs-card-sub" id="obs-tokens-spent">0 tokens processed</div>
+              </div>
+
+              <div class="obs-card">
+                <div class="obs-card-label">Avg Response Latency</div>
+                <div class="obs-card-val" id="obs-avg-latency">0.0 ms</div>
+                <div class="obs-card-sub" id="obs-latency-sub">Cache speedup active</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Oversight Body: 2 Columns -->
+          <div class="oversight-body-grid">
+            
+            <!-- Left: Recent Activity Feed -->
+            <div class="feed-card-box">
+              <div class="feed-header-line">
+                <div class="feed-title">
+                  <span>⏱</span> Recent Activity Feed
+                </div>
+                <a class="feed-view-all-link">View All ➔</a>
+              </div>
+
+              <div class="activity-timeline">
+                
+                <div class="activity-item">
+                  <div class="activity-dot-icon">🔧</div>
+                  <div class="activity-content">
+                    <div class="activity-meta-top">
+                      <span class="activity-actor-name">Tech. M. Richards</span>
+                      <span class="activity-time">10 mins ago</span>
+                    </div>
+                    <div class="activity-text-desc">
+                      Completed diagnostic sequence on <span class="tag-code">ID-8842</span>. Battery voltage anomalous.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-dot-icon">💬</div>
+                  <div class="activity-content">
+                    <div class="activity-meta-top">
+                      <span class="activity-actor-name">System Alert</span>
+                      <span class="activity-time">45 mins ago</span>
+                    </div>
+                    <div class="activity-text-desc">
+                      Customer feedback report generated for recent brake service.
+                    </div>
+                    <div class="activity-action-row">
+                      <span class="rating-badge">⭐ 4.2 Avg</span>
+                      <button class="review-report-btn">Review Report</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-dot-icon">✓</div>
+                  <div class="activity-content">
+                    <div class="activity-meta-top">
+                      <span class="activity-actor-name">Tech. S. Patel</span>
+                      <span class="activity-time">2 hrs ago</span>
+                    </div>
+                    <div class="activity-text-desc">
+                      Approved parts requisition for <span class="tag-code">RO-2991</span>. Parts expected tomorrow.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right: Compliance Card & Manager Tools -->
+            <div class="right-column-stack">
+              
+              <!-- Dark Compliance Card -->
+              <div class="compliance-dark-card">
+                <div class="compliance-tag-pill">
+                  <span>🛡️</span> Compliance Required
+                </div>
+                <div class="compliance-card-title">Recall Completion for SUVs</div>
+                <div class="compliance-card-desc">
+                  Mandatory regional report due for Q3 SUV safety recalls. Required by regulatory board.
+                </div>
+                <div class="compliance-progress-box">
+                  <div class="compliance-progress-labels">
+                    <span>Data Collation</span>
+                    <span>92%</span>
+                  </div>
+                  <div class="kpi-progress-bar-track" style="background: rgba(255,255,255,0.2);">
+                    <div class="kpi-progress-bar-fill" style="width: 92%; background: #38bdf8;"></div>
+                  </div>
+                </div>
+                <button class="btn-request-report" id="btn-request-compliance-report">
+                  <span>📑</span> Request Report
+                </button>
+              </div>
+
+              <!-- Manager Tools List -->
+              <div class="manager-tools-card">
+                <div class="tools-header-label">Manager Tools</div>
+                <div class="tool-item-row">
+                  <div class="tool-left-info">
+                    <span>👥</span>
+                    <span>Staff Allocation</span>
+                  </div>
+                  <span>➔</span>
+                </div>
+                <div class="tool-item-row">
+                  <div class="tool-left-info">
+                    <span>📦</span>
+                    <span>Inventory Audit</span>
+                  </div>
+                  <span>➔</span>
+                </div>
+                <div class="tool-item-row">
+                  <div class="tool-left-info">
+                    <span>⚠️</span>
+                    <span>Critical Alerts</span>
+                  </div>
+                  <div class="tool-alert-badge">3</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           VIEW 3: ADMIN - KNOWLEDGE BASE MANAGEMENT
+           =================================================================== -->
+      <section class="portal-view" id="view-knowledge-base">
+        <div class="oversight-container">
+          
+          <div class="view-header-row">
+            <div>
+              <h1 class="view-title-main">Knowledge Base Management</h1>
+              <p class="view-subtitle">Centralized document portal for technical manuals and service notices.</p>
+            </div>
+          </div>
+
+          <div class="kb-layout-grid">
+            
+            <!-- Left: Upload & Tagging -->
+            <div>
+              <!-- Drag and Drop Box -->
+              <div class="upload-dropzone-card">
+                <div class="card-title-header">
+                  <span>Upload Document</span>
+                  <span>📤</span>
+                </div>
+                <div class="dropzone-dashed-box" id="dropzone-box">
+                  <div class="dropzone-icon">☁️</div>
+                  <div class="dropzone-text">Drag and drop files here</div>
+                  <div class="dropzone-hint">PDF, DOCX, ZIP up to 50MB</div>
+                  <button class="btn-browse-files">Browse Files</button>
+                </div>
+              </div>
+
+              <!-- Metadata Tagging Form -->
+              <div class="metadata-tagging-card">
+                <div class="card-title-header">
+                  <span>Metadata Tagging</span>
+                  <span>🏷️</span>
+                </div>
+
+                <form id="metadata-tagging-form">
+                  <div class="form-group">
+                    <label>Vehicle Model</label>
+                    <select id="tag-vehicle-model">
+                      <option value="">Select Model...</option>
+                      <option value="Series X (SUV Model X)" selected>Series X (SUV Model X)</option>
+                      <option value="Series Y">Series Y</option>
+                      <option value="Comm V1">Comm V1</option>
+                    </select>
+                  </div>
+
+                  <div class="form-row-2col">
+                    <div class="form-group">
+                      <label>Model Year</label>
+                      <input type="text" id="tag-model-year" placeholder="YYYY" value="2023">
+                    </div>
+                    <div class="form-group">
+                      <label>Region</label>
+                      <select id="tag-region">
+                        <option value="Global">Global</option>
+                        <option value="NA">North America (NA)</option>
+                        <option value="EMEA">EMEA</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Document Version</label>
+                    <input type="text" id="tag-doc-version" placeholder="e.g. v2.1.0" value="v2.4.1">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group-row">
+                      <label class="radio-label">
+                        <input type="radio" name="doc_status" value="Draft"> Draft
+                      </label>
+                      <label class="radio-label">
+                        <input type="radio" name="doc_status" value="Published" checked> Published
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn-save-metadata">Save Metadata & Upload</button>
+                </form>
+              </div>
+
+            </div>
+
+            <!-- Right: Document Library Table -->
+            <div class="document-library-card">
+              <div class="library-top-bar">
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 700; color: var(--text-title);">Document Library</h3>
+                  <p style="font-size: 12.5px; color: var(--text-muted);">Manage existing manuals and notices.</p>
+                </div>
+                <div class="search-filter-box">
+                  <input type="text" class="table-search-input" id="kb-search-input" placeholder="Search documents...">
+                  <button class="btn-filter-icon">⚙</button>
+                </div>
+              </div>
+
+              <table class="data-table" id="kb-table">
+                <thead>
+                  <tr>
+                    <th>Doc ID</th>
+                    <th>Title</th>
+                    <th>Model / Region</th>
+                    <th>Version</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="kb-table-body">
+                  <tr>
+                    <td><code>MNL-24-001</code></td>
+                    <td>
+                      <div class="doc-title-cell">
+                        <span>📕</span>
+                        <span>Series X Service Manual</span>
+                      </div>
+                    </td>
+                    <td>Series X / Global</td>
+                    <td>v2.4.1</td>
+                    <td><span class="status-badge published">PUBLISHED</span></td>
+                  </tr>
+                  <tr>
+                    <td><code>RCL-23-088B</code></td>
+                    <td>
+                      <div class="doc-title-cell">
+                        <span>📄</span>
+                        <span>Battery Control Module Update</span>
+                      </div>
+                    </td>
+                    <td>Series Y / NA</td>
+                    <td>v1.0.0</td>
+                    <td><span class="status-badge draft">DRAFT</span></td>
+                  </tr>
+                  <tr>
+                    <td><code>TSB-22-112</code></td>
+                    <td>
+                      <div class="doc-title-cell">
+                        <span>📁</span>
+                        <span>Suspension Torque Specs</span>
+                      </div>
+                    </td>
+                    <td>Comm V1 / EMEA</td>
+                    <td>v3.1.2</td>
+                    <td><span class="status-badge archived">ARCHIVED</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="table-pagination-footer">
+                <div>Showing 1-3 of 142 documents</div>
+                <div class="pagination-btns">
+                  <button class="btn-page">Prev</button>
+                  <button class="btn-page">Next</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           VIEW 4: ADMIN - GLOBAL COMPLIANCE CONTROL (Audit Panel)
+           =================================================================== -->
+      <section class="portal-view" id="view-audit-panel">
+        <div class="oversight-container">
+          
+          <div class="view-header-row">
+            <div>
+              <h1 class="view-title-main">Global Compliance Control</h1>
+              <p class="view-subtitle">Manage publication workflows, review documentation updates, and monitor system-wide compliance metrics.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn-export" id="btn-export-audit">
+                <span>📥</span> Export Report
+              </button>
+              <button class="btn-bulk-publish" id="btn-bulk-publish">
+                <span>📡</span> Bulk Publish
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Grid: Validate Updates & Publication Timeline -->
+          <div class="audit-top-grid">
+            
+            <!-- Left: Validate Updates -->
+            <div class="validate-updates-card">
+              <div class="card-title-header">
+                <span>Validate Updates</span>
+                <span class="pending-review-badge">3 Pending Review</span>
+              </div>
+
+              <!-- Update 1 -->
+              <div class="update-item-box">
+                <div class="update-box-title-row">
+                  <span>🚗</span>
+                  <div class="update-box-title">EV Battery Array Diagnostic Guide</div>
+                  <span class="update-doc-tag">DOC-2991-EV &bull; v2.4 (Draft)</span>
+                </div>
+                <div class="update-meta-grid">
+                  <div>
+                    <span>Author</span>
+                    <strong>Sarah Jenkins (Lead Tech)</strong>
+                  </div>
+                  <div>
+                    <span>Changes</span>
+                    <strong>Updated thermal tolerance parameters for cells 12-48.</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Update 2 -->
+              <div class="update-item-box">
+                <div class="update-box-title-row">
+                  <span>⚙️</span>
+                  <div class="update-box-title">Hydraulic Brake Bleed Protocol</div>
+                  <span class="update-doc-tag">PRT-882-BRK &bull; v1.1 (Draft)</span>
+                </div>
+                <div class="update-meta-grid">
+                  <div>
+                    <span>Author</span>
+                    <strong>Marcus Vance (Systems)</strong>
+                  </div>
+                  <div>
+                    <span>Changes</span>
+                    <strong>Added torque specs for newer caliper models.</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right: Publication Timeline -->
+            <div class="timeline-card">
+              <div class="card-title-header">
+                <span>Publication Timeline</span>
+                <span>⏱</span>
+              </div>
+
+              <div class="timeline-items-list">
+                
+                <div class="timeline-item-entry">
+                  <div class="timeline-icon-bubble">✓</div>
+                  <div class="timeline-entry-content">
+                    <div class="timeline-entry-title">Transmission Overhaul Guide Published</div>
+                    <div class="timeline-entry-time">Today, 09:42 AM &bull; Approved by Admin</div>
+                    <div class="timeline-id-box">ID: PUB-TRNS-092 | Vol: 4.2</div>
+                  </div>
+                </div>
+
+                <div class="timeline-item-entry">
+                  <div class="timeline-icon-bubble gray">📄</div>
+                  <div class="timeline-entry-content">
+                    <div class="timeline-entry-title">Draft: HVAC Refrigerant Update</div>
+                    <div class="timeline-entry-time">Yesterday, 14:15 PM &bull; Submitted by L. Chen</div>
+                  </div>
+                </div>
+
+                <div class="timeline-item-entry">
+                  <div class="timeline-icon-bubble red">✕</div>
+                  <div class="timeline-entry-content">
+                    <div class="timeline-entry-title">Rejected: Suspension Torque Specs</div>
+                    <div class="timeline-entry-time">Oct 24, 11:30 AM &bull; Rejected by Admin</div>
+                    <div class="timeline-rejection-reason">Reason: Missing calibration data for heavy-duty variants.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom: Comprehensive Audit Log Table -->
+          <div class="audit-table-card">
+            <div class="library-top-bar">
+              <div>
+                <h3 style="font-size: 16px; font-weight: 700; color: var(--text-title);">Comprehensive Audit Log</h3>
+              </div>
+              <div class="search-filter-box">
+                <input type="text" class="table-search-input" id="audit-search-input" placeholder="Search logs...">
+                <button class="btn-filter-icon">⚙</button>
+              </div>
+            </div>
+
+            <table class="data-table" id="audit-table">
+              <thead>
+                <tr>
+                  <th>DOCUMENT ID</th>
+                  <th>ACTION</th>
+                  <th>OPERATOR</th>
+                  <th>TIMESTAMP</th>
+                  <th>TECH FEEDBACK TREND</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>TRNS-092</code></td>
+                  <td><span class="status-badge published">✓ Published</span></td>
+                  <td>Admin (M. Davis)</td>
+                  <td>2023-10-26 09:42:11</td>
+                  <td><span class="feedback-trend-pill positive">📈 98% Positive</span></td>
+                </tr>
+                <tr>
+                  <td><code>HVAC-441</code></td>
+                  <td><span class="status-badge draft">📤 Uploaded Draft</span></td>
+                  <td>L. Chen</td>
+                  <td>2023-10-25 14:15:00</td>
+                  <td><span class="feedback-trend-pill neutral">Pending Review</span></td>
+                </tr>
+                <tr>
+                  <td><code>SUSP-201</code></td>
+                  <td><span class="status-badge" style="background:#fee2e2; color:#dc2626;">✕ Rejected</span></td>
+                  <td>Admin (M. Davis)</td>
+                  <td>2023-10-24 11:30:45</td>
+                  <td><span class="feedback-trend-pill negative">📉 Issues Flagged</span></td>
+                </tr>
+                <tr>
+                  <td><code>ELEC-088</code></td>
+                  <td><span class="status-badge published">✓ Published</span></td>
+                  <td>Admin (J. Smith)</td>
+                  <td>2023-10-22 16:05:22</td>
+                  <td><span class="feedback-trend-pill neutral">➔ Stable (No new feedback)</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Role Switcher Modal -->
+  <div class="role-modal-backdrop" id="role-modal">
+    <div class="role-modal-card">
+      <div class="role-modal-title">Switch Persona & Secure Portal</div>
+      <p style="font-size: 13px; color: var(--text-muted);">
+        Select a role to verify access permissions, metrics, and workflows:
+      </p>
+
+      <div class="role-options-list">
+        <div class="role-select-item" data-role="TECHNICIAN" data-name="Tech. M. Richards" data-avatar="TR" data-target="view-diagnostic-hub">
+          <div class="user-avatar-img" style="background:#0284c7;">TR</div>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">Tech. M. Richards</div>
+            <div style="font-size: 11px; color: var(--primary);">TECHNICIAN &bull; Diagnostic Hub</div>
+          </div>
+        </div>
+
+        <div class="role-select-item selected" data-role="MANAGER" data-name="J. Doe" data-avatar="JD" data-target="view-command-center">
+          <div class="user-avatar-img" style="background:#0f172a;">JD</div>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">J. Doe</div>
+            <div style="font-size: 11px; color: var(--primary);">SERVICE MANAGER &bull; Command Center</div>
+          </div>
+        </div>
+
+        <div class="role-select-item" data-role="ADMIN" data-name="Admin M. Davis" data-avatar="MD" data-target="view-audit-panel">
+          <div class="user-avatar-img" style="background:#059669;">MD</div>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">Admin M. Davis</div>
+            <div style="font-size: 11px; color: var(--primary);">COMPLIANCE ADMIN &bull; Audit & Knowledge Base</div>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-close-role-modal" style="margin-top: 6px; padding: 9px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
