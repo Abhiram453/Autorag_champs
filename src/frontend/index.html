@@ -311,6 +311,41 @@
 
           </div>
 
+          <!-- RAG Observability & Query Caching Metrics Strip -->
+          <div class="observability-metrics-section">
+            <div class="observability-header-row">
+              <div class="observability-title">
+                <span>⚡</span> RAG Observability &amp; Query Cache Intelligence
+              </div>
+              <div class="observability-actions">
+                <span id="cache-entries-pill" class="badge-pill-outline">Active Cache: 0 entries</span>
+                <button class="btn-flush-cache" id="btn-clear-query-cache" title="Purge in-memory query cache">
+                  <span>🗑️</span> Clear Cache
+                </button>
+              </div>
+            </div>
+
+            <div class="observability-cards-grid">
+              <div class="obs-card">
+                <div class="obs-card-label">Cache Hit Rate</div>
+                <div class="obs-card-val" id="obs-hit-rate">0.0%</div>
+                <div class="obs-card-sub" id="obs-hit-count">0 hits / 0 requests</div>
+              </div>
+
+              <div class="obs-card">
+                <div class="obs-card-label">Total Cost Spent</div>
+                <div class="obs-card-val" id="obs-cost-spent">$0.000000</div>
+                <div class="obs-card-sub" id="obs-tokens-spent">0 tokens processed</div>
+              </div>
+
+              <div class="obs-card">
+                <div class="obs-card-label">Avg Response Latency</div>
+                <div class="obs-card-val" id="obs-avg-latency">0.0 ms</div>
+                <div class="obs-card-sub" id="obs-latency-sub">Cache speedup active</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Oversight Body: 2 Columns -->
           <div class="oversight-body-grid">
             

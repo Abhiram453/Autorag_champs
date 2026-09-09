@@ -72,6 +72,11 @@ function switchView(targetViewId) {
     appSidebar.classList.remove("open");
   }
 
+  // Refresh observability metrics when viewing manager command center
+  if (targetViewId === "view-command-center") {
+    updateObservabilityMetrics();
+  }
+
   // Auto-scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -203,6 +208,7 @@ async function streamAnswer(question) {
         <span class="accumulated-text"></span><span class="streaming-cursor"></span>
       </div>
       <div class="citations-slot"></div>
+      <div class="usage-slot"></div>
       <div class="error-slot"></div>
     </div>
   `;
@@ -213,6 +219,7 @@ async function streamAnswer(question) {
   const accumulatedTextSpan = botRow.querySelector(".accumulated-text");
   const cursorSpan = botRow.querySelector(".streaming-cursor");
   const citationsSlot = botRow.querySelector(".citations-slot");
+  const usageSlot = botRow.querySelector(".usage-slot");
   const errorSlot = botRow.querySelector(".error-slot");
   const statusHeaderTag = botRow.querySelector(".status-header-tag");
 
@@ -254,13 +261,43 @@ async function streamAnswer(question) {
           if (event.type === "citations") {
             currentSources = event.sources || [];
             citationsSlot.innerHTML = CitationList({ sources: currentSources });
-            statusHeaderTag.innerHTML = `🛡️ Grounded &bull; Citations Verified (${Math.round((event.confidence || 0) * 100)}%)`;
+            const hitLabel = event.cache_hit ? " &bull; ⚡ Cached" : "";
+            statusHeaderTag.innerHTML = `🛡️ Grounded &bull; Citations Verified (${Math.round((event.confidence || 0) * 100)}%)${hitLabel}`;
           }
 
           if (event.type === "token") {
             currentAnswer += event.text;
             accumulatedTextSpan.textContent = currentAnswer;
             botRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+
+          if (event.type === "usage") {
+            const usage = event.usage;
+            if (usage && usageSlot) {
+              if (usage.cache_hit) {
+                usageSlot.innerHTML = `
+                  <div class="chat-usage-badge cached">
+                    <span>⚡ Cached</span>
+                    <span>&bull;</span>
+                    <span>${usage.latency_ms}ms</span>
+                    <span>&bull;</span>
+                    <span>$0.000000</span>
+                  </div>
+                `;
+              } else {
+                usageSlot.innerHTML = `
+                  <div class="chat-usage-badge live">
+                    <span>🧠 Live RAG</span>
+                    <span>&bull;</span>
+                    <span>${usage.latency_ms}ms</span>
+                    <span>&bull;</span>
+                    <span>${usage.total_tokens} tokens</span>
+                    <span>&bull;</span>
+                    <span>$${(usage.estimated_cost || 0).toFixed(6)}</span>
+                  </div>
+                `;
+              }
+            }
           }
 
           if (event.type === "status" && event.status === "refused_weak_context") {
@@ -288,6 +325,8 @@ async function streamAnswer(question) {
       // Update dialogue history
       conversationHistory.push({ role: "user", content: question });
       conversationHistory.push({ role: "assistant", content: currentAnswer });
+      // Update manager command center metrics
+      updateObservabilityMetrics();
     }
 
   } catch (error) {
@@ -505,7 +544,54 @@ if (btnRequestCompliance) {
   });
 }
 
-// --- 6. Backend Connection Health Check ---
+// --- 6. RAG Observability & Query Caching Metrics Manager ---
+
+async function updateObservabilityMetrics() {
+  try {
+    const res = await fetch(`${RAG_API_URL}/metrics/observability`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+    const hitRateEl = document.getElementById("obs-hit-rate");
+    const hitCountEl = document.getElementById("obs-hit-count");
+    const costSpentEl = document.getElementById("obs-cost-spent");
+    const tokensSpentEl = document.getElementById("obs-tokens-spent");
+    const avgLatencyEl = document.getElementById("obs-avg-latency");
+    const latencySubEl = document.getElementById("obs-latency-sub");
+    const cacheEntriesPill = document.getElementById("cache-entries-pill");
+
+    if (hitRateEl) hitRateEl.textContent = `${Math.round(data.cache_hit_rate * 100)}%`;
+    if (hitCountEl) hitCountEl.textContent = `${data.cache_hits} hits / ${data.total_requests} queries`;
+    if (costSpentEl) costSpentEl.textContent = `$${(data.total_estimated_cost || 0).toFixed(6)}`;
+    if (tokensSpentEl) tokensSpentEl.textContent = `${(data.total_tokens_spent || 0).toLocaleString()} tokens processed`;
+    if (avgLatencyEl) avgLatencyEl.textContent = `${(data.average_latency_ms || 0).toFixed(1)} ms`;
+    if (cacheEntriesPill) cacheEntriesPill.textContent = `Active Cache: ${data.active_cache_entries || 0} entries`;
+    if (latencySubEl) {
+      latencySubEl.textContent = data.cache_hits > 0 ? `⚡ ${data.cache_hits} queries served in < 5ms` : "Cache speedup active";
+    }
+  } catch (err) {
+    console.warn("Could not fetch observability metrics:", err);
+  }
+}
+
+// Clear Query Cache button handler
+const btnClearCache = document.getElementById("btn-clear-query-cache");
+if (btnClearCache) {
+  btnClearCache.addEventListener("click", async () => {
+    try {
+      const res = await fetch(`${RAG_API_URL}/cache/clear`, { method: "POST" });
+      if (res.ok) {
+        const result = await res.json();
+        alert(`✓ Query cache purged! (${result.purged_entries} entries removed)`);
+        updateObservabilityMetrics();
+      }
+    } catch (err) {
+      alert("Failed to clear query cache: " + err.message);
+    }
+  });
+}
+
+// --- 7. Backend Connection Health Check ---
 
 async function checkBackendHealth() {
   try {
@@ -538,7 +624,7 @@ function escapeHtml(str) {
 // Initialize on Load
 document.addEventListener("DOMContentLoaded", () => {
   checkBackendHealth();
-  // Default to Manager Command Center as per mockup or Diagnostic Hub
-  // In the first screenshot Command Center is active for Manager J. Doe
+  updateObservabilityMetrics();
+  // Default to Manager Command Center as per mockup
   switchView("view-command-center");
 });

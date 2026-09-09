@@ -14,6 +14,8 @@ import os
 import sys
 import math
 import json
+import time
+import uuid
 import logging
 from typing import List, Dict, Any, Optional
 from pathlib import Path
@@ -29,6 +31,18 @@ from openai import OpenAI
 # Ensure workspace root is in python path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT_DIR))
+
+# Observability, Caching & Cost Tracking
+from src.observability import (
+    get_cached_answer,
+    save_cached_answer,
+    clear_cache,
+    count_tokens,
+    estimate_cost,
+    log_rag_request,
+    summarize_usage,
+    generate_usage_report,
+)
 
 # Configure logging
 os.makedirs("outputs", exist_ok=True)
@@ -72,6 +86,8 @@ class QueryResponse(BaseModel):
     top_score: float
     confidence: float
     status: str  # "answered" | "refused_weak_context" | "generation_error"
+    cache_hit: bool = False
+    usage: Optional[Dict[str, Any]] = None
 
 class StatusResponse(BaseModel):
     status: str
@@ -580,6 +596,7 @@ def query_rag(payload: QueryRequest):
     """
     Main RAG query endpoint.
     Accepts question and optional history, returns grounded answer, retrieved sources, citations, and confidence.
+    Supports SHA-256 query caching, structured observability logging, and token cost tracking.
     """
     cleaned_question = payload.question.strip()
     if not cleaned_question:
@@ -588,11 +605,90 @@ def query_rag(payload: QueryRequest):
             detail="Question cannot be empty or whitespace only."
         )
 
+    start_time = time.time()
+    req_id = f"req_{uuid.uuid4().hex[:10]}"
+    filters = {"k": payload.k or 4}
+
+    # 1. Check Query Cache
+    cached = get_cached_answer(cleaned_question, filters)
+    if cached is not None:
+        latency_ms = round((time.time() - start_time) * 1000.0, 2)
+        cached_result = dict(cached)
+        cached_result["cache_hit"] = True
+        cached_result["usage"] = {
+            "cache_hit": True,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "estimated_cost": 0.0,
+            "latency_ms": latency_ms
+        }
+
+        sources_list = []
+        for s in cached_result.get("sources", []):
+            if isinstance(s, dict):
+                sources_list.append(s.get("source", ""))
+            elif hasattr(s, "source"):
+                sources_list.append(s.source)
+
+        log_rag_request({
+            "request_id": req_id,
+            "question": cleaned_question,
+            "answer": cached_result.get("answer", ""),
+            "sources": sources_list,
+            "cache_hit": True,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "estimated_cost": 0.0,
+            "latency_ms": latency_ms,
+            "status": cached_result.get("status", "answered")
+        })
+        return cached_result
+
+    # 2. Cache Miss: Execute live RAG pipeline
     result = rag_engine.query(
         question=cleaned_question,
         history=payload.history,
         k=payload.k or 4
     )
+    latency_ms = round((time.time() - start_time) * 1000.0, 2)
+
+    # 3. Calculate Token Usage & Cost
+    sources_text = " ".join(s.get("text", "") for s in result.get("sources", []))
+    input_tokens = count_tokens(cleaned_question + " " + sources_text)
+    output_tokens = count_tokens(result.get("answer", ""))
+    cost = estimate_cost(input_tokens, output_tokens)
+
+    usage_data = {
+        "cache_hit": False,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+        "estimated_cost": cost,
+        "latency_ms": latency_ms
+    }
+
+    result["cache_hit"] = False
+    result["usage"] = usage_data
+
+    # 4. Save to Query Cache if answered or safely refused
+    if result.get("status") in ("answered", "refused_weak_context"):
+        save_cached_answer(cleaned_question, result, filters)
+
+    # 5. Log Structured Audit Record
+    log_rag_request({
+        "request_id": req_id,
+        "question": cleaned_question,
+        "answer": result.get("answer", ""),
+        "sources": [s.get("source", "") for s in result.get("sources", [])],
+        "cache_hit": False,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "estimated_cost": cost,
+        "latency_ms": latency_ms,
+        "status": result.get("status", "answered")
+    })
+
     return result
 
 @app.post("/query/stream", tags=["RAG Engine"])
@@ -603,6 +699,7 @@ def stream_query(payload: QueryRequest):
     - {"type": "status", "stage": ...}
     - {"type": "citations", "sources": [...]}
     - {"type": "token", "text": ...}
+    - {"type": "usage", "usage": {...}}
     - {"type": "done"}
     - {"type": "error", "message": ...}
     """
@@ -613,15 +710,137 @@ def stream_query(payload: QueryRequest):
             detail="Question cannot be empty or whitespace only."
         )
 
+    start_time = time.time()
+    req_id = f"req_{uuid.uuid4().hex[:10]}"
+    filters = {"k": payload.k or 4}
+
+    # Check cache for streaming
+    cached = get_cached_answer(cleaned_question, filters)
+    if cached is not None:
+        def cached_stream():
+            latency_ms = round((time.time() - start_time) * 1000.0, 2)
+            sources_payload = []
+            for idx, s in enumerate(cached.get("sources", []), start=1):
+                doc_name = s.get("source", "manual.txt") if isinstance(s, dict) else getattr(s, "source", "manual.txt")
+                chunk_id = s.get("chunk_id", f"chunk_{idx}") if isinstance(s, dict) else getattr(s, "chunk_id", f"chunk_{idx}")
+                sec = s.get("section", "General") if isinstance(s, dict) else getattr(s, "section", "General")
+                dtype = s.get("doc_type", "Manual") if isinstance(s, dict) else getattr(s, "doc_type", "Manual")
+                sc = s.get("score", 0.0) if isinstance(s, dict) else getattr(s, "score", 0.0)
+                txt = s.get("text", "") if isinstance(s, dict) else getattr(s, "text", "")
+                sources_payload.append({
+                    "id": f"source-{idx}",
+                    "label": f"[{idx}]",
+                    "document": doc_name,
+                    "chunk_id": chunk_id,
+                    "section": sec,
+                    "doc_type": dtype,
+                    "score": sc,
+                    "text": txt
+                })
+
+            yield f"data: {json.dumps({'type': 'citations', 'sources': sources_payload, 'status': cached.get('status', 'answered'), 'confidence': cached.get('confidence', 1.0), 'cache_hit': True})}\n\n"
+            yield f"data: {json.dumps({'type': 'token', 'text': cached.get('answer', '')})}\n\n"
+
+            usage_info = {
+                "cache_hit": True,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "estimated_cost": 0.0,
+                "latency_ms": latency_ms
+            }
+            yield f"data: {json.dumps({'type': 'usage', 'usage': usage_info})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+            log_rag_request({
+                "request_id": req_id,
+                "question": cleaned_question,
+                "answer": cached.get("answer", ""),
+                "sources": [s["document"] for s in sources_payload],
+                "cache_hit": True,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "estimated_cost": 0.0,
+                "latency_ms": latency_ms,
+                "status": cached.get("status", "answered")
+            })
+
+        return StreamingResponse(
+            cached_stream(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
+
     def event_stream():
+        accumulated_text = ""
+        captured_sources = []
+        is_refusal = False
+
         try:
             for event in rag_engine.rag_pipeline_stream(
                 question=cleaned_question,
                 history=payload.history,
                 k=payload.k or 4
             ):
+                if event.get("type") == "citations":
+                    captured_sources = event.get("sources", [])
+                elif event.get("type") == "token":
+                    accumulated_text += event.get("text", "")
+                elif event.get("type") == "status" and event.get("status") == "refused_weak_context":
+                    is_refusal = True
+
                 yield f"data: {json.dumps(event)}\n\n"
+
+            # Compute usage metrics
+            latency_ms = round((time.time() - start_time) * 1000.0, 2)
+            sources_text = " ".join(s.get("text", "") for s in captured_sources)
+            input_tokens = count_tokens(cleaned_question + " " + sources_text)
+            output_tokens = count_tokens(accumulated_text)
+            cost = estimate_cost(input_tokens, output_tokens)
+
+            usage_info = {
+                "cache_hit": False,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "total_tokens": input_tokens + output_tokens,
+                "estimated_cost": cost,
+                "latency_ms": latency_ms
+            }
+
+            yield f"data: {json.dumps({'type': 'usage', 'usage': usage_info})}\n\n"
             yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+            # Cache if valid answer
+            if accumulated_text and captured_sources and not is_refusal:
+                cached_obj = {
+                    "question": cleaned_question,
+                    "answer": accumulated_text,
+                    "sources": captured_sources,
+                    "citations": {s["label"]: s for s in captured_sources},
+                    "top_score": captured_sources[0].get("score", 0.9) if captured_sources else 0.0,
+                    "confidence": captured_sources[0].get("score", 0.9) if captured_sources else 0.0,
+                    "status": "answered"
+                }
+                save_cached_answer(cleaned_question, cached_obj, filters)
+
+            # Log to structured audit trail
+            log_rag_request({
+                "request_id": req_id,
+                "question": cleaned_question,
+                "answer": accumulated_text,
+                "sources": [s.get("document", s.get("source", "")) for s in captured_sources],
+                "cache_hit": False,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "estimated_cost": cost,
+                "latency_ms": latency_ms,
+                "status": "refused_weak_context" if is_refusal else "answered"
+            })
+
         except Exception as e:
             logger.error("Error in streaming response: %s", e)
             error_event = {
@@ -639,6 +858,17 @@ def stream_query(payload: QueryRequest):
             "X-Accel-Buffering": "no"
         }
     )
+
+@app.get("/metrics/observability", tags=["Observability"])
+def get_observability_metrics():
+    """Returns aggregated query cache, token spend, and latency metrics."""
+    return summarize_usage()
+
+@app.post("/cache/clear", tags=["Observability"])
+def clear_query_cache():
+    """Purges the in-memory query cache."""
+    purged = clear_cache()
+    return {"status": "cleared", "purged_entries": purged}
 
 @app.get("/", tags=["UI"])
 def serve_frontend():

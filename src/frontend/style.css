@@ -1857,3 +1857,128 @@ body {
   margin-left: 6px;
 }
 
+/* ===================================================================
+   RAG Observability & Query Caching Metrics Section
+   =================================================================== */
+.observability-metrics-section {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.observability-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.observability-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-title);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.observability-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-pill-outline {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.btn-flush-cache {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.btn-flush-cache:hover {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+.observability-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.obs-card {
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.obs-card-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.obs-card-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-title);
+  font-family: var(--font-mono);
+  margin-bottom: 3px;
+}
+
+.obs-card-sub {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+/* Chat Usage & Cache Badge Pills */
+.chat-usage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  width: fit-content;
+}
+
+.chat-usage-badge.cached {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.chat-usage-badge.live {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+

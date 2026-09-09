@@ -143,6 +143,9 @@ python tests/test_rag_api.py
 
 # SSE Streaming RAG Test Suite
 python tests/test_rag_streaming.py
+
+# Observability, Caching & Cost Tracking Test Suite
+python tests/test_rag_observability.py
 ```
 
 ---
@@ -154,6 +157,28 @@ The system connects a streaming backend (`POST /query/stream`) to the chat inter
 2. **Citations-First Architecture**: Retrieved evidence is emitted as a typed `citations` event before the first token arrives, allowing users to inspect grounding sources immediately via `<details>` and `<summary>` tabs.
 3. **Graceful Interruption & Error Handling**: If a stream is interrupted by network failure or backend timeout, partial output is preserved with an `(Incomplete)` badge, received citations remain visible, and an inline `Retry` button enables resuming.
 
+---
+
+## 📊 RAG Observability, Query Caching & Cost Tracking
+
+A robust RAG system must be observable, cost-conscious, and auditable. Concept 34 introduces:
+1. **SHA-256 Query Cache with TTL**:
+   - Computes deterministic SHA-256 hashes of normalized, lowercase questions and filter sets.
+   - Repeated queries return in `< 5ms` with zero token spend and `cache_hit: true`.
+   - Built-in 15-minute Time-To-Live (TTL) automatically purges stale cached responses.
+   - Flush endpoint `POST /cache/clear` allows manual or automated cache eviction.
+2. **Structured JSON Audit Logging**:
+   - Emits standardized JSON lines to `outputs/rag_observability.log` on every request.
+   - Captures `timestamp`, `request_id`, `question`, `answer_preview`, `sources`, `cache_hit`, `input_tokens`, `output_tokens`, `total_tokens`, `estimated_cost`, `latency_ms`, and `status`.
+3. **Token Usage & Cost Accounting**:
+   - High-precision token calculation using `tiktoken` with fallback character estimation.
+   - Transparent pricing model: `$0.00015 / 1k` input tokens and `$0.00060 / 1k` output tokens.
+4. **Operational Metrics & Monitoring**:
+   - `GET /metrics/observability`: Exposes aggregated telemetry (`total_requests`, `cache_hits`, `cache_hit_rate`, `total_estimated_cost`, `average_latency_ms`, `total_tokens_spent`, `active_cache_entries`).
+   - Generates monitoring reports via `generate_usage_report()` saved to `outputs/observability_summary.json`.
+   - Multi-portal UI visibility: Technician Hub displays `⚡ Cached (0ms • $0.00)` or `🧠 Live RAG (tokens • cost)` badges, while Manager Command Center visualizes real-time Cache Hit Rate %, Total Spend ($), and Avg Latency.
+
+---
 
 ## 🚀 Team Workflow & Guidelines
 
