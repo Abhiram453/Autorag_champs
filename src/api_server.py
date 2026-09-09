@@ -21,7 +21,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from openai import OpenAI
@@ -358,6 +358,91 @@ class BackendRAGEngine:
                 "status": "generation_error"
             }
 
+    def rag_pipeline_stream(self, question: str, history: Optional[List[Dict[str, str]]] = None, k: int = 4):
+        """
+        Streaming generator for the RAG pipeline.
+        Yields typed events:
+        1. {"type": "citations", "sources": [...]} with retrieved grounding evidence.
+        2. {"type": "token", "text": "..."} as LLM generates answer tokens.
+        """
+        history = history or []
+        standalone_query = self.rewrite_followup(history, question)
+        chunks = self.retrieve_chunks(standalone_query, k=k)
+        top_score = round(chunks[0]["score"], 4) if chunks else 0.0
+
+        # Guardrail check
+        if not chunks or top_score < self.min_top_score:
+            logger.info("Stream guardrail triggered: top_score %.4f < threshold %.2f", top_score, self.min_top_score)
+            yield {
+                "type": "status",
+                "status": "refused_weak_context",
+                "confidence": top_score,
+                "rewritten_query": standalone_query
+            }
+            # Stream refusal text tokens progressively
+            refusal_text = "I don't have enough reliable context in the automotive service manuals to answer that question."
+            words = refusal_text.split(" ")
+            for i, word in enumerate(words):
+                prefix = " " if i > 0 else ""
+                yield {"type": "token", "text": prefix + word}
+            return
+
+        strong_chunks = [c for c in chunks if c["score"] >= self.min_top_score]
+
+        # 1. Emit Citations event FIRST so the UI can display sources immediately
+        sources_payload = []
+        for idx, c in enumerate(strong_chunks, start=1):
+            meta = c.get("metadata", {})
+            sources_payload.append({
+                "id": f"source-{idx}",
+                "label": f"[{idx}]",
+                "document": meta.get("source", "manual.txt"),
+                "chunk_id": c.get("chunk_id", f"chunk_{idx}"),
+                "section": meta.get("section", "General"),
+                "doc_type": meta.get("doc_type", "Manual"),
+                "score": round(c.get("score", 0.0), 4),
+                "text": c.get("text", "")
+            })
+
+        yield {
+            "type": "citations",
+            "sources": sources_payload,
+            "status": "answered",
+            "confidence": top_score,
+            "rewritten_query": standalone_query
+        }
+
+        # 2. Build grounded prompt
+        context_blocks = []
+        for s in sources_payload:
+            context_blocks.append(f"{s['label']} (Source: {s['document']} | Section: {s['section']})\n{s['text']}")
+        context_str = "\n\n".join(context_blocks)
+
+        system_prompt = (
+            "You are an expert automotive technical assistant.\n"
+            "Answer the question strictly using ONLY the provided Context.\n"
+            "Cite every factual claim using source markers like [1] or [2].\n"
+            "If the Context does not support an answer, state clearly that you do not have enough information."
+        )
+        user_prompt = f"Context:\n{context_str}\n\nQuestion: {question}"
+
+        # 3. Stream tokens from LLM
+        stream_response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.1,
+            stream=True
+        )
+
+        for chunk in stream_response:
+            if chunk.choices and len(chunk.choices) > 0:
+                delta = chunk.choices[0].delta
+                if delta and delta.content:
+                    yield {"type": "token", "text": delta.content}
+
 
 # --- FastAPI Application Setup ---
 
@@ -509,6 +594,51 @@ def query_rag(payload: QueryRequest):
         k=payload.k or 4
     )
     return result
+
+@app.post("/query/stream", tags=["RAG Engine"])
+def stream_query(payload: QueryRequest):
+    """
+    Server-Sent Events (SSE) progressive streaming RAG query endpoint.
+    Emits typed events:
+    - {"type": "status", "stage": ...}
+    - {"type": "citations", "sources": [...]}
+    - {"type": "token", "text": ...}
+    - {"type": "done"}
+    - {"type": "error", "message": ...}
+    """
+    cleaned_question = payload.question.strip()
+    if not cleaned_question:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Question cannot be empty or whitespace only."
+        )
+
+    def event_stream():
+        try:
+            for event in rag_engine.rag_pipeline_stream(
+                question=cleaned_question,
+                history=payload.history,
+                k=payload.k or 4
+            ):
+                yield f"data: {json.dumps(event)}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            logger.error("Error in streaming response: %s", e)
+            error_event = {
+                "type": "error",
+                "message": "The answer stopped streaming. Please retry."
+            }
+            yield f"data: {json.dumps(error_event)}\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 @app.get("/", tags=["UI"])
 def serve_frontend():

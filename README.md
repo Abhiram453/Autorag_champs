@@ -136,12 +136,24 @@ streamlit run streamlit_app.py
 ```
 
 ### Running Automated Test Suite
-To verify all API endpoints, guardrail gating, validation rules, and frontend delivery:
+To verify all API endpoints, SSE streaming protocol, guardrail gating, validation rules, and frontend delivery:
 ```bash
+# REST API Test Suite
 python tests/test_rag_api.py
+
+# SSE Streaming RAG Test Suite
+python tests/test_rag_streaming.py
 ```
 
 ---
+
+## ⚡ Streaming RAG with Progressive Citations
+
+The system connects a streaming backend (`POST /query/stream`) to the chat interface using Server-Sent Events (`text/event-stream`):
+1. **Low Latency & High Perceived Speed**: The LLM streams answer tokens progressively as they are generated, rather than forcing the user to wait for the complete response.
+2. **Citations-First Architecture**: Retrieved evidence is emitted as a typed `citations` event before the first token arrives, allowing users to inspect grounding sources immediately via `<details>` and `<summary>` tabs.
+3. **Graceful Interruption & Error Handling**: If a stream is interrupted by network failure or backend timeout, partial output is preserved with an `(Incomplete)` badge, received citations remain visible, and an inline `Retry` button enables resuming.
+
 
 ## 🚀 Team Workflow & Guidelines
 

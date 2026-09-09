@@ -27,6 +27,7 @@ To maintain complete auditability and fulfill assignment submission requirements
 | **Concept 28: Retrieval Quality Guardrails** | `feature/retrieval-quality-guardrails` | `src/retrieval_guardrails.py`, `outputs/guardrails_demo.log` |
 | **Concept 31: Conversational RAG & Query Rewriting** | `feature/conversational-rag-query-rewriting` | `src/conversational_rag.py`, `outputs/conversational_rag_demo.log` |
 | **Concept 32: Multi-Portal RAG Platform & Diagnostic UI** | `feature/rag-chat-query-ui` | `src/api_server.py`, `src/frontend/`, `streamlit_app.py`, `tests/test_rag_api.py` |
+| **Concept 33: Streaming RAG & Progressive Citations** | `feature/streaming-rag-citations` | `src/api_server.py`, `src/frontend/app.js`, `streamlit_app.py`, `tests/test_rag_streaming.py` |
 | **Assignment 3.11: GitHub Team Workflow** | `feature/github-workflow-setup` | `WORKFLOW.md`, `.github/`, `README.md` |
 
 - **Branch Lifecycle**:

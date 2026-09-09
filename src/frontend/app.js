@@ -142,107 +142,198 @@ roleSelectItems.forEach(item => {
   });
 });
 
-// --- 3. Live RAG Diagnostic Hub Logic ---
+// --- 3. Live Progressive Streaming RAG Diagnostic Hub Logic ---
+
+let lastQuestion = "";
 
 /**
- * Sends POST /query request to backend RAG API.
- * @param {string} question - Technician query
- * @returns {Promise<Object>} - RAG response
+ * Component: CitationList({ sources })
+ * Renders citations beside the generated answer with expandable <details> source inspection.
+ * @param {Object} props - { sources: Array }
+ * @returns {string} - HTML string
  */
-async function askQuestion(question) {
-  const endpoint = `${RAG_API_URL}/query`;
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      question: question,
-      history: conversationHistory
-    })
-  });
+function CitationList({ sources }) {
+  if (!sources || sources.length === 0) return "";
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `RAG query failed with status ${response.status}`);
-  }
+  const detailsHtml = sources.map(source => `
+    <details class="citation-details" key="${escapeHtml(source.id || '')}">
+      <summary>
+        <span>${escapeHtml(source.label || '')}</span>
+        <strong>${escapeHtml(source.document || '')}</strong>
+        ${source.chunk_id ? `<code>${escapeHtml(source.chunk_id)}</code>` : ''}
+      </summary>
+      <p>${escapeHtml(source.text || 'No preview available')}</p>
+    </details>
+  `).join("");
 
-  return response.json();
+  return `
+    <section aria-label="Sources" class="streaming-citations-section">
+      <div class="streaming-citations-title">
+        <span>📚</span> Sources & Traceability (${sources.length})
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        ${detailsHtml}
+      </div>
+    </section>
+  `;
 }
 
 /**
- * Component: Answer({ result })
- * Displays the answer first, then renders retrieved sources with verified chunk_id.
- * @param {Object} props - { result: QueryResponse }
- * @returns {HTMLElement}
+ * Progressively streams RAG answer tokens from /query/stream and renders citations.
+ * Handles streaming interruptions and partial errors gracefully.
+ * @param {string} question
  */
-function Answer({ result }) {
-  const isRefusal = result.status === "refused_weak_context";
-  const confidencePercent = Math.round((result.confidence || result.top_score || 0) * 100);
+async function streamAnswer(question) {
+  lastQuestion = question;
+  isQueryLoading = true;
+  hubQuerySubmit.disabled = true;
+  hubQueryInput.disabled = true;
 
-  const row = document.createElement("div");
-  row.className = "chat-bubble-row bot";
+  // Create Assistant Message Bubble
+  const botRow = document.createElement("div");
+  botRow.className = "chat-bubble-row bot";
 
-  let sourcesHtml = "";
-  if (result.sources && result.sources.length > 0) {
-    const sourceItems = result.sources.map((s, idx) => {
-      const scoreTag = s.score ? `(${Math.round(s.score * 100)}% match)` : "";
-      return `
-        <li style="margin-bottom: 6px; padding: 6px 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
-          <div style="font-weight: 600; color: #0f172a; display: flex; justify-content: space-between;">
-            <span>[${idx + 1}] ${escapeHtml(s.source)} ${s.chunk_id ? `<code>(${escapeHtml(s.chunk_id)})</code>` : ""}</span>
-            <span style="font-size: 11px; color: #0284c7;">${scoreTag}</span>
-          </div>
-          <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">
-            ${escapeHtml(s.section || "General")} &bull; ${escapeHtml(s.text ? s.text.substring(0, 110) + "..." : "")}
-          </div>
-        </li>
-      `;
-    }).join("");
-
-    sourcesHtml = `
-      <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
-        <div style="font-weight: 700; font-size: 12px; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
-          📚 Retrieved Sources (${result.sources.length} Documents)
-        </div>
-        <ul style="list-style: none; padding: 0;">
-          ${sourceItems}
-        </ul>
-      </div>
-    `;
-  } else if (isRefusal) {
-    sourcesHtml = `
-      <div style="margin-top: 10px; padding: 8px 12px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 12px; color: #b45309;">
-        ⚠️ <strong>Zero Hallucination Guardrail:</strong> Context similarity below minimum threshold (${confidencePercent}%). System refused answer.
-      </div>
-    `;
-  }
-
-  row.innerHTML = `
+  botRow.innerHTML = `
     <div class="chat-avatar">AI</div>
-    <div class="chat-bubble-content">
-      <div style="font-size: 11px; font-weight: 700; color: ${isRefusal ? '#b45309' : '#0284c7'}; margin-bottom: 4px; text-transform: uppercase;">
-        ${isRefusal ? '🛡️ Guardrail Refusal' : `🛡️ Grounded Diagnostic Response (${confidencePercent}% Confidence)`}
+    <div class="chat-bubble-content" style="width: 100%;">
+      <div class="status-header-tag" style="font-size: 11px; font-weight: 700; color: #0284c7; margin-bottom: 6px; text-transform: uppercase;">
+        ⚡ Streaming Answer...
       </div>
-      <div>${escapeHtml(result.answer)}</div>
-      ${sourcesHtml}
+      <div class="answer-text-area" style="font-size: 13.5px; line-height: 1.5; color: #334155;">
+        <span class="accumulated-text"></span><span class="streaming-cursor"></span>
+      </div>
+      <div class="citations-slot"></div>
+      <div class="error-slot"></div>
     </div>
   `;
 
-  return row;
+  hubChatStream.appendChild(botRow);
+  botRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  const accumulatedTextSpan = botRow.querySelector(".accumulated-text");
+  const cursorSpan = botRow.querySelector(".streaming-cursor");
+  const citationsSlot = botRow.querySelector(".citations-slot");
+  const errorSlot = botRow.querySelector(".error-slot");
+  const statusHeaderTag = botRow.querySelector(".status-header-tag");
+
+  let currentAnswer = "";
+  let currentSources = [];
+  let streamCompletedSuccessfully = false;
+
+  try {
+    const response = await fetch(`${RAG_API_URL}/query/stream`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, history: conversationHistory })
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error("Could not start the stream.");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop(); // Keep trailing incomplete line
+
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (!trimmedLine.startsWith("data: ")) continue;
+
+        const rawJson = trimmedLine.slice(6);
+        try {
+          const event = JSON.parse(rawJson);
+
+          if (event.type === "citations") {
+            currentSources = event.sources || [];
+            citationsSlot.innerHTML = CitationList({ sources: currentSources });
+            statusHeaderTag.innerHTML = `🛡️ Grounded &bull; Citations Verified (${Math.round((event.confidence || 0) * 100)}%)`;
+          }
+
+          if (event.type === "token") {
+            currentAnswer += event.text;
+            accumulatedTextSpan.textContent = currentAnswer;
+            botRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+
+          if (event.type === "status" && event.status === "refused_weak_context") {
+            statusHeaderTag.innerHTML = `<span style="color: #b45309;">⚠️ Guardrail Refusal</span>`;
+          }
+
+          if (event.type === "done") {
+            streamCompletedSuccessfully = true;
+          }
+
+          if (event.type === "error") {
+            throw new Error(event.message || "Streaming error occurred.");
+          }
+        } catch (parseErr) {
+          if (parseErr.message.includes("Streaming error")) throw parseErr;
+          console.warn("Error parsing event JSON:", parseErr);
+        }
+      }
+    }
+
+    // Stream finished
+    if (cursorSpan) cursorSpan.remove();
+    if (streamCompletedSuccessfully) {
+      statusHeaderTag.textContent = currentSources.length > 0 ? "🛡️ Grounded Diagnostic Response" : "✓ Response Complete";
+      // Update dialogue history
+      conversationHistory.push({ role: "user", content: question });
+      conversationHistory.push({ role: "assistant", content: currentAnswer });
+    }
+
+  } catch (error) {
+    console.error("Stream failed:", error);
+    if (cursorSpan) cursorSpan.remove();
+
+    // Mark as incomplete while keeping received partial text & citations
+    if (currentAnswer.length > 0) {
+      accumulatedTextSpan.insertAdjacentHTML("beforeend", '<span class="incomplete-badge">(Incomplete)</span>');
+    }
+
+    statusHeaderTag.innerHTML = '<span style="color: #dc2626;">✕ Stream Interrupted</span>';
+
+    // Show graceful inline error banner with Retry action
+    errorSlot.innerHTML = `
+      <div role="alert" class="stream-error-banner">
+        <p>⚠️ ${escapeHtml(error.message || "The answer stopped streaming. Please try again.")}</p>
+        <button class="stream-retry-btn" id="btn-stream-retry">Retry</button>
+      </div>
+    `;
+
+    const retryBtn = errorSlot.querySelector("#btn-stream-retry");
+    if (retryBtn) {
+      retryBtn.addEventListener("click", () => {
+        botRow.remove();
+        streamAnswer(lastQuestion);
+      });
+    }
+
+  } finally {
+    isQueryLoading = false;
+    hubQuerySubmit.disabled = false;
+    hubQueryInput.disabled = false;
+    hubQueryInput.focus();
+  }
 }
 
 /**
- * Handles RAG form submission with clear loading and error feedback.
+ * Form submit handler for Technician Diagnostic Hub.
  * @param {string} question
  */
 async function handleSubmit(question) {
   const trimmed = question.trim();
   if (!trimmed || isQueryLoading) return;
 
-  isQueryLoading = true;
   hubQueryInput.value = "";
-  hubQuerySubmit.disabled = true;
 
   // 1. Render User Message
   const userRow = document.createElement("div");
@@ -254,49 +345,13 @@ async function handleSubmit(question) {
   hubChatStream.appendChild(userRow);
   userRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-  // 2. Render Thinking Indicator
-  const thinkingRow = document.createElement("div");
-  thinkingRow.className = "chat-bubble-row bot";
-  thinkingRow.id = "thinking-indicator";
-  thinkingRow.innerHTML = `
-    <div class="chat-avatar">AI</div>
-    <div class="chat-bubble-content" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted);">
-      <div style="width: 14px; height: 14px; border: 2px solid #0066ff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-      <span>Querying model-specific manuals & verifying citations...</span>
-    </div>
-  `;
-  hubChatStream.appendChild(thinkingRow);
-  thinkingRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-  try {
-    const result = await askQuestion(trimmed);
-    thinkingRow.remove();
-
-    const answerElement = Answer({ result });
-    hubChatStream.appendChild(answerElement);
-    answerElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-    // Update history
-    conversationHistory.push({ role: "user", content: trimmed });
-    conversationHistory.push({ role: "assistant", content: result.answer });
-  } catch (err) {
-    thinkingRow.remove();
-    const errorRow = document.createElement("div");
-    errorRow.className = "chat-bubble-row bot";
-    errorRow.innerHTML = `
-      <div class="chat-avatar" style="background:#ef4444;">✕</div>
-      <div class="chat-bubble-content" style="background:#fef2f2; border: 1px solid #fecaca; color:#b91c1c;">
-        <strong>API Error:</strong> ${escapeHtml(err.message || "Failed to reach RAG backend service.")}
-      </div>
-    `;
-    hubChatStream.appendChild(errorRow);
-    errorRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  } finally {
-    isQueryLoading = false;
-    hubQuerySubmit.disabled = false;
-    hubQueryInput.focus();
-  }
+  // 2. Start Progressive Stream
+  await streamAnswer(trimmed);
 }
+
+// Attach to window for testing
+window.streamAnswer = streamAnswer;
+window.CitationList = CitationList;
 
 // Hub Query input listeners
 if (hubQuerySubmit && hubQueryInput) {

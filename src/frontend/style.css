@@ -1730,3 +1730,130 @@ body {
     gap: 12px;
   }
 }
+
+/* ==========================================================================
+   STREAMING RAG & CITATION STYLING
+   ========================================================================== */
+.streaming-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  background-color: var(--primary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink-cursor 0.7s infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.streaming-citations-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.streaming-citations-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.citation-details {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 13px;
+  transition: border-color 0.15s ease;
+}
+
+.citation-details:hover {
+  border-color: var(--primary);
+}
+
+.citation-details summary {
+  font-weight: 600;
+  color: var(--text-title);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.citation-details summary code {
+  background: #f1f5f9;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--primary);
+}
+
+.citation-details p {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  border-left: 3px solid var(--primary);
+}
+
+.stream-error-banner {
+  margin-top: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stream-error-banner p {
+  font-size: 12.5px;
+  color: #b91c1c;
+  font-weight: 500;
+  margin: 0;
+}
+
+.stream-retry-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.stream-retry-btn:hover {
+  background: #dc2626;
+}
+
+.incomplete-badge {
+  font-size: 11px;
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+

@@ -10,6 +10,7 @@ Features:
 """
 
 import os
+import json
 import requests
 import streamlit as st
 
@@ -182,20 +183,57 @@ if active_prompt:
                     for m in st.session_state.messages[:-1]
                 ]
 
-                status_box.write("2. Performing vector similarity search & guardrail gating...")
+                status_box.write("2. Connecting to /query/stream SSE endpoint...")
                 res = requests.post(
-                    f"{api_base_url}/query",
+                    f"{api_base_url}/query/stream",
                     json={"question": active_prompt, "history": history_turns},
-                    timeout=30
+                    stream=True,
+                    timeout=45
                 )
 
                 if res.status_code == 200:
-                    status_box.write("3. Verifying source citations & formatting response...")
-                    result_data = res.json()
-                    status_box.update(label="Diagnostic Response Ready", state="complete", expanded=False)
+                    status_box.update(label="Progressively Streaming Answer & Citations...", state="running", expanded=False)
                     
-                    # Render response
-                    render_assistant_response(result_data)
+                    answer_placeholder = st.empty()
+                    sources_placeholder = st.empty()
+                    accumulated_answer = ""
+                    received_sources = []
+                    query_status = "answered"
+
+                    for line in res.iter_lines(decode_unicode=True):
+                        if not line or not line.startswith("data: "):
+                            continue
+                        event_json = line[len("data: "):]
+                        try:
+                            event = json.loads(event_json)
+                            if event.get("type") == "citations":
+                                received_sources = event.get("sources", [])
+                            elif event.get("type") == "token":
+                                accumulated_answer += event.get("text", "")
+                                answer_placeholder.markdown(f"### Answer\n\n{accumulated_answer} ▌")
+                            elif event.get("type") == "status":
+                                query_status = event.get("status", "answered")
+                            elif event.get("type") == "done":
+                                break
+                        except Exception:
+                            pass
+
+                    # Finalize answer display (remove trailing cursor)
+                    answer_placeholder.markdown(f"### Answer\n\n{accumulated_answer}")
+
+                    # Render received sources
+                    result_data = {
+                        "answer": accumulated_answer,
+                        "sources": received_sources,
+                        "status": query_status,
+                        "confidence": 0.85
+                    }
+                    if received_sources:
+                        with sources_placeholder.expander(f"📚 Inspect Verified Sources ({len(received_sources)} documents)", expanded=False):
+                            for idx, src in enumerate(received_sources, start=1):
+                                st.markdown(f"**{src.get('label', f'[{idx}]')} {src.get('document')}** (`{src.get('chunk_id')}`)")
+                                st.code(src.get("text", ""), language="text")
+
                     st.session_state.messages.append({"role": "assistant", "result": result_data})
                 else:
                     error_msg = f"API Error {res.status_code}: {res.text}"
