@@ -9,7 +9,150 @@
 </head>
 <body>
 
-  <div class="app-wrapper">
+  <!-- =========================================================================
+       SPLIT-SCREEN SECURE LOGIN PAGE
+       ========================================================================= -->
+  <div class="login-screen-wrapper" id="login-screen">
+    
+    <!-- Left Hero Illustration Side -->
+    <div class="login-hero-side">
+      <div class="login-hero-waves"></div>
+      
+      <div class="login-hero-header">
+        <div class="login-brand-pill">
+          <span>⚙️</span> Aura Automotive Intelligence
+        </div>
+      </div>
+
+      <div class="login-hero-center">
+        <!-- Mechanical Gears -->
+        <div class="gear-assembly">
+          <svg class="gear-svg-1" viewBox="0 0 100 100" fill="none" stroke="#0066ff" stroke-width="6">
+            <circle cx="50" cy="50" r="30" stroke-dasharray="8 6"/>
+            <circle cx="50" cy="50" r="14" fill="#0066ff" fill-opacity="0.3"/>
+            <path d="M50 10v10M50 80v10M10 50h10M80 50h10M22 22l7 7M71 71l7 7M22 78l7-7M71 29l7-7" stroke-linecap="round"/>
+          </svg>
+          <svg class="gear-svg-2" viewBox="0 0 100 100" fill="none" stroke="#38bdf8" stroke-width="6">
+            <circle cx="50" cy="50" r="26" stroke-dasharray="6 6"/>
+            <circle cx="50" cy="50" r="10" fill="#38bdf8" fill-opacity="0.3"/>
+            <path d="M50 14v8M50 78v8M14 50h8M78 50h8M24 24l6 6M70 70l6 6M24 76l6-6M70 30l6-6" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Animated Glowing Car SVG -->
+        <div class="car-animation-stage">
+          <div class="laser-scanline"></div>
+          <svg class="car-svg-outline" viewBox="0 0 600 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 160 C 70 160, 95 155, 110 135 C 130 110, 170 75, 230 65 C 290 55, 370 55, 430 75 C 470 90, 510 120, 540 135 C 565 145, 580 155, 580 165 L 560 175 C 550 178, 530 180, 510 180 C 490 180, 480 155, 450 155 C 420 155, 410 180, 390 180 L 210 180 C 190 180, 180 155, 150 155 C 120 155, 110 180, 90 180 L 40 180 Z" stroke="#0066ff" stroke-width="4" fill="rgba(0, 102, 255, 0.05)"/>
+            <circle cx="150" cy="175" r="32" stroke="#00f0ff" stroke-width="4" fill="#0f172a"/>
+            <circle cx="150" cy="175" r="14" stroke="#0066ff" stroke-width="3" stroke-dasharray="4 3"/>
+            <circle cx="450" cy="175" r="32" stroke="#00f0ff" stroke-width="4" fill="#0f172a"/>
+            <circle cx="450" cy="175" r="14" stroke="#0066ff" stroke-width="3" stroke-dasharray="4 3"/>
+            <path d="M210 120 L 250 75 C 290 68, 360 68, 410 82 L 460 120 Z" stroke="#38bdf8" stroke-width="3" fill="rgba(56, 189, 248, 0.1)"/>
+            <line x1="325" y1="70" x2="325" y2="120" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3"/>
+            <polygon points="535,135 565,140 545,148" fill="#00f0ff"/>
+            <polygon points="45,160 55,158 55,165" fill="#ef4444"/>
+            <circle cx="550" cy="138" r="18" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.7"/>
+            <circle cx="550" cy="138" r="36" stroke="#00f0ff" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+          </svg>
+        </div>
+
+        <h2 style="font-size: 24px; font-weight: 800; color: #ffffff; margin-top: 24px; text-align: center;">
+          Aura Automotive OS
+        </h2>
+        <p style="font-size: 13.5px; color: #94a3b8; max-width: 440px; text-align: center; margin-top: 6px; line-height: 1.6;">
+          Autonomous diagnostic RAG pipeline, step repair verification, and enterprise-grade role governance.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Right Login Form Side -->
+    <div class="login-form-side">
+      <div class="login-card">
+        
+        <div class="login-title-row">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 24px;">⚙️</span>
+            <span style="font-weight: 800; font-size: 16px; color: #0066ff; letter-spacing: 0.5px;">AURA PLATFORM</span>
+          </div>
+          <h1 class="login-main-title">Sign In</h1>
+          <p class="login-subtitle">
+            Select your role to access your permitted workspace and real-time tools.
+          </p>
+        </div>
+
+        <!-- Quick 1-Click Demo Logins -->
+        <div class="demo-accounts-strip">
+          <div class="demo-strip-label">
+            <span>Quick 1-Click Demo Accounts</span>
+            <span style="color: var(--primary);">Instant Fill</span>
+          </div>
+          <div class="demo-pills-row">
+            <button type="button" class="demo-pill-btn active" id="demo-tech-btn">
+              <span>👨‍🔧</span> Tech
+            </button>
+            <button type="button" class="demo-pill-btn" id="demo-manager-btn">
+              <span>👨‍💼</span> Manager
+            </button>
+            <button type="button" class="demo-pill-btn" id="demo-admin-btn">
+              <span>🛡️</span> Admin
+            </button>
+          </div>
+        </div>
+
+        <div class="login-error-banner" id="login-error-banner">
+          <span>⚠️</span> <span id="login-error-text">Invalid credentials.</span>
+        </div>
+
+        <form id="auth-login-form">
+          <div class="login-form-group">
+            <label class="login-label" for="login-email">Work Email</label>
+            <div class="login-input-wrapper">
+              <span class="login-input-icon">✉</span>
+              <input 
+                type="email" 
+                id="login-email" 
+                class="login-input-field" 
+                value="tech@aura.auto" 
+                required 
+                placeholder="name@aura.auto"
+              >
+            </div>
+          </div>
+
+          <div class="login-form-group">
+            <label class="login-label" for="login-password">Password</label>
+            <div class="login-input-wrapper">
+              <span class="login-input-icon">🔑</span>
+              <input 
+                type="password" 
+                id="login-password" 
+                class="login-input-field" 
+                value="password123" 
+                required 
+                placeholder="••••••••"
+              >
+            </div>
+          </div>
+
+          <button type="submit" class="btn-login-submit" id="btn-login-submit">
+            <span id="btn-login-spinner" style="display:none;">⏳</span>
+            <span>Authenticate & Launch Workspace</span> ➔
+          </button>
+        </form>
+
+        <div style="margin-top: 24px; text-align: center; font-size: 11.5px; color: #94a3b8;">
+          🔒 Secure 256-bit encrypted session • Role-gated portal rendering
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Application Shell (Role-Gated) -->
+  <div class="app-wrapper" id="app-shell" style="display: none;">
     
     <!-- Left Navigation Sidebar -->
     <aside class="sidebar" id="app-sidebar">
@@ -24,20 +167,20 @@
           <span>▶</span> Start Session
         </button>
 
-        <nav class="nav-menu">
-          <a class="nav-item active" id="nav-diagnostic-hub" data-target="view-diagnostic-hub">
+        <nav class="nav-menu" id="main-nav-menu">
+          <a class="nav-item active" id="nav-diagnostic-hub" data-target="view-diagnostic-hub" data-roles="TECHNICIAN,MANAGER,ADMIN">
             <span class="nav-icon">🔧</span>
             <span>Diagnostic Hub</span>
           </a>
-          <a class="nav-item" id="nav-command-center" data-target="view-command-center">
+          <a class="nav-item" id="nav-command-center" data-target="view-command-center" data-roles="MANAGER,ADMIN">
             <span class="nav-icon">📊</span>
             <span>Command Center</span>
           </a>
-          <a class="nav-item" id="nav-knowledge-base" data-target="view-knowledge-base">
+          <a class="nav-item" id="nav-knowledge-base" data-target="view-knowledge-base" data-roles="ADMIN">
             <span class="nav-icon">📚</span>
             <span>Knowledge Base</span>
           </a>
-          <a class="nav-item" id="nav-audit-panel" data-target="view-audit-panel">
+          <a class="nav-item" id="nav-audit-panel" data-target="view-audit-panel" data-roles="ADMIN">
             <span class="nav-icon">📋</span>
             <span>Audit Panel</span>
           </a>
@@ -46,24 +189,27 @@
 
       <div class="sidebar-bottom">
         <div class="bottom-nav-group">
-          <a class="nav-item" id="nav-settings">
+          <a class="nav-item" id="nav-settings" data-roles="TECHNICIAN,MANAGER,ADMIN">
             <span class="nav-icon">⚙️</span>
             <span>Settings</span>
           </a>
-          <a class="nav-item" id="nav-support">
+          <a class="nav-item" id="nav-support" data-roles="TECHNICIAN,MANAGER,ADMIN">
             <span class="nav-icon">❓</span>
             <span>Support</span>
           </a>
+          <a class="nav-item nav-logout" id="nav-logout-btn" title="Sign out of current session">
+            <span class="nav-icon">🚪</span>
+            <span>Sign Out</span>
+          </a>
         </div>
 
-        <!-- User Role Profile Pill & Switcher Trigger -->
-        <div class="user-profile-pill" id="user-profile-trigger" title="Click to switch user role/portal">
-          <div class="user-avatar-img" id="user-avatar-display">JD</div>
+        <!-- Authenticated User Profile Badge (Secure Session) -->
+        <div class="user-profile-pill" id="user-profile-card">
+          <div class="user-avatar-img" id="user-avatar-display">TR</div>
           <div class="user-info">
-            <div class="user-name" id="user-name-display">J. Doe</div>
-            <div class="user-role-badge" id="user-role-display">MANAGER</div>
+            <div class="user-name" id="user-name-display">Tech. M. Richards</div>
+            <div class="user-role-badge" id="user-role-display">TECHNICIAN</div>
           </div>
-          <span style="font-size: 11px; color: var(--text-muted);">⇄</span>
         </div>
       </div>
     </aside>
@@ -118,40 +264,28 @@
             <!-- Chat Stream Scroll -->
             <div class="chat-history-scroll" id="hub-chat-stream">
               
-              <!-- Bot Initial Message -->
-              <div class="chat-bubble-row bot">
-                <div class="chat-avatar">AI</div>
-                <div class="chat-bubble-content">
-                  Vehicle loaded. Code <strong>P0300</strong> (Random/Multiple Cylinder Misfire Detected) reported. Would you like me to pull up the diagnostic flow for the ignition coils?
+              <!-- Clean Real-Time AI Greeting & Diagnostic Chips -->
+              <div class="chat-welcome-card" id="chat-welcome-card">
+                <div style="font-size: 26px; margin-bottom: 8px;">🤖</div>
+                <div style="font-weight: 800; font-size: 15px; color: var(--text-title); margin-bottom: 4px;">
+                  Aura Diagnostic Intelligence Ready
                 </div>
-              </div>
-
-              <!-- Technician User Response -->
-              <div class="chat-bubble-row user">
-                <div class="chat-avatar user-avatar">Tech</div>
-                <div class="chat-bubble-content">
-                  Yes, focus on Bank 1.
-                </div>
-              </div>
-
-              <!-- Bot Response with Specs Table -->
-              <div class="chat-bubble-row bot" id="initial-bot-response">
-                <div class="chat-avatar">AI</div>
-                <div class="chat-bubble-content">
-                  Loading <strong>Bank 1 Ignition Coil</strong> specs. I've populated the Instruction Viewer on the right.<br><br>
-                  <em>Note: Check the wiring harness connector C102 for corrosion, a known issue on this VIN range.</em>
-                  <table class="chat-specs-table">
-                    <thead>
-                      <tr><th>Parameter</th><th>Specification</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Primary Resistance</td><td>0.4 - 0.6 Ω</td></tr>
-                      <tr><td>Secondary Resistance</td><td>5.0 - 7.0 kΩ</td></tr>
-                    </tbody>
-                  </table>
-                  <div style="margin-top: 10px; font-size: 11.5px; color: var(--text-muted);">
-                    📚 Sources: <code>sample_manual.txt (chunk_mnl_001)</code>, <code>tsb_notice.md (chunk_tsb_112)</code>
-                  </div>
+                <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                  Connected to active technical repair manuals and recall notices. Click an inquiry below or type any question into the search field:
+                </p>
+                <div class="diagnostic-chips-row">
+                  <button type="button" class="diag-chip-btn" data-query="What connector should I inspect for misfire issues related to DTC P0300?">
+                    <span>🔍</span> Check DTC P0300
+                  </button>
+                  <button type="button" class="diag-chip-btn" data-query="What is the primary and secondary resistance specification for Bank 1 ignition coils?">
+                    <span>⚡</span> Bank 1 Coil Specs
+                  </button>
+                  <button type="button" class="diag-chip-btn" data-query="What are the torque specifications for hydraulic brake caliper bolts?">
+                    <span>🛑</span> Brake Caliper Torque
+                  </button>
+                  <button type="button" class="diag-chip-btn" data-query="What are the safety disconnect procedures for the EV battery array?">
+                    <span>🔋</span> EV Battery Safety
+                  </button>
                 </div>
               </div>
 
@@ -176,53 +310,56 @@
               <span class="time-badge">Est. Time: 45 min</span>
             </div>
 
-            <div class="steps-list-scroll">
+            <!-- Interactive Progress Bar -->
+            <div class="instruction-progress-bar-container">
+              <div class="progress-bar-label-row">
+                <span>Repair Completion</span>
+                <span id="repair-progress-text">0 of 3 steps (0%)</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="repair-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="steps-list-scroll" id="steps-list-scroll">
               
               <!-- Step 1 -->
               <div class="step-item-card" id="repair-step-1">
                 <div class="step-header-line">
-                  <input type="checkbox" class="step-checkbox" id="check-step-1" checked>
+                  <input type="checkbox" class="step-checkbox" id="check-step-1">
                   <div class="step-number-box">1</div>
-                  <span>Disconnect Negative Battery Cable</span>
+                  <span>Isolate High Voltage & Disconnect Battery</span>
                 </div>
                 <div class="step-body-text">
-                  Always disconnect power before servicing electrical components to prevent shorts and ECU damage.
+                  Disconnect negative terminal. Wait 5 minutes before servicing to allow capacitors to discharge safely.
                 </div>
                 <div class="step-warning-box">
                   <span>⚠️</span>
-                  <span>Wait 5 minutes after disconnect before working on the ignition system to allow capacitors to discharge.</span>
+                  <span>Ensure vehicle is powered down with key fob stored at least 15 feet away.</span>
                 </div>
               </div>
 
               <!-- Step 2 -->
               <div class="step-item-card" id="repair-step-2">
                 <div class="step-header-line">
-                  <input type="checkbox" class="step-checkbox" id="check-step-2" checked>
+                  <input type="checkbox" class="step-checkbox" id="check-step-2">
                   <div class="step-number-box">2</div>
-                  <span>Remove Engine Cover</span>
+                  <span>Inspect Wiring Harness Connector C102</span>
                 </div>
                 <div class="step-body-text">
-                  Remove the 4 decorative bolts (10mm) securing the top plastic engine cover.
-                </div>
-                <div class="step-diagram-preview">
-                  <div style="font-weight: 600; color: #334155;">🖼 Engine Bay Diagram (10mm Bolt Locations)</div>
-                  <div style="font-size: 11px; color: #64748b;">Torque spec: 9-11 Nm upon reassembly.</div>
+                  Locate bulkhead connector C102 on right cylinder head. Inspect female pin terminals for moisture intrusion.
                 </div>
               </div>
 
-              <!-- Step 3 (Active Step) -->
-              <div class="step-item-card active-step" id="repair-step-3">
+              <!-- Step 3 -->
+              <div class="step-item-card" id="repair-step-3">
                 <div class="step-header-line">
                   <input type="checkbox" class="step-checkbox" id="check-step-3">
                   <div class="step-number-box">3</div>
-                  <span>Disconnect Ignition Coil Harness (Bank 1)</span>
+                  <span>Measure Coil Resistance Across Terminals 1 and 2</span>
                 </div>
                 <div class="step-body-text">
-                  Locate coils on the right side of the engine (cylinders 1, 3, 5). Unclip the wiring harness connectors from each coil pack.
-                </div>
-                <div class="step-code-box">
-                  Target Location: Bank 1 (Right Bank / Passenger Side)<br>
-                  Connector ID: C102 (Inspect for corrosion as per AI note)
+                  Set digital multimeter to low Ω scale. Verify primary resistance reads within 0.4 to 0.6 ohms.
                 </div>
               </div>
 
@@ -803,45 +940,10 @@
     </div>
   </div>
 
-  <!-- Role Switcher Modal -->
-  <div class="role-modal-backdrop" id="role-modal">
-    <div class="role-modal-card">
-      <div class="role-modal-title">Switch Persona & Secure Portal</div>
-      <p style="font-size: 13px; color: var(--text-muted);">
-        Select a role to verify access permissions, metrics, and workflows:
-      </p>
 
-      <div class="role-options-list">
-        <div class="role-select-item" data-role="TECHNICIAN" data-name="Tech. M. Richards" data-avatar="TR" data-target="view-diagnostic-hub">
-          <div class="user-avatar-img" style="background:#0284c7;">TR</div>
-          <div>
-            <div style="font-weight: 700; font-size: 14px;">Tech. M. Richards</div>
-            <div style="font-size: 11px; color: var(--primary);">TECHNICIAN &bull; Diagnostic Hub</div>
-          </div>
-        </div>
 
-        <div class="role-select-item selected" data-role="MANAGER" data-name="J. Doe" data-avatar="JD" data-target="view-command-center">
-          <div class="user-avatar-img" style="background:#0f172a;">JD</div>
-          <div>
-            <div style="font-weight: 700; font-size: 14px;">J. Doe</div>
-            <div style="font-size: 11px; color: var(--primary);">SERVICE MANAGER &bull; Command Center</div>
-          </div>
-        </div>
-
-        <div class="role-select-item" data-role="ADMIN" data-name="Admin M. Davis" data-avatar="MD" data-target="view-audit-panel">
-          <div class="user-avatar-img" style="background:#059669;">MD</div>
-          <div>
-            <div style="font-weight: 700; font-size: 14px;">Admin M. Davis</div>
-            <div style="font-size: 11px; color: var(--primary);">COMPLIANCE ADMIN &bull; Audit & Knowledge Base</div>
-          </div>
-        </div>
-      </div>
-
-      <button id="btn-close-role-modal" style="margin-top: 6px; padding: 9px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
-        Close
-      </button>
-    </div>
-  </div>
+  <!-- Real-time Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
 
   <script src="/static/app.js"></script>
 </body>

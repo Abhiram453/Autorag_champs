@@ -1982,3 +1982,743 @@ body {
   border: 1px solid #bae6fd;
 }
 
+/* ==========================================================================
+   SPLIT-SCREEN LOGIN PAGE & AUTOMOTIVE ANIMATIONS
+   ========================================================================== */
+
+.login-screen-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  background: #0b1120;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.login-screen-wrapper.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Left Side: Animated Illustration Hero */
+.login-hero-side {
+  flex: 1.1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  background: radial-gradient(circle at 20% 30%, #1e293b 0%, #0f172a 60%, #020617 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+/* Wave Background Effect */
+.login-hero-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 102, 255, 0.15) 0%, rgba(16, 185, 129, 0.08) 35%, transparent 70%);
+  animation: waveMotion 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes waveMotion {
+  0% { transform: translate(-10%, -10%) rotate(0deg); }
+  50% { transform: translate(-5%, -20%) rotate(5deg) scale(1.1); }
+  100% { transform: translate(-15%, -5%) rotate(-5deg); }
+}
+
+.login-hero-header {
+  position: relative;
+  z-index: 2;
+}
+
+.login-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  color: #f8fafc;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.login-hero-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+}
+
+/* Animated Car Wireframe Container */
+.car-animation-stage {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.car-svg-outline {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 16px rgba(0, 102, 255, 0.45));
+  animation: carFloat 5s ease-in-out infinite alternate;
+}
+
+@keyframes carFloat {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Rotating Mechanical Gears */
+.gear-assembly {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  display: flex;
+  gap: -10px;
+  opacity: 0.75;
+}
+
+.gear-svg-1 {
+  width: 52px;
+  height: 52px;
+  animation: gearSpinClockwise 12s linear infinite;
+}
+
+.gear-svg-2 {
+  width: 38px;
+  height: 38px;
+  margin-left: -12px;
+  margin-top: 24px;
+  animation: gearSpinCounter 8s linear infinite;
+}
+
+@keyframes gearSpinClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gearSpinCounter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+/* Sweeping Laser Scanner */
+.laser-scanline {
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  width: 90%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f0ff, #0066ff, transparent);
+  box-shadow: 0 0 12px #00f0ff;
+  animation: laserSweep 3.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes laserSweep {
+  0% { transform: translateY(0px) scaleX(0.8); opacity: 0.3; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(180px) scaleX(1); opacity: 0.3; }
+}
+
+.login-hero-badges {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-spec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+}
+
+.hero-spec-badge span.accent {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+/* Right Side: Modern Login Form Card */
+.login-form-side {
+  flex: 0.9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-title-row {
+  margin-bottom: 24px;
+}
+
+.login-main-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.login-subtitle {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Quick Demo Role Selector Pills */
+.demo-accounts-strip {
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--radius-md);
+}
+
+.demo-strip-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.demo-pills-row {
+  display: flex;
+  gap: 8px;
+}
+
+.demo-pill-btn {
+  flex: 1;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.demo-pill-btn:hover {
+  border-color: var(--primary);
+  background: #eff6ff;
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.demo-pill-btn.active {
+  border-color: var(--primary);
+  background: #0066ff;
+  color: #ffffff;
+}
+
+/* Form Controls */
+.login-form-group {
+  margin-bottom: 18px;
+}
+
+.login-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.login-input-field {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input-field:focus {
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
+}
+
+select.login-input-field {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.btn-login-submit {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-login-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.35);
+}
+
+.btn-login-submit:active {
+  transform: translateY(0);
+}
+
+.login-error-banner {
+  display: none;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  color: #b91c1c;
+  font-size: 12.5px;
+  font-weight: 500;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Sign Out Navigation Item */
+.nav-logout {
+  color: #dc2626 !important;
+  cursor: pointer;
+}
+
+.nav-logout:hover {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+
+/* Instruction Viewer Progress Bar */
+.instruction-progress-bar-container {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.progress-bar-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 7px;
+  background: #e2e8f0;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.4s ease;
+}
+
+/* Real-time Toast Notifications */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.aura-toast {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.aura-toast.success {
+  border-left-color: #10b981;
+}
+
+.aura-toast.warning {
+  border-left-color: #f59e0b;
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+/* File Drop Zone Bounce */
+.dropzone-box.drag-over {
+  border-color: var(--primary) !important;
+  background: #eff6ff !important;
+  animation: dropBounce 0.4s ease infinite alternate;
+}
+
+@keyframes dropBounce {
+  from { transform: scale(1); }
+  to { transform: scale(1.02); }
+}
+
+/* Quick Diagnostic Action Chips & AI Welcome Card */
+.chat-welcome-card {
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+  animation: slideInUp 0.3s ease;
+}
+
+.diagnostic-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.diag-chip-btn {
+  padding: 8px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.diag-chip-btn:hover {
+  background: #eff6ff;
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.btn-load-vin {
+  padding: 7px 14px;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-load-vin:hover {
+  background: var(--primary-hover);
+}
+
+/* ==========================================================================
+   100% FULL RESPONSIVENESS & ADAPTIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Tablet Viewport (1024px and down) */
+@media (max-width: 1024px) {
+  .app-wrapper {
+    overflow: auto;
+  }
+
+  .main-container {
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  .diagnostic-workspace {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 16px;
+  }
+
+  .diagnostic-assistant-panel,
+  .instruction-viewer-panel {
+    height: 520px;
+  }
+
+  .oversight-body-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .kb-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .login-hero-side {
+    padding: 32px;
+  }
+
+  .login-form-side {
+    padding: 32px;
+  }
+}
+
+/* Mobile & Small Tablet Viewport (768px and down) */
+@media (max-width: 768px) {
+  /* Mobile Topbar with Hamburger */
+  .mobile-topbar {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  /* Off-canvas Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-container {
+    width: 100vw;
+    padding: 12px;
+  }
+
+  /* Split-screen Login on Mobile */
+  .login-screen-wrapper {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .login-hero-side {
+    flex: none;
+    min-height: 220px;
+    padding: 24px 16px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .gear-assembly {
+    top: 10px;
+    right: 12px;
+    transform: scale(0.65);
+  }
+
+  .car-animation-stage {
+    height: 140px;
+    max-width: 280px;
+  }
+
+  .login-hero-center h2 {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  .login-hero-center p {
+    font-size: 11.5px;
+    margin-top: 2px;
+  }
+
+  .login-form-side {
+    flex: none;
+    width: 100%;
+    padding: 24px 16px 40px 16px;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .demo-pills-row {
+    flex-wrap: wrap;
+  }
+
+  .demo-pill-btn {
+    min-width: 90px;
+  }
+
+  /* Hub Top Bar on Mobile */
+  .hub-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .vin-search-wrapper {
+    width: 100%;
+  }
+
+  .vehicle-context-badge {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* KPI Cards & Metrics on Mobile */
+  .metrics-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .observability-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .observability-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Diagnostic Bottom Action Bar */
+  .diagnostic-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .bottom-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .bottom-action-buttons button {
+    flex: 1;
+    min-width: 100px;
+    padding: 8px 10px;
+    font-size: 11.5px;
+  }
+
+  /* Responsive Data Tables */
+  .data-table,
+  .table-scroll-wrapper {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .aura-toast {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+
+

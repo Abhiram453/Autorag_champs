@@ -1,5 +1,7 @@
 # Environment variables
 .env
+.env.local
+*.pem
 
 # Virtual environments
 .venv/

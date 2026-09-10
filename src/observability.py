@@ -15,7 +15,7 @@ import time
 import hashlib
 import logging
 from typing import Optional, Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Setup logging
@@ -31,7 +31,7 @@ logger.setLevel(logging.INFO)
 
 # Token counting helper
 try:
-    import tiktoken
+    import tiktoken  # type: ignore[import-untyped, import-not-found]
     _TIKTOKEN_ENCODER = tiktoken.get_encoding("cl100k_base")
 except Exception:
     _TIKTOKEN_ENCODER = None
@@ -119,7 +119,7 @@ def log_rag_request(record: Dict[str, Any]) -> Dict[str, Any]:
     Tracks: timestamp, request_id, question, answer_preview, sources, cache_hit, tokens, cost, latency.
     """
     entry = {
-        "timestamp": record.get("timestamp") or datetime.utcnow().isoformat() + "Z",
+        "timestamp": record.get("timestamp") or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "request_id": record.get("request_id", "req_unknown"),
         "question": record.get("question", ""),
         "answer_preview": record.get("answer", "")[:180],
@@ -212,7 +212,7 @@ def summarize_usage(log_records: Optional[List[Dict[str, Any]]] = None) -> Dict[
 def generate_usage_report(output_file: Optional[str] = None) -> Dict[str, Any]:
     """Generates and writes a summary report JSON file."""
     summary = summarize_usage()
-    summary["report_generated_at"] = datetime.utcnow().isoformat() + "Z"
+    summary["report_generated_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     recent = recent_log_records if recent_log_records else load_records_from_log_file()
     summary["recent_queries"] = recent[-10:]
 

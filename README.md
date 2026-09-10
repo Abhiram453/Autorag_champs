@@ -4,6 +4,16 @@ An AI-powered automotive diagnostic assistant that retrieves model-specific, up-
 
 ---
 
+## ✨ Features
+
+- **Upload documents**: Multi-format document intake (`.pdf`, `.txt`, `.md`, `.html`) with automated metadata extraction and file validation.
+- **Ingest, chunk, embed, and index content**: Token-aware chunking, batch embedding generation (`text-embedding-3-small`), and vector similarity indexing.
+- **Ask questions through a chat UI**: Interactive multi-portal web interface (`src/frontend`) and Streamlit workspace (`streamlit_app.py`) with real-time SSE streaming.
+- **Receive grounded answers with citations**: Pre-generation quality guardrails and inline source attributions (`[1]`, `[2]`) mapped directly to document chunks.
+- **View logs and usage summary**: Real-time token usage, per-query cost tracking, SHA-256 query caching, and structured JSON audit telemetry.
+
+---
+
 ## 📁 Repository Structure
 
 ```
@@ -12,22 +22,20 @@ Autorag_champs/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/sprint_task.md
 ├── data/              # Source repair manuals, recall notices, diagnostic guides (.txt, .md, .html)
-├── src/               # Ingestion, document loading, chunking, embeddings, sanity testing, hybrid search, retrieval tuning, citations, guardrails, parameters, and history code
-│   ├── chat_completion.py    # OpenAI-compatible API client & chat completion handler
-│   ├── prompt_experiment.py  # Side-by-side prompt engineering experiment runner
-│   ├── token_estimator.py    # Token counter, cost calculator & corpus scale estimator
-│   ├── history_manager.py    # Multi-turn conversation manager, FIFO trimming & summarization
-│   ├── parameter_experiment.py # Generation parameters control (temperature, max_tokens, stop)
-│   ├── structured_output.py  # Defensive JSON mode parser, schema validator & retry recovery
-│   ├── prompt_template_engine.py # Multi-feature prompt template renderer & reusability engine
-│   ├── document_loader.py    # Multi-format document loader (.pdf, .txt, .md, .html) & intake scanner
-│   ├── batch_embedding_pipeline.py # Scalable batch embedding pipeline with backoff & resumable cache
-│   ├── embedding_sanity_test.py # Retrieval quality & embedding sanity testing engine
-│   ├── hybrid_search.py      # Metadata-filtered & hybrid (semantic + lexical) search engine
-│   ├── retrieval_tuner.py    # Retrieval quality tuning & empirical benchmark evaluation engine
-│   ├── citation_generator.py # Grounded generation with inline citations & source attribution
-│   ├── retrieval_guardrails.py # Pre-generation retrieval quality guardrails & refusal gating
-│   └── conversational_rag.py # Conversational RAG engine with LLM query rewriting & multi-turn history
+├── src/               # Application source code & RAG pipeline engines
+│   ├── api_server.py                # FastAPI backend API server (/query, /status, /metrics, /audit-logs)
+│   ├── conversational_rag.py        # Conversational RAG & query rewriting engine
+│   ├── citation_generator.py        # Grounded generation with inline citations
+│   ├── retrieval_guardrails.py      # Quality guardrails & similarity threshold gating
+│   ├── hybrid_search.py             # Metadata-filtered & hybrid (semantic + lexical) search
+│   ├── retrieval_tuner.py           # Retrieval quality tuning & benchmark evaluation engine
+│   ├── batch_embedding_pipeline.py  # Batch embedding pipeline with backoff & resumable cache
+│   ├── document_loader.py           # Multi-format document loader (.pdf, .txt, .md, .html)
+│   ├── observability.py            # SHA-256 query caching, audit logging & token cost tracking
+│   └── frontend/                    # 100% responsive multi-portal web client
+│       ├── index.html               # Semantic HTML for all portal views
+│       ├── style.css                # Glassmorphic automotive styling & responsive breakpoints
+│       └── app.js                   # Routing, role switching, and live RAG API client
 ├── prompts/           # System prompt templates & persona instructions
 │   ├── system_prompt.txt
 │   ├── prompt_templates.py   # Vague vs. Strict System Prompts, Refusal Rules & JSON schemas
@@ -35,21 +43,15 @@ Autorag_champs/
 ├── outputs/           # Logs, generated output artifacts, sample execution captures
 │   ├── rag_api_test.log             # Automated FastAPI test suite logs
 │   ├── conversational_rag_demo.log  # Conversational RAG & multi-turn query rewriting log
+│   ├── guardrails_demo.log          # Retrieval strength guardrails & refusal gating log
+│   ├── citation_generation_demo.log # Grounded LLM completion with citations log
 │   ├── user_page_mockup.html        # Interactive HTML mockup of Diagnostic Hub UI
-│   ├── user_page_overview.md        # Layout architecture breakdown
-│   └── github_workflow_submission_guide.md # Assignment submission guide & video script
-├── src/               # Application source code
-│   ├── api_server.py                # FastAPI backend API server (/query, /status, /metrics, /audit-logs)
-│   ├── conversational_rag.py        # Conversational RAG & query rewriting engine
-│   ├── citation_generator.py        # Grounded generation with inline citations
-│   ├── retrieval_guardrails.py      # Quality guardrails & similarity threshold gating
-│   └── frontend/                    # 100% responsive multi-portal web client
-│       ├── index.html               # Semantic HTML for all 4 portal views
-│       ├── style.css                # Glassmorphic automotive styling & responsive breakpoints
-│       └── app.js                   # Routing, role switching, and live RAG API client
+│   └── github_workflow_submission_guide.md # Assignment submission guide
 ├── tests/             # Automated test suite
-│   └── test_rag_api.py              # End-to-end FastAPI & query test suite
-├── streamlit_app.py   # Streamlit companion application with st.chat and st.status
+│   ├── test_rag_api.py              # End-to-end FastAPI & query test suite
+│   ├── test_rag_streaming.py        # SSE streaming endpoint test suite
+│   └── test_rag_observability.py    # Observability, caching & token cost test suite
+├── streamlit_app.py   # Streamlit companion application
 ├── .env               # Local environment variables and API keys (git-ignored)
 ├── .env.example       # Example environment configuration template (committed)
 ├── .gitignore         # Version control exclusion rules
@@ -62,30 +64,105 @@ Autorag_champs/
 
 ## ⚙️ Setup & Configuration
 
-### 1. Environment Isolation
-Create and activate a virtual environment:
+### 1. Install Dependencies
+Create a virtual environment and install the required Python dependencies:
 ```bash
 python -m venv .venv
 # On Windows (PowerShell):
 .venv\Scripts\Activate.ps1
 # On Linux/macOS:
 source .venv/bin/activate
-```
 
-### 2. Install Dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 3. Environment Variables
-Copy `.env.example` to `.env` and fill in your API configuration:
+### 2. Configure Environment Variables
+Secrets and API credentials must **never** be committed to source control. Create a local `.env` file from the provided template:
 ```bash
 cp .env.example .env
 ```
 
+Documented required configuration values:
+```ini
+# OpenAI & Model Configuration
+OPENAI_API_KEY=your_api_key_here
+CHAT_MODEL=openai/gpt-4o-mini
+EMBEDDING_MODEL=text-embedding-3-small
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+
+# Vector Database & Retrieval Configuration
+VECTOR_DB_URL=http://localhost:6333
+VECTOR_COLLECTION=automotive_manuals
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+```
+
+### 3. Run the Backend API Server
+Start the FastAPI server using Uvicorn:
+```bash
+uvicorn src.api_server:app --reload --port 8000
+```
+Or execute directly using Python:
+```bash
+python src/api_server.py
+```
+Backend API endpoints will be accessible at:
+- **Root & Multi-Portal UI**: `http://localhost:8000/`
+- **Swagger Interactive API Docs**: `http://localhost:8000/docs`
+- **Metrics & Health**: `http://localhost:8000/metrics/observability`
+
+### 4. Run the Frontend Chat UI
+You can run the web portal client or the Streamlit workspace:
+
+```bash
+# Option A: Built-in Web Client (Static Web Server)
+python -m http.server 3000 --directory src/frontend
+# Access at http://localhost:3000
+
+# Option B: Streamlit Companion App
+streamlit run streamlit_app.py
+# Access at http://localhost:8501
+```
+
 ---
 
-## 🛡️ Running Retrieval Quality Guardrails
+## 🔒 Configure Secrets Safely
+
+Secrets are strictly protected from accidental version control commits via `.gitignore`:
+
+```gitignore
+.env
+.env.local
+*.pem
+```
+
+For local development, keep your actual secret API keys inside `.env` (which is excluded by `.gitignore`). For deployment (e.g., Vercel, Render, Railway, AWS), configure environment variables directly in the hosting provider's secret management settings rather than hardcoding them in source code.
+
+---
+
+## 🧪 End-to-End Demo
+
+Uploaded document: `sample_manual.txt`
+
+**Question:**
+What is the primary resistance specification for Bank 1 ignition coils on DTC P0300?
+
+**Answer:**
+The primary resistance specification for Bank 1 ignition coils must measure 0.4 to 0.6 ohms across terminals 1 and 2. [1]
+
+**Sources:**
+```text
+[1] sample_manual.txt, chunk chunk_mnl_001
+"AUTOMOTIVE REPAIR MANUAL: DTC P0300 indicates random misfire. Inspect Bank 1 ignition coils. Primary resistance specification: 0.4 to 0.6 ohms across terminals 1 and 2."
+```
+
+This confirms that upload, ingestion, retrieval, generation, and citation display all work together seamlessly.
+
+---
+
+## 🛡️ Retrieval Quality Guardrails & Refusal Gating
 
 To execute pre-generation retrieval strength checking (`MIN_TOP_SCORE = 0.70`), halt LLM invocation on weak/empty context (`status: "refused_weak_context"`), and preserve confident generation (`status: "answered"`) for supported queries:
 
@@ -94,49 +171,31 @@ python src/retrieval_guardrails.py
 ```
 
 ### Key Learnings
-- **Pre-Generation Refusal Gating**: Evaluating similarity scores before calling the LLM prevents the model from hallucinating plausible-sounding answers when evidence is missing.
+- **Pre-Generation Refusal Gating**: Evaluating similarity scores before calling the LLM prevents hallucinations when evidence is missing.
 - **Threshold Control**: Queries with top similarity scores `< 0.70` trigger immediate refusal (*"I don't have enough reliable context to answer that."*) without wasting API tokens.
 - **Confident Generation**: Queries with strong retrieved context (`>= 0.70`) proceed cleanly to grounded generation with inline citations.
 
 ---
 
-## 💬 Running Conversational RAG & Query Rewriting
+## 💬 Conversational RAG & Query Rewriting
 
-To execute multi-turn conversational RAG with automatic LLM query rewriting and retrieval guardrails:
+To execute multi-turn conversational RAG with automatic LLM query rewriting:
 
 ```bash
 python src/conversational_rag.py
 ```
 
 ### Key Learnings
-- **Query Reformulation Engine**: Conversational follow-ups (e.g. *"What connector should I inspect?"*) are rewritten into self-contained standalone search queries (e.g. *"What connector should be inspected for misfire issues related to DTC P0300 on 2023 SUV Model X?"*) using prior dialogue context.
-- **Standalone Retrieval & Guardrails**: Vector search runs against the rewritten query to ensure accurate semantic matching and prevent context drift across multi-turn sessions.
-- **Grounded Responses & Safe Refusals**: Supported turns return citation-backed answers (`[1]`, `[2]`), while out-of-domain or under-supported follow-ups trigger guardrail refusals.
+- **Query Reformulation Engine**: Rewrites follow-up questions (e.g. *"What connector should I inspect?"*) into self-contained standalone search queries (e.g. *"What connector should be inspected for misfire issues related to DTC P0300 on 2023 SUV Model X?"*).
+- **Standalone Retrieval**: Vector search runs against the rewritten query to ensure accurate semantic matching across multi-turn sessions.
+- **Grounded Responses & Safe Refusals**: Supported turns return citation-backed answers (`[1]`, `[2]`), while unsupported questions trigger guardrail refusals.
 
-## 🌐 Running the Multi-Portal Platform & Diagnostic Hub UI
+---
 
-The platform provides a 100% responsive interface with three secure portals:
-- **Technician Portal (`Diagnostic Hub`)**: Live RAG Chat (`POST /query`), VIN search, DTC detection (`P0300`), specs table, inline citations `[1]`, `[2]`, verified source drawer, and step-by-step repair instruction viewer.
-- **Manager Portal (`Command Center`)**: Management oversight, operational metrics (`1,248` repairs, `78%` recalls, `42` pending approvals), recent activity feed, and SUV recall compliance tracking.
-- **Admin Portal (`Knowledge Base & Audit Panel`)**: Document upload drag-and-drop zone, metadata tagging form (Model, Year, Region, Version, Status), document library table, and global compliance audit logs with technician feedback trends.
+## 🧪 Running Automated Test Suite
 
-### Option A: Running the FastAPI Web Application
-Start the FastAPI server:
-```bash
-python -m uvicorn src.api_server:app --host 127.0.0.1 --port 8000 --reload
-```
-Open your browser to:
-- **Interactive Multi-Portal UI**: `http://127.0.0.1:8000/`
-- **Swagger Interactive API Docs**: `http://127.0.0.1:8000/docs`
+Verify API endpoints, SSE streaming, guardrail gating, validation rules, and caching telemetry:
 
-### Option B: Running the Streamlit Companion App
-Start Streamlit:
-```bash
-streamlit run streamlit_app.py
-```
-
-### Running Automated Test Suite
-To verify all API endpoints, SSE streaming protocol, guardrail gating, validation rules, and frontend delivery:
 ```bash
 # REST API Test Suite
 python tests/test_rag_api.py
@@ -150,33 +209,11 @@ python tests/test_rag_observability.py
 
 ---
 
-## ⚡ Streaming RAG with Progressive Citations
-
-The system connects a streaming backend (`POST /query/stream`) to the chat interface using Server-Sent Events (`text/event-stream`):
-1. **Low Latency & High Perceived Speed**: The LLM streams answer tokens progressively as they are generated, rather than forcing the user to wait for the complete response.
-2. **Citations-First Architecture**: Retrieved evidence is emitted as a typed `citations` event before the first token arrives, allowing users to inspect grounding sources immediately via `<details>` and `<summary>` tabs.
-3. **Graceful Interruption & Error Handling**: If a stream is interrupted by network failure or backend timeout, partial output is preserved with an `(Incomplete)` badge, received citations remain visible, and an inline `Retry` button enables resuming.
-
----
-
 ## 📊 RAG Observability, Query Caching & Cost Tracking
 
-A robust RAG system must be observable, cost-conscious, and auditable. Concept 34 introduces:
-1. **SHA-256 Query Cache with TTL**:
-   - Computes deterministic SHA-256 hashes of normalized, lowercase questions and filter sets.
-   - Repeated queries return in `< 5ms` with zero token spend and `cache_hit: true`.
-   - Built-in 15-minute Time-To-Live (TTL) automatically purges stale cached responses.
-   - Flush endpoint `POST /cache/clear` allows manual or automated cache eviction.
-2. **Structured JSON Audit Logging**:
-   - Emits standardized JSON lines to `outputs/rag_observability.log` on every request.
-   - Captures `timestamp`, `request_id`, `question`, `answer_preview`, `sources`, `cache_hit`, `input_tokens`, `output_tokens`, `total_tokens`, `estimated_cost`, `latency_ms`, and `status`.
-3. **Token Usage & Cost Accounting**:
-   - High-precision token calculation using `tiktoken` with fallback character estimation.
-   - Transparent pricing model: `$0.00015 / 1k` input tokens and `$0.00060 / 1k` output tokens.
-4. **Operational Metrics & Monitoring**:
-   - `GET /metrics/observability`: Exposes aggregated telemetry (`total_requests`, `cache_hits`, `cache_hit_rate`, `total_estimated_cost`, `average_latency_ms`, `total_tokens_spent`, `active_cache_entries`).
-   - Generates monitoring reports via `generate_usage_report()` saved to `outputs/observability_summary.json`.
-   - Multi-portal UI visibility: Technician Hub displays `⚡ Cached (0ms • $0.00)` or `🧠 Live RAG (tokens • cost)` badges, while Manager Command Center visualizes real-time Cache Hit Rate %, Total Spend ($), and Avg Latency.
+- **SHA-256 Query Cache**: Deterministic hashes for instant repeated query response (`< 5ms`, `cache_hit: true`).
+- **Structured JSON Audit Logging**: Logs request telemetry, tokens, latency, cost, and sources to `outputs/rag_observability.log`.
+- **Token Accounting**: High-precision token calculation using `tiktoken` with character fallback.
 
 ---
 

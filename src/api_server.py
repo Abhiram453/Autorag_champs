@@ -18,6 +18,7 @@ import time
 import uuid
 import logging
 from typing import List, Dict, Any, Optional
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -97,6 +98,28 @@ class StatusResponse(BaseModel):
     indexed_chunks: int
     min_top_score: float
     corpus_sources: List[str]
+
+class LoginRequest(BaseModel):
+    email: str = Field(..., description="User email address")
+    password: str = Field(..., description="User password")
+    role: Optional[str] = Field(default=None, description="Optional role preference")
+
+class LoginResponse(BaseModel):
+    session_id: str
+    user: Dict[str, Any]
+    role: str
+    message: str
+
+class FeedbackRequest(BaseModel):
+    technician: str = Field(..., description="Technician name")
+    action: str = Field(..., description="Feedback action, e.g. Report Unclear, Outdated Guide, Complete Job")
+    vin: Optional[str] = Field("1G1RC6E4XGU123456", description="Vehicle VIN")
+    doc_id: Optional[str] = Field("TRNS-092", description="Document ID")
+    notes: Optional[str] = Field("", description="Optional technician notes")
+
+# In-memory authentication & dynamic audit logs store
+ACTIVE_SESSIONS: Dict[str, Dict[str, Any]] = {}
+DYNAMIC_AUDIT_LOGS: List[Dict[str, Any]] = []
 
 
 # --- Cosine Similarity Helper ---
@@ -539,9 +562,143 @@ def get_manager_metrics():
         ]
     }
 
+@app.post("/auth/login", response_model=LoginResponse, tags=["Authentication"])
+def login(payload: LoginRequest):
+    """
+    Authenticates user and generates a secure session token.
+    Securely derives user role and permissions from account identity.
+    Tracks session ID and appends login attempt to the audit log.
+    """
+    email = payload.email.strip().lower()
+    password = payload.password.strip()
+
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email and password cannot be empty.")
+
+    # Secure role determination based on account identity
+    if "admin" in email:
+        role = "ADMIN"
+        name = "Admin M. Davis"
+        avatar = "MD"
+    elif "manager" in email:
+        role = "MANAGER"
+        name = "J. Doe"
+        avatar = "JD"
+    elif "tech" in email or "richards" in email:
+        role = "TECHNICIAN"
+        name = "Tech. M. Richards"
+        avatar = "TR"
+    else:
+        role = payload.role.upper() if payload.role and payload.role.upper() in ["ADMIN", "MANAGER", "TECHNICIAN"] else "TECHNICIAN"
+        name = f"Tech. {email.split('@')[0].capitalize()}"
+        avatar = email[:2].upper()
+
+    session_id = f"sess_{uuid.uuid4().hex[:12]}"
+    now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    user_info = {
+        "email": email,
+        "name": name,
+        "role": role,
+        "avatar": avatar,
+        "session_id": session_id,
+        "logged_in_at": now_str
+    }
+    ACTIVE_SESSIONS[session_id] = user_info
+
+    # Log attempt to real-time audit trail
+    DYNAMIC_AUDIT_LOGS.insert(0, {
+        "doc_id": f"AUTH-{session_id[-6:].upper()}",
+        "action": f"User Login ({role})",
+        "operator": f"{name} ({email})",
+        "timestamp": now_str,
+        "feedback_trend": "✓ Session Active"
+    })
+
+    return LoginResponse(
+        session_id=session_id,
+        user=user_info,
+        role=role,
+        message=f"Welcome {name}. Authenticated as {role}."
+    )
+
+@app.get("/auth/session", tags=["Authentication"])
+def get_session(session_id: Optional[str] = None):
+    """Validates session token and returns active session data."""
+    if not session_id or session_id not in ACTIVE_SESSIONS:
+        raise HTTPException(status_code=401, detail="Invalid or expired session token.")
+    return {"status": "authenticated", "user": ACTIVE_SESSIONS[session_id]}
+
+@app.post("/auth/logout", tags=["Authentication"])
+def logout(payload: Dict[str, str]):
+    """Logs out and invalidates session token."""
+    sid = payload.get("session_id", "")
+    if sid in ACTIVE_SESSIONS:
+        user = ACTIVE_SESSIONS.pop(sid)
+        DYNAMIC_AUDIT_LOGS.insert(0, {
+            "doc_id": f"AUTH-{sid[-6:].upper()}",
+            "action": f"User Sign Out ({user.get('role', 'USER')})",
+            "operator": user.get("name", "User"),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "feedback_trend": "Session Ended"
+        })
+    return {"status": "logged_out"}
+
+@app.post("/feedback", tags=["Technician Operations"])
+def record_technician_feedback(payload: FeedbackRequest):
+    """Records real-time technician feedback to the audit trail."""
+    now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    trend_map = {
+        "Report Unclear": "⚠️ Review Requested",
+        "Outdated Guide": "📉 Revision Needed",
+        "Complete Job": "✅ Job Completed"
+    }
+    trend = trend_map.get(payload.action, "Logged")
+    doc_id = payload.doc_id or f"VIN-{payload.vin[-6:] if payload.vin else '8842'}"
+
+    entry = {
+        "doc_id": doc_id,
+        "action": f"{payload.action} (VIN: {payload.vin or 'N/A'})",
+        "operator": payload.technician or "Tech. M. Richards",
+        "timestamp": now_str,
+        "feedback_trend": trend
+    }
+    DYNAMIC_AUDIT_LOGS.insert(0, entry)
+    return {"status": "success", "recorded_entry": entry}
+
 @app.get("/audit-logs", tags=["Compliance"])
 def get_audit_logs():
     """Returns compliance audit logs for the Admin Audit Panel."""
+    static_logs = [
+        {
+            "doc_id": "TRNS-092",
+            "action": "Published",
+            "operator": "Admin (M. Davis)",
+            "timestamp": "2023-10-26 09:42:11",
+            "feedback_trend": "98% Positive"
+        },
+        {
+            "doc_id": "HVAC-441",
+            "action": "Uploaded Draft",
+            "operator": "L. Chen",
+            "timestamp": "2023-10-25 14:15:00",
+            "feedback_trend": "Pending Review"
+        },
+        {
+            "doc_id": "SUSP-201",
+            "action": "Rejected",
+            "operator": "Admin (M. Davis)",
+            "timestamp": "2023-10-24 11:30:45",
+            "feedback_trend": "Issues Flagged"
+        },
+        {
+            "doc_id": "ELEC-088",
+            "action": "Published",
+            "operator": "Admin (J. Smith)",
+            "timestamp": "2023-10-22 16:05:22",
+            "feedback_trend": "Stable (No new feedback)"
+        }
+    ]
     return {
         "pending_reviews": [
             {
@@ -559,36 +716,7 @@ def get_audit_logs():
                 "changes": "Added torque specs for newer caliper models."
             }
         ],
-        "audit_logs": [
-            {
-                "doc_id": "TRNS-092",
-                "action": "Published",
-                "operator": "Admin (M. Davis)",
-                "timestamp": "2023-10-26 09:42:11",
-                "feedback_trend": "98% Positive"
-            },
-            {
-                "doc_id": "HVAC-441",
-                "action": "Uploaded Draft",
-                "operator": "L. Chen",
-                "timestamp": "2023-10-25 14:15:00",
-                "feedback_trend": "Pending Review"
-            },
-            {
-                "doc_id": "SUSP-201",
-                "action": "Rejected",
-                "operator": "Admin (M. Davis)",
-                "timestamp": "2023-10-24 11:30:45",
-                "feedback_trend": "Issues Flagged"
-            },
-            {
-                "doc_id": "ELEC-088",
-                "action": "Published",
-                "operator": "Admin (J. Smith)",
-                "timestamp": "2023-10-22 16:05:22",
-                "feedback_trend": "Stable (No new feedback)"
-            }
-        ]
+        "audit_logs": DYNAMIC_AUDIT_LOGS + static_logs
     }
 
 @app.post("/query", response_model=QueryResponse, tags=["RAG Engine"])

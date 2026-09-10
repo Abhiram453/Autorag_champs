@@ -16,9 +16,27 @@
 const RAG_API_URL = window.NEXT_PUBLIC_RAG_API_URL || "";
 
 // State
-let activeRole = "MANAGER"; // Default starting role as shown in screenshot
+let activeRole = "TECHNICIAN";
+let currentUser = null;
 let conversationHistory = [];
 let isQueryLoading = false;
+
+// DOM Elements - Login & Auth
+const loginScreen = document.getElementById("login-screen");
+const appShell = document.getElementById("app-shell");
+const authLoginForm = document.getElementById("auth-login-form");
+const loginEmailInput = document.getElementById("login-email");
+const loginPasswordInput = document.getElementById("login-password");
+const loginRoleSelect = document.getElementById("login-role");
+const loginErrorBanner = document.getElementById("login-error-banner");
+const loginErrorText = document.getElementById("login-error-text");
+const btnLoginSubmit = document.getElementById("btn-login-submit");
+const btnLoginSpinner = document.getElementById("btn-login-spinner");
+const demoTechBtn = document.getElementById("demo-tech-btn");
+const demoManagerBtn = document.getElementById("demo-manager-btn");
+const demoAdminBtn = document.getElementById("demo-admin-btn");
+const navLogoutBtn = document.getElementById("nav-logout-btn");
+const dropzoneBox = document.getElementById("dropzone-box");
 
 // DOM Elements - Navigation & Shell
 const navItems = document.querySelectorAll(".nav-menu .nav-item");
@@ -46,9 +64,97 @@ const kbTableBody = document.getElementById("kb-table-body");
 const kbSearchInput = document.getElementById("kb-search-input");
 const auditSearchInput = document.getElementById("audit-search-input");
 
-// --- 1. Multi-Portal Routing ---
+// --- Real-Time Toast Notification System ---
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.className = `aura-toast ${type}`;
+  const icons = { info: "ℹ️", success: "✅", warning: "⚠️", alert: "🔔" };
+  toast.innerHTML = `<span>${icons[type] || "ℹ️"}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = "toastFadeOut 0.3s forwards";
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
 
+// --- Number Count-Up Animation Engine ---
+function animateCounter(element, target, suffix = "", duration = 1000) {
+  if (!element) return;
+  let start = 0;
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeProgress = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * easeProgress);
+    element.textContent = current.toLocaleString() + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      element.textContent = target.toLocaleString() + suffix;
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+function triggerManagerCounters() {
+  const repairsEl = document.getElementById("metric-repairs-count");
+  const recallsEl = document.getElementById("metric-recalls-pct");
+  const approvalsEl = document.getElementById("metric-approvals-count");
+  if (repairsEl) animateCounter(repairsEl, 1248, "");
+  if (recallsEl) animateCounter(recallsEl, 78, "%");
+  if (approvalsEl) animateCounter(approvalsEl, 42, "");
+}
+
+// --- Strict Role-Based Tab Hiding & Route Gatekeeper ---
+function applyRoleAccess(role, user) {
+  activeRole = (role || "TECHNICIAN").toUpperCase();
+  currentUser = user || {
+    name: activeRole === "MANAGER" ? "J. Doe" : (activeRole === "ADMIN" ? "Admin M. Davis" : "Tech. M. Richards"),
+    role: activeRole,
+    avatar: activeRole === "MANAGER" ? "JD" : (activeRole === "ADMIN" ? "MD" : "TR")
+  };
+
+  if (userNameDisplay) userNameDisplay.textContent = currentUser.name;
+  if (userRoleDisplay) userRoleDisplay.textContent = activeRole;
+  if (userAvatarDisplay) userAvatarDisplay.textContent = currentUser.avatar;
+
+  // Strict Tab Hiding: Hide forbidden navigation tabs completely
+  const allNavItems = document.querySelectorAll(".nav-item[data-roles]");
+  allNavItems.forEach(item => {
+    const rolesStr = item.dataset.roles || "";
+    const allowed = rolesStr.split(",").map(r => r.trim().toUpperCase());
+    if (allowed.includes(activeRole)) {
+      item.style.display = "flex";
+    } else {
+      item.style.display = "none";
+    }
+  });
+
+  // Navigate to permitted default view
+  if (activeRole === "TECHNICIAN") {
+    switchView("view-diagnostic-hub");
+  } else if (activeRole === "MANAGER") {
+    switchView("view-command-center");
+  } else if (activeRole === "ADMIN") {
+    switchView("view-knowledge-base");
+  }
+}
+
+// --- 1. Multi-Portal Routing with Route Protection ---
 function switchView(targetViewId) {
+  // Check if target view's nav item is hidden for active role
+  const targetNav = document.querySelector(`.nav-item[data-target="${targetViewId}"]`);
+  if (targetNav && targetNav.style.display === "none") {
+    // Silently fall back to permitted home view
+    const fallback = activeRole === "TECHNICIAN" ? "view-diagnostic-hub" : (activeRole === "MANAGER" ? "view-command-center" : "view-knowledge-base");
+    if (targetViewId !== fallback) {
+      return switchView(fallback);
+    }
+  }
+
   // Update sidebar active link
   navItems.forEach(item => {
     if (item.dataset.target === targetViewId) {
@@ -72,12 +178,14 @@ function switchView(targetViewId) {
     appSidebar.classList.remove("open");
   }
 
-  // Refresh observability metrics when viewing manager command center
+  // Real-time hooks per view
   if (targetViewId === "view-command-center") {
     updateObservabilityMetrics();
+    triggerManagerCounters();
+  } else if (targetViewId === "view-audit-panel") {
+    fetchAuditLogs();
   }
 
-  // Auto-scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -106,46 +214,119 @@ if (btnStartSession) {
   });
 }
 
-// --- 2. Secure Role Switcher ---
-
-if (userProfileTrigger) {
-  userProfileTrigger.addEventListener("click", () => {
-    roleModal.style.display = "flex";
+// --- Sign Out Handler ---
+if (navLogoutBtn) {
+  navLogoutBtn.addEventListener("click", async () => {
+    try {
+      const sessionData = sessionStorage.getItem("aura_auth_session");
+      if (sessionData) {
+        const parsed = JSON.parse(sessionData);
+        await fetch(`${RAG_API_URL}/auth/logout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_id: parsed.session_id })
+        });
+      }
+    } catch (e) {
+      // Ignore network errors on logout
+    }
+    sessionStorage.removeItem("aura_auth_session");
+    if (appShell) appShell.style.display = "none";
+    if (loginScreen) loginScreen.classList.remove("hidden");
+    showToast("Signed out of session.", "info");
   });
 }
 
-if (btnCloseRoleModal) {
-  btnCloseRoleModal.addEventListener("click", () => {
-    roleModal.style.display = "none";
+// --- Quick Demo Role Selectors ---
+if (demoTechBtn) {
+  demoTechBtn.addEventListener("click", () => {
+    if (loginEmailInput) loginEmailInput.value = "tech@aura.auto";
+    demoTechBtn.classList.add("active");
+    demoManagerBtn.classList.remove("active");
+    demoAdminBtn.classList.remove("active");
   });
 }
 
-// Close modal when clicking outside
-window.addEventListener("click", (e) => {
-  if (e.target === roleModal) {
-    roleModal.style.display = "none";
-  }
-});
+if (demoManagerBtn) {
+  demoManagerBtn.addEventListener("click", () => {
+    if (loginEmailInput) loginEmailInput.value = "manager@aura.auto";
+    demoManagerBtn.classList.add("active");
+    demoTechBtn.classList.remove("active");
+    demoAdminBtn.classList.remove("active");
+  });
+}
 
-roleSelectItems.forEach(item => {
-  item.addEventListener("click", () => {
-    const role = item.dataset.role;
-    const name = item.dataset.name;
-    const avatar = item.dataset.avatar;
-    const targetView = item.dataset.target;
+if (demoAdminBtn) {
+  demoAdminBtn.addEventListener("click", () => {
+    if (loginEmailInput) loginEmailInput.value = "admin@aura.auto";
+    demoAdminBtn.classList.add("active");
+    demoTechBtn.classList.remove("active");
+    demoManagerBtn.classList.remove("active");
+  });
+}
 
-    activeRole = role;
-    userNameDisplay.textContent = name;
-    userRoleDisplay.textContent = role;
-    userAvatarDisplay.textContent = avatar;
+// --- Login Form Authentication Handler ---
+if (authLoginForm) {
+  authLoginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (loginErrorBanner) loginErrorBanner.style.display = "none";
+    if (btnLoginSpinner) btnLoginSpinner.style.display = "inline";
 
-    roleSelectItems.forEach(i => i.classList.remove("selected"));
-    item.classList.add("selected");
+    const email = loginEmailInput ? loginEmailInput.value.trim() : "";
+    const password = loginPasswordInput ? loginPasswordInput.value : "";
 
-    roleModal.style.display = "none";
-    switchView(targetView);
+    try {
+      const res = await fetch(`${RAG_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!res.ok) {
+        throw new Error("Authentication failed. Check credentials.");
+      }
+
+      const data = await res.json();
+      sessionStorage.setItem("aura_auth_session", JSON.stringify(data));
+
+      if (loginScreen) loginScreen.classList.add("hidden");
+      if (appShell) appShell.style.display = "flex";
+
+      applyRoleAccess(data.role, data.user);
+      showToast(`Welcome, ${data.user.name} (${data.role})`, "success");
+    } catch (err) {
+      if (loginErrorBanner) {
+        loginErrorBanner.style.display = "flex";
+        if (loginErrorText) loginErrorText.textContent = err.message || "Login failed.";
+      }
+    } finally {
+      if (btnLoginSpinner) btnLoginSpinner.style.display = "none";
+    }
+  });
+}
+
+// --- Interactive Diagnostic Quick Chips ---
+document.querySelectorAll(".diag-chip-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const query = btn.dataset.query;
+    if (query) {
+      if (hubQueryInput) hubQueryInput.value = query;
+      handleSubmit(query);
+    }
   });
 });
+
+// --- Load VIN Button Handler ---
+const btnLoadVin = document.getElementById("btn-load-vin");
+if (btnLoadVin) {
+  btnLoadVin.addEventListener("click", () => {
+    const vinInput = document.getElementById("vin-search-input");
+    const vin = vinInput ? vinInput.value.trim() : "1G1RC6E4XGU123456";
+    showToast(`🚘 Vehicle context loaded for VIN: ${vin}`, "success");
+    const vinTag = document.getElementById("vin-display-tag");
+    if (vinTag) vinTag.textContent = `VIN: ${vin}`;
+  });
+}
 
 // --- 3. Live Progressive Streaming RAG Diagnostic Hub Logic ---
 
@@ -406,44 +587,84 @@ if (hubQuerySubmit && hubQueryInput) {
   });
 }
 
-// --- 4. Interactive Step-by-Step Instruction Viewer ---
+// --- 4. Interactive Step-by-Step Instruction Viewer & Checklist ---
+
+function updateRepairProgress() {
+  const checkboxes = document.querySelectorAll(".step-checkbox");
+  if (!checkboxes.length) return;
+  let checked = 0;
+  checkboxes.forEach(cb => {
+    if (cb.checked) checked++;
+  });
+  const total = checkboxes.length;
+  const pct = Math.round((checked / total) * 100);
+  const fillEl = document.getElementById("repair-progress-fill");
+  const textEl = document.getElementById("repair-progress-text");
+  if (fillEl) fillEl.style.width = `${pct}%`;
+  if (textEl) textEl.textContent = `${checked} of ${total} steps (${pct}%)`;
+}
 
 const stepCheckboxes = document.querySelectorAll(".step-checkbox");
 stepCheckboxes.forEach(cb => {
   cb.addEventListener("change", (e) => {
     const stepCard = e.target.closest(".step-item-card");
     if (stepCard) {
-      if (e.target.checked) {
-        stepCard.style.opacity = "0.75";
-      } else {
-        stepCard.style.opacity = "1";
-      }
+      stepCard.style.opacity = e.target.checked ? "0.75" : "1";
     }
+    updateRepairProgress();
   });
 });
+
+// Real-Time Technician Feedback Dispatcher
+async function sendTechnicianFeedback(action, notes = "") {
+  try {
+    const res = await fetch(`${RAG_API_URL}/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        technician: currentUser ? currentUser.name : "Tech. M. Richards",
+        action: action,
+        vin: "1G1RC6E4XGU123456",
+        doc_id: "TRNS-092",
+        notes: notes
+      })
+    });
+    if (res.ok) {
+      fetchAuditLogs();
+    }
+  } catch (err) {
+    console.warn("Feedback API error:", err);
+  }
+}
 
 // Diagnostic Action Buttons
 const btnCompleteJob = document.getElementById("btn-complete-job");
 if (btnCompleteJob) {
   btnCompleteJob.addEventListener("click", () => {
-    alert("✓ Diagnostic Session SESSION-8A9F completed! Logged to Compliance Audit Panel.");
+    stepCheckboxes.forEach(cb => {
+      cb.checked = true;
+      const card = cb.closest(".step-item-card");
+      if (card) card.style.opacity = "0.75";
+    });
+    updateRepairProgress();
+    sendTechnicianFeedback("Complete Job", "Technician verified all Bank 1 specs.");
+    showToast("✓ Complete Job: Sign-off recorded in compliance audit log!", "success");
   });
 }
 
 const btnReportUnclear = document.getElementById("btn-report-unclear");
 if (btnReportUnclear) {
   btnReportUnclear.addEventListener("click", () => {
-    const reason = prompt("Report Unclear Step:\nPlease specify which instruction requires engineering clarification:");
-    if (reason) {
-      alert(`Report logged for Diagnostic Session SESSION-8A9F: "${reason}"`);
-    }
+    sendTechnicianFeedback("Report Unclear", "Step 3 connector C102 requires clarification.");
+    showToast("⚠️ Report Unclear: Step flagged for engineering review.", "warning");
   });
 }
 
 const btnOutdatedGuide = document.getElementById("btn-outdated-guide");
 if (btnOutdatedGuide) {
   btnOutdatedGuide.addEventListener("click", () => {
-    alert("Flagged guide MNL-24-001 as Outdated. Engineering notification queued.");
+    sendTechnicianFeedback("Outdated Guide", "Manual revision needed for newer coil harness.");
+    showToast("🔄 Outdated Guide: Engineering revision notice queued.", "info");
   });
 }
 
@@ -621,10 +842,97 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
+// Fetch Real-time Audit Logs from Backend
+async function fetchAuditLogs() {
+  try {
+    const res = await fetch(`${RAG_API_URL}/audit-logs`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const tbody = document.querySelector("#audit-table tbody");
+    if (!tbody || !data.audit_logs) return;
+    tbody.innerHTML = "";
+    data.audit_logs.forEach(log => {
+      const tr = document.createElement("tr");
+      const trend = log.feedback_trend || "Logged";
+      let trendClass = "neutral";
+      if (trend.includes("Positive") || trend.includes("Verified") || trend.includes("Active") || trend.includes("Completed")) {
+        trendClass = "positive";
+      } else if (trend.includes("Issues") || trend.includes("Needed") || trend.includes("Requested")) {
+        trendClass = "negative";
+      }
+      tr.innerHTML = `
+        <td><code>${escapeHtml(log.doc_id)}</code></td>
+        <td><span class="status-badge published">${escapeHtml(log.action)}</span></td>
+        <td>${escapeHtml(log.operator)}</td>
+        <td>${escapeHtml(log.timestamp)}</td>
+        <td><span class="feedback-trend-pill ${trendClass}">${escapeHtml(trend)}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.warn("Could not fetch audit logs:", err);
+  }
+}
+
+// Drag & Drop Box Handlers for Knowledge Base
+if (dropzoneBox) {
+  dropzoneBox.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzoneBox.classList.add("drag-over");
+  });
+
+  dropzoneBox.addEventListener("dragleave", () => {
+    dropzoneBox.classList.remove("drag-over");
+  });
+
+  dropzoneBox.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzoneBox.classList.remove("drag-over");
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      showToast(`📄 File "${file.name}" uploaded and staged for ingestion!`, "success");
+      const newDocId = `DOC-${Math.floor(1000 + Math.random() * 9000)}`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><code>${newDocId}</code></td>
+        <td>
+          <div class="doc-title-cell">
+            <span>📘</span>
+            <span>${escapeHtml(file.name)}</span>
+          </div>
+        </td>
+        <td>SUV Model X / Global</td>
+        <td>v1.0 (Staged)</td>
+        <td><span class="status-badge draft">STAGED</span></td>
+      `;
+      if (kbTableBody) kbTableBody.prepend(tr);
+    }
+  });
+}
+
 // Initialize on Load
 document.addEventListener("DOMContentLoaded", () => {
   checkBackendHealth();
   updateObservabilityMetrics();
-  // Default to Manager Command Center as per mockup
-  switchView("view-command-center");
+  updateRepairProgress();
+  fetchAuditLogs();
+
+  // Check existing session
+  const savedSession = sessionStorage.getItem("aura_auth_session");
+  if (savedSession) {
+    try {
+      const parsed = JSON.parse(savedSession);
+      if (loginScreen) loginScreen.classList.add("hidden");
+      if (appShell) appShell.style.display = "flex";
+      applyRoleAccess(parsed.role, parsed.user);
+      return;
+    } catch (e) {
+      sessionStorage.removeItem("aura_auth_session");
+    }
+  }
+
+  // Show login screen by default
+  if (loginScreen) loginScreen.classList.remove("hidden");
+  if (appShell) appShell.style.display = "none";
 });
